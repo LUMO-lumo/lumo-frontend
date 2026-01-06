@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct LumoApp: App {
+    @State private var onboardingViewModel = OnboardingViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MissionSelectView().environment(onboardingViewModel)
         }
     }
 }
