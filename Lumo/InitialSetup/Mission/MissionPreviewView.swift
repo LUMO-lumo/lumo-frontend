@@ -9,7 +9,6 @@ import SwiftUI
 
 struct MissionPreviewView: View {
     @Environment(OnboardingViewModel.self) var viewModel
-    let missionType: MissionType
     
     var body: some View {
         VStack {
@@ -24,7 +23,7 @@ struct MissionPreviewView: View {
             }
             .padding(.vertical, 10)
             
-            switch missionType {
+            switch viewModel.selectedMission {
             case .math:
                 MathMissionView()
             case .typing:
@@ -73,10 +72,11 @@ struct MissionPreviewView: View {
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 10)
+        .navigationBarBackButtonHidden(true)
     }
 }
 
 #Preview {
-    MissionPreviewView(missionType: .math)
+    MissionPreviewView()
         .environment(OnboardingViewModel())
 }

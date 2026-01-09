@@ -65,16 +65,24 @@ struct MissionSelectView: View {
                 Text("다음")
                     .font(.Subtitle3)
                     .frame(maxWidth: .infinity)
-                    .padding()
+                    .padding(.vertical, 14)
                     .foregroundStyle(Color(hex: "404347"))
                     .background(Color(hex: "DDE1E8"))
                     .cornerRadius(8)
             }
-            
-            Spacer() .frame(height: 25.92)
         }
-        
         .padding(.horizontal, 24)
+        .padding(.vertical, 10)
+        .navigationDestination(for: OnboardingStep.self) { step in
+            switch step {
+            case .missionPreview:
+                MissionPreviewView()
+            case .finalComplete:
+                Text("최종 완료 화면") // 임시
+            default:
+                EmptyView()
+            }
+        }
     }
 }
 

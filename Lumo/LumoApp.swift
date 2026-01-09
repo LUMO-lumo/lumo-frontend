@@ -13,7 +13,10 @@ struct LumoApp: App {
     
     var body: some Scene {
         WindowGroup {
-            MissionSelectView().environment(onboardingViewModel)
+            NavigationStack(path: $onboardingViewModel.path) {
+                MissionSelectView()
+            }
+            .environment(onboardingViewModel)
         }
     }
 }
