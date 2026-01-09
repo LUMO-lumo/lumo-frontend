@@ -64,4 +64,12 @@ extension Font {
     static var Body3: Font {
         return .pretend(type: .regular, size: 10)
     }
+    
+    static var pretendardMedium16: Font {
+        return .pretend(type: .medium, size: 16)
+    }
+    
+    static var pretendardBold60: Font {
+        return .pretend(type: .bold, size: 60)
+    }
 }
