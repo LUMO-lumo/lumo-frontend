@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		41853A6F2F11469D00D6CA1C /* LUMO_MainDevApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41853A6D2F11469D00D6CA1C /* LUMO_MainDevApp.swift */; };
+		41853A7B2F1147FE00D6CA1C /* OnBoardingPartTodoWrite.md in Resources */ = {isa = PBXBuildFile; fileRef = 41853A772F1147FE00D6CA1C /* OnBoardingPartTodoWrite.md */; };
+		41853A7C2F1147FE00D6CA1C /* OnBoardingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41853A762F1147FE00D6CA1C /* OnBoardingModel.swift */; };
+		41853A7D2F1147FE00D6CA1C /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41853A792F1147FE00D6CA1C /* OnboardingViewModel.swift */; };
+		41853A7E2F1147FE00D6CA1C /* OnBoardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41853A782F1147FE00D6CA1C /* OnBoardingView.swift */; };
+		41853A802F11481A00D6CA1C /* OnBoardingAsset.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41853A7F2F11481A00D6CA1C /* OnBoardingAsset.xcassets */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		41853A3C2F1145F900D6CA1C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +36,12 @@
 		41853A2E2F1145F700D6CA1C /* LUMO_MainDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LUMO_MainDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		41853A3B2F1145F900D6CA1C /* LUMO_MainDevTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LUMO_MainDevTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		41853A452F1145F900D6CA1C /* LUMO_MainDevUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LUMO_MainDevUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		41853A6D2F11469D00D6CA1C /* LUMO_MainDevApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LUMO_MainDevApp.swift; sourceTree = "<group>"; };
+		41853A762F1147FE00D6CA1C /* OnBoardingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingModel.swift; sourceTree = "<group>"; };
+		41853A772F1147FE00D6CA1C /* OnBoardingPartTodoWrite.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = OnBoardingPartTodoWrite.md; sourceTree = "<group>"; };
+		41853A782F1147FE00D6CA1C /* OnBoardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingView.swift; sourceTree = "<group>"; };
+		41853A792F1147FE00D6CA1C /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
+		41853A7F2F11481A00D6CA1C /* OnBoardingAsset.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = OnBoardingAsset.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -43,6 +58,11 @@
 		41853A482F1145F900D6CA1C /* LUMO_MainDevUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = LUMO_MainDevUITests;
+			sourceTree = "<group>";
+		};
+		41853A812F11486B00D6CA1C /* UtilsPart */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = UtilsPart;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +95,9 @@
 		41853A252F1145F700D6CA1C = {
 			isa = PBXGroup;
 			children = (
+				41853A812F11486B00D6CA1C /* UtilsPart */,
+				41853A6D2F11469D00D6CA1C /* LUMO_MainDevApp.swift */,
+				41853A7A2F1147FE00D6CA1C /* OnBoardingPart */,
 				41853A302F1145F700D6CA1C /* LUMO_MainDev */,
 				41853A3E2F1145F900D6CA1C /* LUMO_MainDevTests */,
 				41853A482F1145F900D6CA1C /* LUMO_MainDevUITests */,
@@ -90,6 +113,18 @@
 				41853A452F1145F900D6CA1C /* LUMO_MainDevUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		41853A7A2F1147FE00D6CA1C /* OnBoardingPart */ = {
+			isa = PBXGroup;
+			children = (
+				41853A7F2F11481A00D6CA1C /* OnBoardingAsset.xcassets */,
+				41853A762F1147FE00D6CA1C /* OnBoardingModel.swift */,
+				41853A772F1147FE00D6CA1C /* OnBoardingPartTodoWrite.md */,
+				41853A782F1147FE00D6CA1C /* OnBoardingView.swift */,
+				41853A792F1147FE00D6CA1C /* OnboardingViewModel.swift */,
+			);
+			path = OnBoardingPart;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -109,6 +144,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				41853A302F1145F700D6CA1C /* LUMO_MainDev */,
+				41853A812F11486B00D6CA1C /* UtilsPart */,
 			);
 			name = LUMO_MainDev;
 			packageProductDependencies = (
@@ -212,6 +248,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41853A802F11481A00D6CA1C /* OnBoardingAsset.xcassets in Resources */,
+				41853A7B2F1147FE00D6CA1C /* OnBoardingPartTodoWrite.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +274,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41853A6F2F11469D00D6CA1C /* LUMO_MainDevApp.swift in Sources */,
+				41853A7C2F1147FE00D6CA1C /* OnBoardingModel.swift in Sources */,
+				41853A7D2F1147FE00D6CA1C /* OnboardingViewModel.swift in Sources */,
+				41853A7E2F1147FE00D6CA1C /* OnBoardingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

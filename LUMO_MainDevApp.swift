@@ -11,7 +11,7 @@ import SwiftUI
 struct LUMO_MainDevApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            OnBoardingView()
         }
     }
 }
