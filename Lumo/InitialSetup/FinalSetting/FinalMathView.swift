@@ -10,7 +10,7 @@ import SwiftUI
 struct FinalMathView: View {
     var body: some View {
         VStack {
-            Text("수학 미션을 수행해주세요")
+            Text("수학 미션을 수행해주세요!")
             
                 .font(.pretendardSemiBold12)
                 .foregroundStyle(Color.white)
