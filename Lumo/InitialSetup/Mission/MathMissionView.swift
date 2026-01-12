@@ -53,7 +53,6 @@ struct MathMissionView: View {
                     Spacer()
                 }
                 
-                
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: 274)
