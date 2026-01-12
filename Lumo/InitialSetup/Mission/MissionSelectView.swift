@@ -78,7 +78,7 @@ struct MissionSelectView: View {
             case .missionPreview:
                 MissionPreviewView()
             case .finalComplete:
-                Text("최종 완료 화면") // 임시
+                FinalCheckView()
             default:
                 EmptyView()
             }
