@@ -41,11 +41,11 @@ struct FinalCheckView: View {
                 case .math:
                     FinalMathView()
                 case .typing:
-                    TypingMissionView()
+                    FinalTypingView()
                 case .distance:
-                    DistanceMissionView()
+                    FinalDistanceView()
                 case .ox:
-                    OxMissionView()
+                    FinalOxView()
                 }
                 
             }
