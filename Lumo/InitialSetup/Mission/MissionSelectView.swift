@@ -73,16 +73,7 @@ struct MissionSelectView: View {
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 10)
-        .navigationDestination(for: OnboardingStep.self) { step in
-            switch step {
-            case .missionPreview:
-                MissionPreviewView()
-            case .finalComplete:
-                FinalCheckView()
-            default:
-                EmptyView()
-            }
-        }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
