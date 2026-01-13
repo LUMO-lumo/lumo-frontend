@@ -34,6 +34,7 @@ enum OnboardingStep: Hashable {
     case soundSetting
     case backgroundSelect
     case permissionCheck
+    case introMisison
     case missionSelect
     case missionPreview(MissionType)
     case finalComplete
