@@ -34,7 +34,7 @@ enum OnboardingStep: Hashable {
     case soundSetting
     case backgroundSelect
     case permissionCheck
-    case introMisison
+    case introMission
     case missionSelect
     case missionPreview(MissionType)
     case finalComplete
@@ -56,24 +56,30 @@ class OnboardingViewModel {
     var selectedMission: MissionType = .math
     
     // 배경 이미지 관련
-    var selectedImage: UIImage? = nil
-    var imageSelection: PhotosPickerItem? = nil {
+    var selectedImages: [UIImage] = [] // 실제 화면에 보여줄 이미지들
+    var imageSelections: [PhotosPickerItem] = [] {
         didSet {
-            loadImage(from: imageSelection)
+            loadImage(from: imageSelections)
         }
     }
     
     // MARK: - Logic
     
     /// PhotosPickerItem을 UIImage로 변환하는 비동기 함수
-    private func loadImage(from selection: PhotosPickerItem?) {
-        guard let selection else { return }
+    private func loadImage(from selections: [PhotosPickerItem]) {
+        
         Task {
-            if let data = try? await selection.loadTransferable(type: Data.self),
-               let uiImage = UIImage(data: data) {
-                await MainActor.run {
-                    self.selectedImage = uiImage
+            var loadedImages: [UIImage] = []
+            
+            for item in selections {
+                if let data = try? await item.loadTransferable(type: Data.self),
+                   let uiImage = UIImage(data: data) {
+                    loadedImages.append(uiImage)
                 }
+            }
+            
+            await MainActor.run {
+                self.selectedImages = loadedImages
             }
         }
     }
@@ -113,8 +119,8 @@ class OnboardingViewModel {
         )
         
         // 이미지 데이터 변환 및 저장
-        if let image = selectedImage,
-           let imageData = image.jpegData(compressionQuality: 0.8) {
+        if let firstImage = selectedImages.first,
+           let imageData = firstImage.jpegData(compressionQuality: 0.8) {
             newAlarm.backgroundImageData = imageData
         }
         
