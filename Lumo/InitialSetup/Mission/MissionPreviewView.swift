@@ -16,7 +16,7 @@ struct MissionPreviewView: View {
             HStack(spacing: 6) {
                 ForEach(0..<2) { index in
                     Rectangle()
-                        .foregroundStyle(Color(hex: "979DA7"))
+                        .foregroundStyle(Color(hex: "F55641"))
                         .frame(height: 3)
                         .cornerRadius(999)
                 }

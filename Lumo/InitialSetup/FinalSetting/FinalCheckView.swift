@@ -13,16 +13,6 @@ struct FinalCheckView: View {
     var body: some View {
         VStack(alignment: .leading) {
             
-            HStack(spacing: 6) {
-                ForEach(0..<4) { index in
-                    Rectangle()
-                        .foregroundStyle(Color(hex: "979DA7"))
-                        .frame(height: 3)
-                        .cornerRadius(999)
-                }
-            }
-            .padding(.vertical, 10)
-            
             Spacer()
             
             Text("이렇게 알람이 울려요.\n알람을 설정하시겠어요?")
@@ -81,18 +71,13 @@ struct FinalCheckView: View {
                 Button(action: {
                     viewModel.path.append(OnboardingStep.finalComplete)
                 }) {
-                    Text("다음")
+                    Text("시작하기")
                         .font(.Subtitle3)
-                        .foregroundStyle(Color(hex: "404347"))
+                        .foregroundStyle(Color.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(Color(hex: "DDE1E8"))
+                        .background(Color(hex: "F55641"))
                         .cornerRadius(8)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color(hex: "DDE1E8"), lineWidth: 2)
-                        )
-                    
                 }
             }
         }

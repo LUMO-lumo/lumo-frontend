@@ -21,7 +21,7 @@ struct MissionSelectView: View {
             HStack(spacing: 6) {
                 ForEach(0..<2) { index in
                     Rectangle()
-                        .foregroundStyle(index == 0 ? Color(hex: "979DA7") : Color(hex: "DDE1E8"))
+                        .foregroundStyle(index == 0 ? Color(hex: "F55641") : Color(hex: "DDE1E8"))
                         .frame(height: 3)
                         .cornerRadius(999)
                 }
@@ -98,11 +98,11 @@ struct MissionButton: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .aspectRatio(168/185, contentMode: .fit)
-            .background(isSelected ? Color(hex: "F2F4F7") : Color.white)
+            .background(Color.white)
             .cornerRadius(16)
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? Color(hex: "BBC0C7") : Color(hex: "DDE1E8"), lineWidth: 2)
+                    .stroke(isSelected ? Color(hex: "F55641") : Color(hex: "DDE1E8"), lineWidth: 2)
             )
         }
     }
