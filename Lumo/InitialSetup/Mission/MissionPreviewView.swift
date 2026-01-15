@@ -9,19 +9,10 @@ import SwiftUI
 
 struct MissionPreviewView: View {
     @Environment(OnboardingViewModel.self) var viewModel
+    @Binding var currentPage: Int
     
     var body: some View {
         VStack {
-            
-            HStack(spacing: 6) {
-                ForEach(0..<2) { index in
-                    Rectangle()
-                        .foregroundStyle(Color(hex: "F55641"))
-                        .frame(height: 3)
-                        .cornerRadius(999)
-                }
-            }
-            .padding(.vertical, 10)
             
             switch viewModel.selectedMission {
             case .math:
@@ -37,7 +28,9 @@ struct MissionPreviewView: View {
             // 이전 및 다음 버튼
             HStack(spacing: 10) {
                 Button(action: {
-                    viewModel.path.removeLast()
+                    withAnimation {
+                        currentPage = 0
+                    }
                 }) {
                     Text("이전")
                         .font(.Subtitle3)
@@ -77,6 +70,6 @@ struct MissionPreviewView: View {
 }
 
 #Preview {
-    MissionPreviewView()
+    MissionPreviewView(currentPage: .constant(1))
         .environment(OnboardingViewModel())
 }

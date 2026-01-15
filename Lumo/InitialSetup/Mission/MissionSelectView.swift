@@ -9,7 +9,9 @@ import SwiftUI
 
 struct MissionSelectView: View {
     @Environment(OnboardingViewModel.self) var viewModel
-    private var index: Int = 0
+    @Binding var currentPage: Int
+    
+   // private var index: Int = 0
     
     let columns = [
         GridItem(.flexible(), spacing: 9),
@@ -18,15 +20,6 @@ struct MissionSelectView: View {
     
     var body: some View {
         VStack {
-            HStack(spacing: 6) {
-                ForEach(0..<2) { index in
-                    Rectangle()
-                        .foregroundStyle(index == 0 ? Color(hex: "F55641") : Color(hex: "DDE1E8"))
-                        .frame(height: 3)
-                        .cornerRadius(999)
-                }
-            }
-            .padding(.vertical, 10)
             
             Spacer() .frame(height: 37)
             
@@ -60,7 +53,9 @@ struct MissionSelectView: View {
             
             // 다음 버튼
             Button(action: {
-                viewModel.path.append(OnboardingStep.missionPreview(viewModel.selectedMission))
+                withAnimation {
+                    currentPage = 1
+                }
             }) {
                 Text("다음")
                     .font(.Subtitle3)
@@ -135,6 +130,6 @@ extension Color {
 }
 
 #Preview {
-    MissionSelectView()
+    MissionSelectView(currentPage: .constant(0))
         .environment(OnboardingViewModel())
 }

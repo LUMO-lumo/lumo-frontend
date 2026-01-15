@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct OnBoardingView: View {
+    @Environment(OnboardingViewModel.self) var viewModel
     @State private var PageNumber = 0
     let coralOrange = Color(hex: "F55641")
     let corallightGray = Color(hex: "DDE1E8")
@@ -78,7 +79,7 @@ struct OnBoardingView: View {
                 PageNumber += 1
             }
         } else {
-            print("온보딩 완료!")
+            viewModel.path.append(OnboardingStep.initialSetup)
         }
     }
 }

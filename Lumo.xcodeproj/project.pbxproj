@@ -6,8 +6,18 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B4FD5F372F17E61C0022CF67 /* OnBoardingPartTodoWrite.md in Resources */ = {isa = PBXBuildFile; fileRef = B4FD5F322F17E61C0022CF67 /* OnBoardingPartTodoWrite.md */; };
+		B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FD5F332F17E61C0022CF67 /* OnBoardingView.swift */; };
+		B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FD5F312F17E61C0022CF67 /* OnBoardingModel.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		B4B2BD3F2F07C3010036E720 /* Lumo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4FD5F312F17E61C0022CF67 /* OnBoardingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingModel.swift; sourceTree = "<group>"; };
+		B4FD5F322F17E61C0022CF67 /* OnBoardingPartTodoWrite.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = OnBoardingPartTodoWrite.md; sourceTree = "<group>"; };
+		B4FD5F332F17E61C0022CF67 /* OnBoardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingView.swift; sourceTree = "<group>"; };
+		B4FD5F342F17E61C0022CF67 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,6 +55,7 @@
 		B4B2BD362F07C3010036E720 = {
 			isa = PBXGroup;
 			children = (
+				B4FD5F352F17E61C0022CF67 /* OnBoardingPart */,
 				B4B2BD412F07C3010036E720 /* Lumo */,
 				B4B2BD402F07C3010036E720 /* Products */,
 			);
@@ -56,6 +67,17 @@
 				B4B2BD3F2F07C3010036E720 /* Lumo.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B4FD5F352F17E61C0022CF67 /* OnBoardingPart */ = {
+			isa = PBXGroup;
+			children = (
+				B4FD5F312F17E61C0022CF67 /* OnBoardingModel.swift */,
+				B4FD5F322F17E61C0022CF67 /* OnBoardingPartTodoWrite.md */,
+				B4FD5F332F17E61C0022CF67 /* OnBoardingView.swift */,
+				B4FD5F342F17E61C0022CF67 /* OnboardingViewModel.swift */,
+			);
+			path = OnBoardingPart;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -122,6 +144,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4FD5F372F17E61C0022CF67 /* OnBoardingPartTodoWrite.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,6 +155,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */,
+				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

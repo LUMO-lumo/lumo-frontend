@@ -1,0 +1,33 @@
+//
+//  LoacationSettingView.swift
+//  Lumo
+//
+//  Created by 김승겸 on 1/15/26.
+//
+
+import SwiftUI
+
+struct LocationSettingView: View {
+    @Environment(OnboardingViewModel.self) var viewModel
+    @Binding var currentPage: Int
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            
+            Spacer()
+            
+            Text("기기 위치 설정 허용")
+                .font(.Subtitle1)
+            
+            Spacer()
+        }
+        .padding(.horizontal, 24)
+        .padding(.vertical, 10)
+        .navigationBarBackButtonHidden(true)
+    }
+}
+
+#Preview {
+    LocationSettingView(currentPage: .constant(3))
+        .environment(OnboardingViewModel())
+}
