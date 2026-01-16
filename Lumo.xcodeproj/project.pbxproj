@@ -7,36 +7,38 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B4FD5F2E2F17DEE80022CF67 /* LumoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FD5F142F17DEE80022CF67 /* LumoApp.swift */; };
 		B4FD5F372F17E61C0022CF67 /* OnBoardingPartTodoWrite.md in Resources */ = {isa = PBXBuildFile; fileRef = B4FD5F322F17E61C0022CF67 /* OnBoardingPartTodoWrite.md */; };
+		B4FD5F382F17E61C0022CF67 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4FD5F2F2F17E61C0022CF67 /* Assets.xcassets */; };
 		B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FD5F332F17E61C0022CF67 /* OnBoardingView.swift */; };
 		B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FD5F312F17E61C0022CF67 /* OnBoardingModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B4B2BD3F2F07C3010036E720 /* Lumo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4FD5F132F17DEE80022CF67 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B4FD5F142F17DEE80022CF67 /* LumoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumoApp.swift; sourceTree = "<group>"; };
+		B4FD5F2F2F17E61C0022CF67 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B4FD5F312F17E61C0022CF67 /* OnBoardingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingModel.swift; sourceTree = "<group>"; };
 		B4FD5F322F17E61C0022CF67 /* OnBoardingPartTodoWrite.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = OnBoardingPartTodoWrite.md; sourceTree = "<group>"; };
 		B4FD5F332F17E61C0022CF67 /* OnBoardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingView.swift; sourceTree = "<group>"; };
 		B4FD5F342F17E61C0022CF67 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B408D3442F0BA80A00B5F155 /* Exceptions for "Lumo" folder in "Lumo" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = B4B2BD3E2F07C3010036E720 /* Lumo */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B4B2BD412F07C3010036E720 /* Lumo */ = {
+		B4FD5FC22F1A35B30022CF67 /* InitialSetup */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B408D3442F0BA80A00B5F155 /* Exceptions for "Lumo" folder in "Lumo" target */,
-			);
-			path = Lumo;
+			path = InitialSetup;
+			sourceTree = "<group>";
+		};
+		B4FD5FDE2F1A35B90022CF67 /* Resources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B4FD5FE82F1A3BAF0022CF67 /* Domain */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Domain;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -55,9 +57,14 @@
 		B4B2BD362F07C3010036E720 = {
 			isa = PBXGroup;
 			children = (
+				B4FD5F142F17DEE80022CF67 /* LumoApp.swift */,
+				B4FD5FE82F1A3BAF0022CF67 /* Domain */,
+				B4FD5FC22F1A35B30022CF67 /* InitialSetup */,
 				B4FD5F352F17E61C0022CF67 /* OnBoardingPart */,
-				B4B2BD412F07C3010036E720 /* Lumo */,
 				B4B2BD402F07C3010036E720 /* Products */,
+				B4FD5FDE2F1A35B90022CF67 /* Resources */,
+				B4FD5F2F2F17E61C0022CF67 /* Assets.xcassets */,
+				B4FD5F132F17DEE80022CF67 /* Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -96,7 +103,9 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				B4B2BD412F07C3010036E720 /* Lumo */,
+				B4FD5FC22F1A35B30022CF67 /* InitialSetup */,
+				B4FD5FDE2F1A35B90022CF67 /* Resources */,
+				B4FD5FE82F1A3BAF0022CF67 /* Domain */,
 			);
 			name = Lumo;
 			packageProductDependencies = (
@@ -145,6 +154,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B4FD5F372F17E61C0022CF67 /* OnBoardingPartTodoWrite.md in Resources */,
+				B4FD5F382F17E61C0022CF67 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,6 +167,7 @@
 			files = (
 				B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */,
 				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
+				B4FD5F2E2F17DEE80022CF67 /* LumoApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,7 +305,7 @@
 				DEVELOPMENT_TEAM = 32UGN86SXU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Lumo/Info.plist;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -328,7 +339,7 @@
 				DEVELOPMENT_TEAM = 32UGN86SXU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Lumo/Info.plist;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
