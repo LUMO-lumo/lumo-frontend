@@ -81,10 +81,10 @@ struct MissionButton: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: 12) {
-                Image(systemName: getIconName(mission))
+                Image(getIconName(mission))
                     .resizable()
                     .scaledToFit()
-                    .frame(width:72, height: 72)
+                    .frame(width:96, height: 96)
                     .foregroundStyle(Color.black)
                 
                 Text(mission.title)
@@ -105,10 +105,10 @@ struct MissionButton: View {
     // 미션별 아이콘 매핑 (임시)
     func getIconName(_ mission: MissionType) -> String {
         switch mission {
-        case .math: return "xmark.square"
-        case .typing: return "xmark.square"
-        case .ox: return "xmark.square"
-        case .distance: return "xmark.square"
+        case .math: return "MathMission"
+        case .typing: return "TypingMission"
+        case .ox: return "OXMission"
+        case .distance: return "DistanceMission"
         }
     }
 }
