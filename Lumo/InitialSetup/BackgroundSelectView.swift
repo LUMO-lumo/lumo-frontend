@@ -20,6 +20,7 @@ struct BackgroundSelectView: View {
     var body: some View {
         VStack(alignment: .leading) {
             VStack(alignment: .leading) {
+                
                 Spacer() .frame(height: 37)
                 
                 Text("하루의 시작을 밝혀 줄\n알람 배경을 선택해주세요.")
@@ -27,8 +28,6 @@ struct BackgroundSelectView: View {
                 
                 Spacer() .frame(height: 45)
             }
-            .padding(.horizontal, 24
-            )
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 10) {
                     
@@ -75,17 +74,17 @@ struct BackgroundSelectView: View {
                         let remainingSlots = 3 - viewModel.selectedImages.count
                         ForEach(0..<remainingSlots, id: \.self) { _ in
                             Rectangle()
-                                .fill(Color(hex: "DDE1E8").opacity(0.5))
+                                .fill(Color(hex: "D9D9D9"))
                                 .aspectRatio(168.0/230.0, contentMode: .fit)
                                 .cornerRadius(12)
                         }
                     }
                 }
-                .padding(.horizontal, 24)
             }
             .scrollIndicators(.hidden)
             
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 10)
     }
 }
