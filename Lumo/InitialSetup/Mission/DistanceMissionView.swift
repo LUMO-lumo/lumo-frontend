@@ -11,14 +11,9 @@ struct DistanceMissionView: View {
         VStack {
             Spacer()
             
-            HStack {
-                Text("거리 미션")
-                    .font(.Subtitle2)
-                    .foregroundStyle(Color(hex: "F55641"))
-                + Text("은 이런 미션을 수행해요")
-                    .font(.Subtitle2)
-                    .foregroundStyle(Color.black)
-            }
+            Text("\(Text("거리 미션").foregroundStyle(Color(hex: "F55641")))은 이런 미션을 수행해요")
+                .font(.Subtitle2)
+                .foregroundStyle(Color.black)
             
             Spacer()
             
@@ -51,7 +46,7 @@ struct DistanceMissionView: View {
                     .font(.pretendardBold60)
                     .padding(.bottom, 30)
                     .foregroundStyle(Color.black)
-                    
+                
                 Spacer().frame(height: 12)
                 
                 Text("움직였어요")
@@ -59,10 +54,10 @@ struct DistanceMissionView: View {
                     .foregroundStyle(Color.black)
             }
             .frame(maxWidth: .infinity)
-                .padding(.horizontal, 24)
-                .padding(.vertical, 54)
-                .background(Color(hex: "F2F4F7"))
-                .cornerRadius(16)
+            .padding(.horizontal, 24)
+            .padding(.vertical, 54)
+            .background(Color(hex: "F2F4F7"))
+            .cornerRadius(16)
             
             Spacer()
         }
