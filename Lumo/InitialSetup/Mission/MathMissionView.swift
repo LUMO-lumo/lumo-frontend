@@ -12,23 +12,14 @@ struct MathMissionView: View {
         VStack {
             Spacer()
             
-            HStack {
-                Text("수학 미션")
-                    .font(.Subtitle2)
-                    .foregroundStyle(Color(hex: "F55641"))
-                + Text("은 이런 미션을 수행해요")
+                Text("\(Text("수학 미션").foregroundStyle(Color(hex: "F55641")))은 이런 미션을 수행해요")
                     .font(.Subtitle2)
                     .foregroundStyle(Color.black)
-            }
             
             Spacer()
             
             HStack {
-                Text("Q.")
-                    .font(.Subtitle2)
-                    .foregroundStyle(Color.black)
-                
-                + Text(" 88+33 = ?")
+                Text("Q. 88+33 = ?")
                     .font(.Subtitle2)
                     .foregroundStyle(Color.black)
                 
@@ -43,12 +34,9 @@ struct MathMissionView: View {
             
             VStack {
                 HStack {
-                    Text("A.")
+                    Text("A. \(Text("답변을 입력해주세요.").foregroundStyle(Color(hex: "979DA7")))")
                         .font(.Subtitle2)
                         .foregroundStyle(Color.black)
-                    + Text(" 답변을 입력해주세요.")
-                        .font(.Subtitle3)
-                        .foregroundStyle(Color(hex: "979DA7"))
                     
                     Spacer()
                 }

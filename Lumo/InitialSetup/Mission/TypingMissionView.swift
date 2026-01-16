@@ -12,10 +12,7 @@ struct TypingMissionView: View {
             Spacer()
             
             HStack {
-                Text("따라쓰기")
-                    .font(.Subtitle2)
-                    .foregroundStyle(Color(hex: "F55641"))
-                + Text("는 이런 미션을 수행해요")
+                Text("\(Text("따라쓰기").foregroundStyle(Color(hex: "F55641")))는 이런 미션을 수행해요")
                     .font(.Subtitle2)
                     .foregroundStyle(Color.black)
             }

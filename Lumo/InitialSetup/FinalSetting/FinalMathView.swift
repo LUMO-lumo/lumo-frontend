@@ -23,11 +23,7 @@ struct FinalMathView: View {
             
             HStack {
                 
-                Text("Q.")
-                    .font(.pretendardSemiBold14)
-                    .foregroundStyle(Color.black)
-                
-                + Text(" 88+33 = ?")
+                Text("Q. 88+33 = ?")
                     .font(.pretendardSemiBold14)
                     .foregroundStyle(Color.black)
                 
@@ -44,12 +40,9 @@ struct FinalMathView: View {
             
             VStack {
                 HStack {
-                    Text("A.")
+                    Text("A. \(Text("답변을 입력해주세요.").foregroundStyle(Color(hex: "979DA7")))")
                         .font(.pretendardSemiBold14)
                         .foregroundStyle(Color.black)
-                    + Text(" 답변을 입력해주세요.")
-                        .font(.pretendardSemiBold14)
-                        .foregroundStyle(Color(hex: "979DA7"))
                     
                     Spacer()
                 }

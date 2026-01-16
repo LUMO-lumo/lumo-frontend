@@ -12,10 +12,7 @@ struct OxMissionView: View {
             Spacer()
             
             HStack {
-                Text("OX퀴즈")
-                    .font(.Subtitle2)
-                    .foregroundStyle(Color(hex: "F55641"))
-                + Text("는 이런 미션을 수행해요")
+                Text("\(Text("OX퀴즈").foregroundStyle(Color(hex: "F55641")))는 이런 미션을 수행해요")
                     .font(.Subtitle2)
                     .foregroundStyle(Color.black)
             }
