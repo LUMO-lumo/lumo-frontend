@@ -14,15 +14,25 @@ struct LocationSettingView: View {
     var body: some View {
         VStack(alignment: .leading) {
             
+            Text("기기의 위치정보 설정을 허용해주세요.")
+                .font(.Subtitle1)
+                .foregroundStyle(Color.black)
+            
+            Spacer() .frame(height: 8)
+            
+            Text("거리미션을 수행할 때 필요해요!")
+                .font(.Body1)
+                .foregroundStyle(Color(hex: "7A7F88"))
+            
             Spacer()
             
-            Text("기기 위치 설정 허용")
-                .font(.Subtitle1)
+            Image("MissionClap")
+                .frame(maxWidth: .infinity)
             
             Spacer()
         }
-        .padding(.horizontal, 24)
         .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .navigationBarBackButtonHidden(true)
     }
 }
