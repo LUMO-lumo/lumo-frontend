@@ -24,10 +24,11 @@ struct InitialSetupContainerView: View {
                         .animation(.easeInOut, value: currentPage)
                 }
             }
-            .padding(.horizontal, 24)
             .padding(.top, 10)
             .padding(.bottom, 10)
 
+            Spacer()
+            
             // 2. 화면들 (TabView)
             TabView(selection: $currentPage) {
                 NicknameSettingView(currentPage: $currentPage)
@@ -101,9 +102,9 @@ struct InitialSetupContainerView: View {
                     }
                 }
             }
-            .padding(.horizontal, 24) // 양옆 여백
             .padding(.bottom, 10)     // 바닥 여백
         }
+        .padding(.horizontal, 24)
         .navigationBarBackButtonHidden(true)
     }
 }
