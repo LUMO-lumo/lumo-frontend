@@ -22,7 +22,6 @@
 		B4FD5F312F17E61C0022CF67 /* OnBoardingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingModel.swift; sourceTree = "<group>"; };
 		B4FD5F322F17E61C0022CF67 /* OnBoardingPartTodoWrite.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = OnBoardingPartTodoWrite.md; sourceTree = "<group>"; };
 		B4FD5F332F17E61C0022CF67 /* OnBoardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingView.swift; sourceTree = "<group>"; };
-		B4FD5F342F17E61C0022CF67 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -82,7 +81,6 @@
 				B4FD5F312F17E61C0022CF67 /* OnBoardingModel.swift */,
 				B4FD5F322F17E61C0022CF67 /* OnBoardingPartTodoWrite.md */,
 				B4FD5F332F17E61C0022CF67 /* OnBoardingView.swift */,
-				B4FD5F342F17E61C0022CF67 /* OnboardingViewModel.swift */,
 			);
 			path = OnBoardingPart;
 			sourceTree = "<group>";
