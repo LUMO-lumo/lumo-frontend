@@ -1,5 +1,5 @@
 //
-//  LoacationSettingView.swift
+//  LocationSettingView.swift
 //  Lumo
 //
 //  Created by 김승겸 on 1/15/26.
