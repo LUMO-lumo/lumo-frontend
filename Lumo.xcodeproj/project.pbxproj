@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		B4301E812F1BA678002B4356 /* RoutineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4301E802F1BA478002B4356 /* RoutineView.swift */; };
 		B4301E832F1D501C002B4356 /* RoutineModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4301E822F1D5018002B4356 /* RoutineModel.swift */; };
+		B4301E852F1D60F9002B4356 /* RoutineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4301E842F1D60F0002B4356 /* RoutineViewModel.swift */; };
 		B4FD5F2E2F17DEE80022CF67 /* LumoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FD5F142F17DEE80022CF67 /* LumoApp.swift */; };
 		B4FD5F372F17E61C0022CF67 /* OnBoardingPartTodoWrite.md in Resources */ = {isa = PBXBuildFile; fileRef = B4FD5F322F17E61C0022CF67 /* OnBoardingPartTodoWrite.md */; };
 		B4FD5F382F17E61C0022CF67 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4FD5F2F2F17E61C0022CF67 /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 /* Begin PBXFileReference section */
 		B4301E802F1BA478002B4356 /* RoutineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineView.swift; sourceTree = "<group>"; };
 		B4301E822F1D5018002B4356 /* RoutineModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineModel.swift; sourceTree = "<group>"; };
+		B4301E842F1D60F0002B4356 /* RoutineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineViewModel.swift; sourceTree = "<group>"; };
 		B4B2BD3F2F07C3010036E720 /* Lumo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4FD5F132F17DEE80022CF67 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B4FD5F142F17DEE80022CF67 /* LumoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumoApp.swift; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 		B4301E7F2F1B9EB1002B4356 /* Routine */ = {
 			isa = PBXGroup;
 			children = (
+				B4301E842F1D60F0002B4356 /* RoutineViewModel.swift */,
 				B4301E822F1D5018002B4356 /* RoutineModel.swift */,
 				B4301E802F1BA478002B4356 /* RoutineView.swift */,
 			);
@@ -179,6 +182,7 @@
 			files = (
 				B4301E832F1D501C002B4356 /* RoutineModel.swift in Sources */,
 				B4301E812F1BA678002B4356 /* RoutineView.swift in Sources */,
+				B4301E852F1D60F9002B4356 /* RoutineViewModel.swift in Sources */,
 				B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */,
 				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
 				B4FD5F2E2F17DEE80022CF67 /* LumoApp.swift in Sources */,
