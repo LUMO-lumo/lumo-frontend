@@ -16,7 +16,7 @@ class RoutineType {
     var createdAt: Date         // 생성일 (정렬용)
     
     // 이 카테고리에 포함된 할 일들 (Cascade: 카테고리 지우면 할 일도 다 지워짐)
-    @Relationship(deleteRule: .cascade, inverse: \RoutineTask.category)
+    @Relationship(deleteRule: .cascade, inverse: \RoutineTask.type)
     var tasks: [RoutineTask]?
     
     init(title: String) {
@@ -33,7 +33,7 @@ class RoutineTask {
     var id : UUID
     var title: String               // [필수] 루틴 이름
     
-    var category: RoutineType?
+    var type: RoutineType?
     
     var currentStreak: Int          // 연속 달성 횟수
     var isCompleted: Bool           // 오늘 완료 여부 (체크 여부)
