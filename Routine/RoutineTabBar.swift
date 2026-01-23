@@ -31,7 +31,7 @@ struct RoutineTabBar: View {
                                 RoundedRectangle(cornerRadius: 20)
                                     .stroke(type == selectedType ? Color.clear : Color(hex: "BBC0C7"), lineWidth: 1)
                             }
-                        
+                            
                     }
                 }
                 
@@ -55,7 +55,7 @@ struct RoutineTabBar: View {
                     )
                 }
             }
-            .padding(.horizontal)
+            .padding(.vertical, 2)
         }
     }
 }
