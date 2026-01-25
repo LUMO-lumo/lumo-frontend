@@ -72,14 +72,46 @@ class RoutineViewModel {
     func checkAndCreateDefaultCategories() {
         let descriptor = FetchDescriptor<RoutineType>()
         
-        // 데이터가 하나도 없으면 기본 3개 생성
+        // 데이터가 하나도 없으면 초기 세팅 진행
         if (try? modelContext.fetchCount(descriptor)) == 0 {
-            let defaults = ["데일리", "시험기간", "이번주"]
-            for title in defaults {
-                let category = RoutineType(title: title)
-                modelContext.insert(category)
-            }
-            print("기본 카테고리 3개 생성 완료")
+            let calendar = Calendar.current
+            let today = Date()
+            let yesterday = calendar.date(byAdding: .day, value: -1, to: today)
+            
+            // 1. 루틴 타입 생성
+            let dailyType = RoutineType(title: "데일리")
+            let examType = RoutineType(title: "시험기간")
+            let weekType = RoutineType(title: "이번주")
+            
+            modelContext.insert(dailyType)
+            modelContext.insert(examType)
+            modelContext.insert(weekType)
+            
+            // 2. 데일리 타입에 초기 루틴(Task) 추가
+            // (1) 아침 스트레칭 (연속 4회)
+            let task1 = RoutineTask(title: "아침 스트레칭")
+            task1.currentStreak = 4
+            task1.lastCompletedDate = yesterday
+            task1.type = dailyType
+            dailyType.tasks?.append(task1)
+            modelContext.insert(task1)
+            
+            // (2) 일기 쓰기 (연속 2회)
+            let task2 = RoutineTask(title: "일기 쓰기")
+            task2.currentStreak = 2
+            task2.lastCompletedDate = yesterday
+            task2.type = dailyType
+            dailyType.tasks?.append(task2)
+            modelContext.insert(task2)
+            
+            // (3) 공복 유산소 (연속 0회)
+            let task3 = RoutineTask(title: "공복 유산소")
+            task3.currentStreak = 0
+            task3.type = dailyType
+            dailyType.tasks?.append(task3)
+            modelContext.insert(task3)
+            
+            print("기본 카테고리 및 초기 루틴 3개 생성 완료")
         }
     }
     
