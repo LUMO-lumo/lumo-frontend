@@ -46,7 +46,9 @@ struct MissionPreviewView: View {
                 }
                 
                 Button(action: {
-                    viewModel.path.append(OnboardingStep.finalComplete)
+                    withAnimation {
+                        currentPage = 2
+                    }
                 }) {
                     Text("다음")
                         .font(.Subtitle3)
