@@ -7,15 +7,15 @@
 import SwiftUI
 import SwiftData
 
-struct DailyRoutineCardView: View {
+struct RoutineCardView: View {
     var task: RoutineTask
     var onToggle: () -> Void
     
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 8) {
-                // 연속 달성 배지 (1회 이상일 때만 표시)
-                if task.currentStreak > 0 {
+                // 연속 달성 배지 (2회 이상일 때만 표시)
+                if task.currentStreak > 1 {
                     Text("연속달성 \(task.currentStreak)회")
                         .font(.pretendardSemiBold10)
                         .foregroundStyle(.white)
