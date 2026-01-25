@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FinalCheckView: View {
     @Environment(OnboardingViewModel.self) var viewModel
+    @Binding var currentPage: Int
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -53,7 +54,9 @@ struct FinalCheckView: View {
             // 이전 및 다음 버튼
             HStack(spacing: 10) {
                 Button(action: {
-                    viewModel.path.removeLast()
+                    withAnimation {
+                        currentPage = 1
+                    }
                 }) {
                     Text("이전")
                         .font(.Subtitle3)
@@ -88,5 +91,6 @@ struct FinalCheckView: View {
 }
 
 #Preview {
-    FinalCheckView().environment(OnboardingViewModel())
+    FinalCheckView(currentPage: .constant(2))
+        .environment(OnboardingViewModel())
 }

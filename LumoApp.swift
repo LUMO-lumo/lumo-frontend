@@ -29,12 +29,6 @@ struct LumoApp: App {
                         case .missionSelect:
                             MissionContainerView()
                             
-//                        case .missionPreview:
-//                            MissionPreviewView()
-                            
-                        case .finalComplete:
-                            FinalCheckView()
-                            
                         default:
                             EmptyView()
                         }

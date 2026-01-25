@@ -10,14 +10,14 @@ import SwiftUI
 struct MissionContainerView: View {
     @State private var currentPage = 0
     @Environment(OnboardingViewModel.self) var viewModel
-
+    
     var body: some View {
         VStack(spacing: 0) {
             
             HStack(spacing: 6) {
-                ForEach(0..<2) { index in
+                ForEach(0..<4) { index in
                     Rectangle()
-                        // 현재 페이지면 주황색, 아니면 회색
+                    // 현재 페이지면 주황색, 아니면 회색
                         .foregroundStyle(index <= currentPage ? Color(hex: "F55641") : Color(hex: "DDE1E8"))
                         .frame(height: 3)
                         .cornerRadius(999)
@@ -36,6 +36,9 @@ struct MissionContainerView: View {
                 // 두 번째: 미션 미리보기
                 MissionPreviewView(currentPage: $currentPage)
                     .tag(1)
+                
+                FinalCheckView(currentPage: $currentPage)
+                    .tag(2)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.easeInOut, value: currentPage) // 슬라이드 애니메이션
