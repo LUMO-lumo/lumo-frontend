@@ -13,6 +13,8 @@ import PhotosUI
 // MARK: - [핵심] 앱의 새로운 시작점 (MainView)
 struct MainView: View {
     // 현재 선택된 탭 (0: 홈, 1: 알람, 2: 루틴, 3: 설정)
+    
+    @Environment(OnboardingViewModel.self) var viewModel
     @State private var selectedTab = 0
     var body: some View {
         ZStack(alignment: .bottom) {

@@ -72,7 +72,9 @@ struct FinalCheckView: View {
                 }
                 
                 Button(action: {
-                    viewModel.path.append(OnboardingStep.finalComplete)
+                    withAnimation {
+                        currentPage = 3
+                    }
                 }) {
                     Text("시작하기")
                         .font(.Subtitle3)

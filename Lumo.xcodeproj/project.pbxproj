@@ -15,7 +15,7 @@
 		B42F48032F26FA600057284E /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42F47FC2F26FA600057284E /* HomeViewModel.swift */; };
 		B42F48042F26FA600057284E /* HomeViewAsset.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B42F47FB2F26FA600057284E /* HomeViewAsset.xcassets */; };
 		B42F48052F26FA600057284E /* HomePartTodoWrite.md in Resources */ = {isa = PBXBuildFile; fileRef = B42F47F92F26FA600057284E /* HomePartTodoWrite.md */; };
-		B42F48072F26FAFD0057284E /* Tabber.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42F48062F26FAFD0057284E /* Tabber.swift */; };
+		B42F48072F26FAFD0057284E /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42F48062F26FAFD0057284E /* TabBar.swift */; };
 		B42F480A2F26FDE60057284E /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = B42F48092F26FDE60057284E /* CombineMoya */; };
 		B42F480C2F26FDE60057284E /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B42F480B2F26FDE60057284E /* Moya */; };
 		B42F480E2F26FDE60057284E /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = B42F480D2F26FDE60057284E /* ReactiveMoya */; };
@@ -36,7 +36,7 @@
 		B42F47FA2F26FA600057284E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		B42F47FB2F26FA600057284E /* HomeViewAsset.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = HomeViewAsset.xcassets; sourceTree = "<group>"; };
 		B42F47FC2F26FA600057284E /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
-		B42F48062F26FAFD0057284E /* Tabber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tabber.swift; sourceTree = "<group>"; };
+		B42F48062F26FAFD0057284E /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
 		B4B2BD3F2F07C3010036E720 /* Lumo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4FD5F132F17DEE80022CF67 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B4FD5F142F17DEE80022CF67 /* LumoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumoApp.swift; sourceTree = "<group>"; };
@@ -105,7 +105,7 @@
 		B4B2BD362F07C3010036E720 = {
 			isa = PBXGroup;
 			children = (
-				B42F48062F26FAFD0057284E /* Tabber.swift */,
+				B42F48062F26FAFD0057284E /* TabBar.swift */,
 				B42F47FD2F26FA600057284E /* HomePart */,
 				B4FD5F142F17DEE80022CF67 /* LumoApp.swift */,
 				B4FD5FE82F1A3BAF0022CF67 /* Domain */,
@@ -225,7 +225,7 @@
 			files = (
 				B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */,
 				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
-				B42F48072F26FAFD0057284E /* Tabber.swift in Sources */,
+				B42F48072F26FAFD0057284E /* TabBar.swift in Sources */,
 				B42F47FE2F26FA600057284E /* TodoSettingView.swift in Sources */,
 				B42F47FF2F26FA600057284E /* TodoSettingViewModel.swift in Sources */,
 				B42F48002F26FA600057284E /* HomeModel.swift in Sources */,

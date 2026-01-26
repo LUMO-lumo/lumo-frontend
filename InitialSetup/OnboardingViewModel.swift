@@ -32,16 +32,17 @@ enum MissionType: String, CaseIterable {
 // 온보딩 단계 네비게이션용
 enum OnboardingStep: Hashable {
     case initialSetup
-    case alarmSetting
-    case soundSetting
-    case notificationSetting
-    case locationSetting
-    case backgroundSelect
-    case permissionCheck
+//    case alarmSetting
+//    case soundSetting
+//    case notificationSetting
+//    case locationSetting
+//    case backgroundSelect
+//    case permissionCheck
     case introMission
     case missionSelect
-    case missionPreview(MissionType)
-    case finalComplete
+//    case missionPreview(MissionType)
+//    case finalComplete
+    case home
 }
 
 @Observable

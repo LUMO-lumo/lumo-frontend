@@ -52,6 +52,12 @@ struct NicknameSettingView: View {
         .onTapGesture {
             isFocused = false
         }
+        // 페이지가 바뀌면 포커스를 즉시 해제하여 화면이 되돌아가는 것 방지
+        .onChange(of: currentPage) { _, newValue in
+            if newValue != 0 { // 0은 현재 페이지 인덱스
+                isFocused = false
+            }
+        }
         .padding(.vertical, 10)
     }
 }

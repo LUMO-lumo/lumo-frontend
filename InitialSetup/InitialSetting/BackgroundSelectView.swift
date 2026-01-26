@@ -18,6 +18,9 @@ struct BackgroundSelectView: View {
     ]
     
     var body: some View {
+        let body3 = Font.Body3
+        let gray = Color(hex: "D9D9D9")
+        
         VStack(alignment: .leading) {
             VStack(alignment: .leading) {
                 
@@ -44,13 +47,13 @@ struct BackgroundSelectView: View {
                                     Image(systemName: "plus.circle")
                                         .font(.system(size: 24))
                                     Text("앨범에서 선택하기")
-                                        .font(.Body3)
+                                        .font(body3)
                                 }
                                     .foregroundStyle(Color.black)
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color(hex: "D9D9D9"), lineWidth: 2)
+                                    .stroke(Color(gray), lineWidth: 2)
                             )
                     }
                     

@@ -39,6 +39,9 @@ struct MissionContainerView: View {
                 
                 FinalCheckView(currentPage: $currentPage)
                     .tag(2)
+                
+                IntroTermAgreementView(currentPage: $currentPage)
+                    .tag(3)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.easeInOut, value: currentPage) // 슬라이드 애니메이션

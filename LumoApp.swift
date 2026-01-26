@@ -29,8 +29,9 @@ struct LumoApp: App {
                         case .missionSelect:
                             MissionContainerView()
                             
-                        default:
-                            EmptyView()
+                        case .home:
+                            MainView()
+                            
                         }
                     }
             }
