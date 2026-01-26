@@ -25,9 +25,7 @@ struct MainView: View {
                 case 1:
                     Text(" 알람 파트")
                 case 2:
-                    Text("루틴 화면") // 나중에 RoutineView()로 교체
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.white)
+                    RoutineView()
                 case 3:
                     Text("설정 화면") // 나중에 SettingView()로 교체
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
