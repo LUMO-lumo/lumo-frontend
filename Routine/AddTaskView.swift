@@ -12,6 +12,8 @@ struct AddTaskView: View {
     @Bindable var viewModel: RoutineViewModel
     @Environment(\.dismiss) var dismiss
     
+    @Binding var isTabBarHidden: Bool
+    
     // 선택 가능한 루틴 타입 목록을 불러옵니다.
     @Query(sort: \RoutineType.createdAt) var routineTypes: [RoutineType]
     
@@ -97,6 +99,8 @@ struct AddTaskView: View {
                     .cornerRadius(8)
             }
             .disabled(viewModel.isTaskSaveDisabled)
+            
+            
         }
         .padding(.horizontal, 24)
         .padding(.bottom, 25)
@@ -126,6 +130,15 @@ struct AddTaskView: View {
                     .foregroundStyle(.black)
             }
         }
+        // 화면이 나타날 때 탭바 숨기기
+        .onAppear {
+            isTabBarHidden = true
+        }
+        
+        // 화면이 사라질 때 탭바 다시 보이기
+        .onDisappear {
+            isTabBarHidden = false
+        }
     }
 }
 
@@ -146,6 +159,6 @@ struct AddTaskView: View {
     viewModel.selectedType = type1
     
     return NavigationStack {
-        AddTaskView(viewModel: viewModel)
+        AddTaskView(viewModel: viewModel, isTabBarHidden: .constant(true))
     }
 }

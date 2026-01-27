@@ -12,6 +12,8 @@ struct RoutineView: View {
     @Environment(\.modelContext) var modelContext
     @State private var viewModel: RoutineViewModel?
     
+    @Binding var isTabBarHidden: Bool
+    
     // DB에서 루틴 타입(탭)들을 생성일 순서대로 가져옴
     @Query(sort: \RoutineType.createdAt) var routineTypes: [RoutineType]
     
@@ -66,7 +68,7 @@ struct RoutineView: View {
                 if let vm = viewModel {
                     VStack {
                         NavigationLink {
-                            AddTaskView(viewModel: vm)
+                            AddTaskView(viewModel: vm, isTabBarHidden: $isTabBarHidden)
                         } label: {
                             Text("생성하기")
                                 .font(.Subtitle3)
@@ -111,6 +113,6 @@ struct RoutineView: View {
 }
 
 #Preview {
-    RoutineView()
+    RoutineView(isTabBarHidden: .constant(false))
         .modelContainer(for: [RoutineType.self, RoutineTask.self], inMemory: true)
 }
