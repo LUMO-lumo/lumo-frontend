@@ -21,7 +21,7 @@ struct MainView: View {
                 case 0:
                     HomeView()
                 case 1:
-                    Text(" 알람 파트")
+                    AlarmMenuView()
                 case 2:
                     Text("루틴 화면") // 나중에 RoutineView()로 교체
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -128,4 +128,8 @@ struct TabBarButton: View {
     }
 }
 
+
+#Preview{
+    MainView()
+}
 
