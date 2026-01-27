@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct OnBoardingView: View {
-    @AppStorage("isOnboardingFinished") var isOnboardingFinished: Bool = false
     @Environment(OnboardingViewModel.self) var viewModel
     @State private var PageNumber = 0
     
@@ -81,9 +80,7 @@ struct OnBoardingView: View {
                 PageNumber += 1
             }
         } else {
-            withAnimation {
-                isOnboardingFinished = true
-            }
+            viewModel.path.append(OnboardingStep.initialSetup)
         }
     }
 }
