@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B40A01162F2BA23D00687C64 /* ProfileSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40A01152F2BA14000687C64 /* ProfileSettingView.swift */; };
+		B40A01182F2BB03300687C64 /* SettingAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B40A01172F2BB03300687C64 /* SettingAssets.xcassets */; };
+		B40A01272F2BBB7400687C64 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40A01252F2BBB7400687C64 /* APIManager.swift */; };
 		B42F47FE2F26FA600057284E /* TodoSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42F47F52F26FA600057284E /* TodoSettingView.swift */; };
 		B42F47FF2F26FA600057284E /* TodoSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42F47F62F26FA600057284E /* TodoSettingViewModel.swift */; };
 		B42F48002F26FA600057284E /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42F47F82F26FA600057284E /* HomeModel.swift */; };
@@ -36,6 +39,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B40A01152F2BA14000687C64 /* ProfileSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingView.swift; sourceTree = "<group>"; };
+		B40A01172F2BB03300687C64 /* SettingAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SettingAssets.xcassets; sourceTree = "<group>"; };
+		B40A01252F2BBB7400687C64 /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		B42F47F42F26FA600057284E /* TodoSettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoSettingModel.swift; sourceTree = "<group>"; };
 		B42F47F52F26FA600057284E /* TodoSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoSettingView.swift; sourceTree = "<group>"; };
 		B42F47F62F26FA600057284E /* TodoSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoSettingViewModel.swift; sourceTree = "<group>"; };
@@ -95,6 +101,47 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B40A01112F2B921500687C64 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				B40A01142F2B923E00687C64 /* ViewModel */,
+				B40A01132F2B923800687C64 /* Model */,
+				B40A01122F2B923100687C64 /* View */,
+				B40A01172F2BB03300687C64 /* SettingAssets.xcassets */,
+			);
+			path = Setting;
+			sourceTree = "<group>";
+		};
+		B40A01122F2B923100687C64 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B40A01152F2BA14000687C64 /* ProfileSettingView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		B40A01132F2B923800687C64 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		B40A01142F2B923E00687C64 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		B40A01262F2BBB7400687C64 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				B40A01252F2BBB7400687C64 /* APIManager.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
 		B42F47F72F26FA600057284E /* TodoSetting */ = {
 			isa = PBXGroup;
 			children = (
@@ -121,6 +168,8 @@
 		B4B2BD362F07C3010036E720 = {
 			isa = PBXGroup;
 			children = (
+				B40A01262F2BBB7400687C64 /* Network */,
+				B40A01112F2B921500687C64 /* Setting */,
 				B4B4DAA42F2767C400C29EDC /* Routine */,
 				B42F48062F26FAFD0057284E /* TabBar.swift */,
 				B42F47FD2F26FA600057284E /* HomePart */,
@@ -246,6 +295,7 @@
 				B4B4DAAC2F2767C400C29EDC /* RoutineAssets.xcassets in Resources */,
 				B42F48052F26FA600057284E /* HomePartTodoWrite.md in Resources */,
 				B4FD5F382F17E61C0022CF67 /* Assets.xcassets in Resources */,
+				B40A01182F2BB03300687C64 /* SettingAssets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,6 +309,7 @@
 				B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */,
 				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
 				B42F48072F26FAFD0057284E /* TabBar.swift in Sources */,
+				B40A01272F2BBB7400687C64 /* APIManager.swift in Sources */,
 				B42F47FE2F26FA600057284E /* TodoSettingView.swift in Sources */,
 				B42F47FF2F26FA600057284E /* TodoSettingViewModel.swift in Sources */,
 				B42F48002F26FA600057284E /* HomeModel.swift in Sources */,
@@ -266,6 +317,7 @@
 				B42F48022F26FA600057284E /* HomeView.swift in Sources */,
 				B42F48032F26FA600057284E /* HomeViewModel.swift in Sources */,
 				B4FD5F2E2F17DEE80022CF67 /* LumoApp.swift in Sources */,
+				B40A01162F2BA23D00687C64 /* ProfileSettingView.swift in Sources */,
 				B4B4DAA52F2767C400C29EDC /* AddTaskView.swift in Sources */,
 				B4B4DAA62F2767C400C29EDC /* AddTypeSheet.swift in Sources */,
 				B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */,
