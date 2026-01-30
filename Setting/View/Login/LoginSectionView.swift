@@ -20,7 +20,7 @@ struct LoginSectionView : View {
                 HStack {
                     Text("로그인이 필요해요")
                         .font(.Subtitle2)
-                        .foregroundColor(.black)
+                        .foregroundStyle(Color.primary)
                     
                     Spacer()
                     

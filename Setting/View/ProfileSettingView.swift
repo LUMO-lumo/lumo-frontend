@@ -23,6 +23,7 @@ struct ProfileSettingView: View {
                         
                         ProSectionView()
                         
+                        AdvancedSectionView()
                         
                     }
                 }

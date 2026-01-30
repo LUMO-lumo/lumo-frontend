@@ -11,18 +11,18 @@ struct ProSectionView: View {
         VStack(alignment: .leading ,spacing: 32) {
             Text("PRO 업그레이드")
                 .font(.Subtitle3)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.primary)
             
             NavigationLink(destination: Text("미션 난이도 조정")) {
                 HStack {
                     Text("미션 난이도 조정")
                         .font(.Body1)
-                        .foregroundColor(.black)
+                        .foregroundStyle(Color.primary)
                     
                     Spacer()
                     
                     Image("chevronRight")
-                        .foregroundColor(.gray500)
+                        .foregroundStyle(Color.gray500)
                 }
             }
             
@@ -30,12 +30,12 @@ struct ProSectionView: View {
                 HStack {
                     Text("스마트 브리핑")
                         .font(.Body1)
-                        .foregroundColor(.black)
+                        .foregroundStyle(Color.primary)
                     
                     Spacer()
                     
                     Image("chevronRight")
-                        .foregroundColor(.gray500)
+                        .foregroundStyle(Color.gray500)
                 }
             }
             
