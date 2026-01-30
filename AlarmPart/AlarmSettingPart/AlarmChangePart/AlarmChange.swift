@@ -7,20 +7,117 @@
 
 import SwiftUI
 import Foundation
-import UserNotifications // [수정] AlarmKit 미인식 오류 해결을 위해 표준 프레임워크 사용
+import UserNotifications //권한 설정하는 방법
+import Combine
 
+
+// MARK: - ViewModel
+class AlarmChangeViewModel: ObservableObject {
+    // UI 상태 프로퍼티
+    @Published var alarmTitle: String = ""
+    @Published var selectedMission: String = "수학문제"
+    @Published var selectedDays: Set<Int> = [] // 0:월 ~ 6:일 (View 기준)
+    @Published var selectedTime: Date = Date()
+    @Published var isSoundOn: Bool = false
+    
+    // 기존 데이터를 가져오는 역활
+    init(alarm: Alarm? = nil) {
+        if let alarm = alarm {
+            print("[Debug] 알람 데이터 수신 성공: \(alarm.label), 시간: \(alarm.timeString)")
+            
+            self.alarmTitle = alarm.label
+            self.selectedTime = alarm.time
+            self.isSoundOn = alarm.isEnabled
+        
+            self.selectedDays = Set(alarm.repeatDays.map { ($0 + 6) % 7 })
+            
+            // [미션 매핑 로직]
+            switch alarm.missionType {
+            case "계산": self.selectedMission = "수학문제"
+            case "받아쓰기": self.selectedMission = "따라쓰기"
+            case "운동": self.selectedMission = "거리미션"
+            case "OX": self.selectedMission = "OX 퀴즈"
+            default: self.selectedMission = "수학문제"
+            }
+        } else {
+            print("[Debug] 알람 데이터가 전달되지 않았습니다 (nil).")
+        }
+    }
+    
+    // 비즈니스 로직: 권한 요청
+    func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("알림 권한 허용됨")
+            } else {
+                print("알림 권한 거부됨")
+            }
+        }
+    }
+    
+    // 비즈니스 로직: 알람 스케줄링
+    func scheduleAlarm() {
+        let content = UNMutableNotificationContent()
+        content.title = alarmTitle.isEmpty ? "알람" : alarmTitle
+        content.body = "\(selectedMission) 미션을 수행할 시간입니다!"
+        content.sound = .default
+        
+        let calendar = Calendar.current
+        let timeComponents = calendar.dateComponents([.hour, .minute], from: selectedTime)
+        guard let hour = timeComponents.hour, let minute = timeComponents.minute else { return }
+        
+        // 1회성 알람
+        if selectedDays.isEmpty {
+            var triggerDate = DateComponents()
+            triggerDate.hour = hour
+            triggerDate.minute = minute
+            
+            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error = error {
+                    print("알람 등록 실패: \(error)")
+                } else {
+                    print("1회성 알람 등록 성공: \(hour):\(minute)")
+                }
+            }
+        } else {
+            // 반복 알람 (요일별 등록)
+            for dayIndex in selectedDays {
+                var triggerDate = DateComponents()
+                triggerDate.hour = hour
+                triggerDate.minute = minute
+                
+                // 요일 매핑: 0(월)->2 ... 6(일)->1
+                let weekday: Int
+                switch dayIndex {
+                case 6: weekday = 1 // 일요일
+                default: weekday = dayIndex + 2 // 월~토
+                }
+                triggerDate.weekday = weekday
+                
+                let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: true)
+                let request = UNNotificationRequest(identifier: "\(UUID().uuidString)_\(dayIndex)", content: content, trigger: trigger)
+                
+                UNUserNotificationCenter.current().add(request)
+            }
+            print("반복 알람 등록 완료")
+        }
+    }
+}
+
+// MARK: - View
 struct AlarmChange: View {
     // MARK: - Properties
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var viewModel: AlarmChangeViewModel
+    init(alarm: Alarm? = nil) {
+        // _viewModel은 @StateObject의 내부 저장소에 접근하는 방식입니다.
+        _viewModel = StateObject(wrappedValue: AlarmChangeViewModel(alarm: alarm))
+    }
     
-    // UI 상태 관리 변수
-    @State private var alarmTitle: String = ""
-    @State private var selectedMission: String = "수학문제"
-    @State private var selectedDays: Set<Int> = [] // 0:월 ~ 6:일
-    @State private var selectedTime: Date = Date()
-    @State private var isSoundOn: Bool = false
-    
-    // 디자인 리소스 (아이콘 및 텍스트)
+    // 디자인 리소스
     let missions = [
         ("수학문제", "plus.forwardslash.minus"),
         ("OX 퀴즈", "checkmark.circle"),
@@ -55,12 +152,12 @@ struct AlarmChange: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 30) {
                     
-                    // 2. 알람 이름 입력 (핑크 배경)
+                    // 2. 알람 이름 입력
                     VStack(alignment: .leading, spacing: 10) {
                         ZStack(alignment: .trailing) {
-                            TextField("알람 이름을 입력해주세요", text: $alarmTitle)
+                            TextField("알람 이름을 입력해주세요", text: $viewModel.alarmTitle)
                                 .padding()
-                                .background(Color(hex: "FDF0EF")) // 디자인 시안의 연한 핑크
+                                .background(Color(hex: "F2F4F7"))
                                 .cornerRadius(10)
                                 .foregroundColor(.black)
                             Image(systemName: "pencil")
@@ -70,7 +167,7 @@ struct AlarmChange: View {
                     }
                     .padding(.horizontal, 20)
                     
-                    // 3. 미션 선택 (그리드 아이콘)
+                    // 3. 미션 선택
                     VStack(alignment: .leading, spacing: 15) {
                         Text("미션 선택")
                             .font(.system(size: 14))
@@ -81,14 +178,16 @@ struct AlarmChange: View {
                                 MissionButton(
                                     title: mission.0,
                                     iconName: mission.1,
-                                    isSelected: selectedMission == mission.0
-                                ) { selectedMission = mission.0 }
+                                    isSelected: viewModel.selectedMission == mission.0
+                                ) {
+                                    viewModel.selectedMission = mission.0
+                                }
                             }
                         }
                         .padding(.horizontal, 20)
                     }
                     
-                    // 4. 요일 선택 (원형 버튼)
+                    // 4. 요일 선택
                     VStack(alignment: .leading, spacing: 15) {
                         Text("요일 선택")
                             .font(.system(size: 14))
@@ -98,12 +197,12 @@ struct AlarmChange: View {
                             ForEach(0..<7) { index in
                                 DayButton(
                                     text: days[index],
-                                    isSelected: selectedDays.contains(index)
+                                    isSelected: viewModel.selectedDays.contains(index)
                                 ) {
-                                    if selectedDays.contains(index) {
-                                        selectedDays.remove(index)
+                                    if viewModel.selectedDays.contains(index) {
+                                        viewModel.selectedDays.remove(index)
                                     } else {
-                                        selectedDays.insert(index)
+                                        viewModel.selectedDays.insert(index)
                                     }
                                 }
                                 if index != 6 { Spacer() }
@@ -112,7 +211,7 @@ struct AlarmChange: View {
                         .padding(.horizontal, 20)
                     }
                     
-                    // 5. 시간 설정 (Wheel DatePicker + Pink Background)
+                    // 5. 시간 설정
                     VStack(alignment: .leading, spacing: 10) {
                         Text("시간 설정")
                             .font(.system(size: 14))
@@ -120,23 +219,20 @@ struct AlarmChange: View {
                             .padding(.horizontal, 20)
                         
                         ZStack {
-                            // 시간 선택기 배경
-                            Color(hex: "FDF0EF").opacity(0.5)
+                            Color(.white)
                                 .cornerRadius(20)
                             
-                            // [수정] 표준 Wheel Picker 스타일
-                            DatePicker("", selection: $selectedTime, displayedComponents: .hourAndMinute)
+                            DatePicker("", selection: $viewModel.selectedTime, displayedComponents: .hourAndMinute)
                                 .datePickerStyle(.wheel)
                                 .labelsHidden()
                                 .frame(height: 200)
-                                // WheelPicker의 기본 배경이 투명하게 보일 수 있도록 조정
                                 .background(Color.clear)
                         }
                         .frame(height: 200)
                         .padding(.horizontal, 20)
                     }
                     
-                    // 6. 하단 옵션 (레이블, 사운드)
+                    // 6. 하단 옵션
                     VStack(spacing: 0) {
                         HStack {
                             Text("레이블")
@@ -167,103 +263,37 @@ struct AlarmChange: View {
                     }
                     .padding(.horizontal, 20)
                     
-                    Spacer().frame(height: 80)
+                    // 7. 설정하기 버튼
+                    Button(action: {
+                        viewModel.scheduleAlarm()
+                        dismiss()
+                    }) {
+                        Text("설정하기")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 56)
+                            .background(Color(hex: "F55641"))
+                            .cornerRadius(15)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 20)
+                    .padding(.bottom, 40)
                 }
-                .padding(.top, 20)
+               
+                .padding(.bottom, 40)
+                
             }
-            
-            // 7. 설정하기 버튼
-            Button(action: {
-                scheduleAlarm()
-                dismiss()
-            }) {
-                Text("설정하기")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 56)
-                    .background(Color(hex: "FF8C68")) // 코랄색
-                    .cornerRadius(15)
-            }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 20)
         }
         .navigationBarHidden(true)
         .background(Color.white)
         .onAppear {
-            requestNotificationPermission()
-        }
-    }
-    
-    // MARK: - Alarm Logic (UserNotifications)
-    
-    // 알림 권한 요청
-    private func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-            if granted {
-                print("알림 권한 허용됨")
-            } else {
-                print("알림 권한 거부됨")
-            }
-        }
-    }
-    
-    // 알람 스케줄링 (표준 API 사용)
-    private func scheduleAlarm() {
-        let content = UNMutableNotificationContent()
-        content.title = alarmTitle.isEmpty ? "알람" : alarmTitle
-        content.body = "\(selectedMission) 미션을 수행할 시간입니다!"
-        content.sound = .default
-        
-        let calendar = Calendar.current
-        let timeComponents = calendar.dateComponents([.hour, .minute], from: selectedTime)
-        guard let hour = timeComponents.hour, let minute = timeComponents.minute else { return }
-        
-        // 반복 요일이 없는 경우 (1회성)
-        if selectedDays.isEmpty {
-            var triggerDate = DateComponents()
-            triggerDate.hour = hour
-            triggerDate.minute = minute
-            
-            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-            
-            UNUserNotificationCenter.current().add(request) { error in
-                if let error = error {
-                    print("알람 등록 실패: \(error)")
-                } else {
-                    print("1회성 알람 등록 성공: \(hour):\(minute)")
-                }
-            }
-        } else {
-            // 요일별 반복 알람 등록
-            // selectedDays: 0(월) ~ 6(일) -> API에 맞게 변환 필요할 수 있음 (UserNotifications는 1=일, 2=월... 7=토)
-            // 여기서는 단순화를 위해 개별 등록 로직 예시
-            for dayIndex in selectedDays {
-                var triggerDate = DateComponents()
-                triggerDate.hour = hour
-                triggerDate.minute = minute
-                // 주의: Calendar.Component.weekday는 1(일요일) ~ 7(토요일)
-                // 현재 UI의 days 배열: ["월", "화", "수", "목", "금", "토", "일"] -> 인덱스 0~6
-                // 매핑: 0(월)->2, 1(화)->3, ... 5(토)->7, 6(일)->1
-                let weekday: Int
-                switch dayIndex {
-                case 6: weekday = 1 // 일요일
-                default: weekday = dayIndex + 2 // 월~토
-                }
-                triggerDate.weekday = weekday
-                
-                let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: true)
-                let request = UNNotificationRequest(identifier: "\(UUID().uuidString)_\(dayIndex)", content: content, trigger: trigger)
-                
-                UNUserNotificationCenter.current().add(request)
-            }
-            print("반복 알람 등록 완료")
+            viewModel.requestNotificationPermission()
         }
     }
 }
 
-// MARK: - Helper Views
+// MARK: - 버튼 기능
 
 struct MissionButton: View {
     let title: String
@@ -276,6 +306,7 @@ struct MissionButton: View {
             VStack(spacing: 8) {
                 ZStack {
                     Circle()
+                    //이후 이미지 추가할 예정
                         .fill(isSelected ? Color(hex: "FF8C68").opacity(0.1) : Color.gray.opacity(0.1))
                         .frame(width: 50, height: 50)
                     Image(systemName: iconName)
@@ -301,15 +332,12 @@ struct DayButton: View {
                 .font(.system(size: 14, weight: .medium))
                 .foregroundColor(isSelected ? .white : .gray)
                 .frame(width: 36, height: 36)
-                .background(isSelected ? Color(hex: "D8CFC4") : Color(hex: "F5F5F5"))
+                .background(isSelected ? Color(hex: "F55641") : Color(hex: "F2F4F7"))
                 .clipShape(Circle())
         }
     }
 }
 
-// [수정] 중복 선언 오류 해결을 위해 extension 제거
-// 프로젝트 내 다른 파일(AlarmMenuView 등)에 이미 정의되어 있습니다.
-
 #Preview {
-    AlarmChange()
+    AlarmChange(alarm: Alarm.dummyData[0])
 }
