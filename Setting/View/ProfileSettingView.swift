@@ -25,6 +25,8 @@ struct ProfileSettingView: View {
                         
                         AdvancedSectionView()
                         
+                        SupportSectionView()
+                        
                     }
                 }
             }
