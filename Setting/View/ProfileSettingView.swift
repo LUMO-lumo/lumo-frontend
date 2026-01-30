@@ -13,22 +13,30 @@ struct ProfileSettingView: View {
             VStack {
                 Text("프로필 설정")
                     .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
                     .font(.system(size: 20, weight: .bold))
                 
-                ScrollView {
-                    VStack(spacing: 24) {
-                        
-                        LoginSectionView()
-                        
-                        ProSectionView()
-                        
-                        AdvancedSectionView()
-                        
-                        SupportSectionView()
-                        
-                    }
+                
+                VStack {
+                    
+                    LoginSectionView()
+                    
+                    ProSectionView()
+                    
+                    Spacer() .frame(height: 16)
+                    
+                    AdvancedSectionView()
+                    
+                    Spacer() .frame(height: 16)
+                    
+                    SupportSectionView()
+                    
+                    Spacer() .frame(height: 20)
+                    
+                    ETCSectionView()
+                    
                 }
+                .padding(.top, 8)
+                .padding(.bottom, 87)
             }
         }
         .padding(.horizontal, 24)
