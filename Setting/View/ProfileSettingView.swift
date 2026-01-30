@@ -21,7 +21,8 @@ struct ProfileSettingView: View {
                         
                         LoginSectionView()
                         
-                        // 여기에 추후 [PRO 업그레이드], [고급 설정] 등이 추가됩니다.
+                        ProSectionView()
+                        
                         
                     }
                 }
