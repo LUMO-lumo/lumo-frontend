@@ -13,8 +13,6 @@ struct ProSectionView: View {
                 .font(.Subtitle3)
                 .foregroundStyle(Color.black)
             
-//            Spacer()
-            
             NavigationLink(destination: Text("미션 난이도 조정")) {
                 HStack {
                     Text("미션 난이도 조정")
@@ -28,9 +26,7 @@ struct ProSectionView: View {
                 }
             }
             
-//            Spacer()
-            
-            NavigationLink(destination: Text("미션 난이도 조정")) { // 나중에 LoginView()로 교체
+            NavigationLink(destination: Text("미션 난이도 조정")) {
                 HStack {
                     Text("스마트 브리핑")
                         .font(.Body1)
