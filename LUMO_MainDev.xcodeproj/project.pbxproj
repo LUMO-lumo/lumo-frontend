@@ -7,6 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		41540CB32F249899004829D3 /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41540CB22F249899004829D3 /* TabBar.swift */; };
+		41540CBD2F2498B0004829D3 /* TodoSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41540CB42F2498B0004829D3 /* TodoSettingModel.swift */; };
+		41540CBE2F2498B0004829D3 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41540CBA2F2498B0004829D3 /* HomeView.swift */; };
+		41540CBF2F2498B0004829D3 /* TodoSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41540CB62F2498B0004829D3 /* TodoSettingViewModel.swift */; };
+		41540CC02F2498B0004829D3 /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41540CB82F2498B0004829D3 /* HomeModel.swift */; };
+		41540CC12F2498B0004829D3 /* TodoSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41540CB52F2498B0004829D3 /* TodoSettingView.swift */; };
+		41540CC22F2498B0004829D3 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41540CBB2F2498B0004829D3 /* HomeViewModel.swift */; };
+		41540CC32F2498B0004829D3 /* HomePartTodoWrite.md in Resources */ = {isa = PBXBuildFile; fileRef = 41540CB92F2498B0004829D3 /* HomePartTodoWrite.md */; };
+		41540CC62F249943004829D3 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 41540CC52F249943004829D3 /* CombineMoya */; };
+		41540CC82F249943004829D3 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 41540CC72F249943004829D3 /* Moya */; };
+		41540CCA2F249943004829D3 /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 41540CC92F249943004829D3 /* ReactiveMoya */; };
+		41540CCC2F249943004829D3 /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 41540CCB2F249943004829D3 /* RxMoya */; };
+		41540CD42F249A7A004829D3 /* HomeViewAsset.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41540CD32F249A7A004829D3 /* HomeViewAsset.xcassets */; };
 		41853A6F2F11469D00D6CA1C /* LUMO_MainDevApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41853A6D2F11469D00D6CA1C /* LUMO_MainDevApp.swift */; };
 		41853A7B2F1147FE00D6CA1C /* OnBoardingPartTodoWrite.md in Resources */ = {isa = PBXBuildFile; fileRef = 41853A772F1147FE00D6CA1C /* OnBoardingPartTodoWrite.md */; };
 		41853A7C2F1147FE00D6CA1C /* OnBoardingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41853A762F1147FE00D6CA1C /* OnBoardingModel.swift */; };
@@ -33,9 +46,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		41853A2E2F1145F700D6CA1C /* LUMO_MainDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LUMO_MainDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		41853A3B2F1145F900D6CA1C /* LUMO_MainDevTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LUMO_MainDevTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		41853A452F1145F900D6CA1C /* LUMO_MainDevUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LUMO_MainDevUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		41540CB22F249899004829D3 /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
+		41540CB42F2498B0004829D3 /* TodoSettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoSettingModel.swift; sourceTree = "<group>"; };
+		41540CB52F2498B0004829D3 /* TodoSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoSettingView.swift; sourceTree = "<group>"; };
+		41540CB62F2498B0004829D3 /* TodoSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoSettingViewModel.swift; sourceTree = "<group>"; };
+		41540CB82F2498B0004829D3 /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
+		41540CB92F2498B0004829D3 /* HomePartTodoWrite.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = HomePartTodoWrite.md; sourceTree = "<group>"; };
+		41540CBA2F2498B0004829D3 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		41540CBB2F2498B0004829D3 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		41540CD32F249A7A004829D3 /* HomeViewAsset.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = HomeViewAsset.xcassets; sourceTree = "<group>"; };
+		415410462F270CCD004829D3 /* LUMO_MainDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LUMO_MainDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		415410472F270CCD004829D3 /* LUMO_MainDevTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LUMO_MainDevTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		415410482F270CCD004829D3 /* LUMO_MainDevUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LUMO_MainDevUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		41853A6D2F11469D00D6CA1C /* LUMO_MainDevApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LUMO_MainDevApp.swift; sourceTree = "<group>"; };
 		41853A762F1147FE00D6CA1C /* OnBoardingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingModel.swift; sourceTree = "<group>"; };
 		41853A772F1147FE00D6CA1C /* OnBoardingPartTodoWrite.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = OnBoardingPartTodoWrite.md; sourceTree = "<group>"; };
@@ -45,24 +67,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		41853A302F1145F700D6CA1C /* LUMO_MainDev */ = {
+		4154107A2F2738E0004829D3 /* AlarmPart */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = LUMO_MainDev;
+			path = AlarmPart;
 			sourceTree = "<group>";
 		};
-		41853A3E2F1145F900D6CA1C /* LUMO_MainDevTests */ = {
+		415410A02F2F9434004829D3 /* SoundSetting */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = LUMO_MainDevTests;
+			path = SoundSetting;
 			sourceTree = "<group>";
 		};
-		41853A482F1145F900D6CA1C /* LUMO_MainDevUITests */ = {
+		41853A812F11486B00D6CA1C /* Resource */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = LUMO_MainDevUITests;
-			sourceTree = "<group>";
-		};
-		41853A812F11486B00D6CA1C /* UtilsPart */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = UtilsPart;
+			path = Resource;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -72,6 +89,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41540CC82F249943004829D3 /* Moya in Frameworks */,
+				41540CC62F249943004829D3 /* CombineMoya in Frameworks */,
+				41540CCC2F249943004829D3 /* RxMoya in Frameworks */,
+				41540CCA2F249943004829D3 /* ReactiveMoya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,27 +113,43 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		41540CB72F2498B0004829D3 /* TodoSetting */ = {
+			isa = PBXGroup;
+			children = (
+				41540CB42F2498B0004829D3 /* TodoSettingModel.swift */,
+				41540CB52F2498B0004829D3 /* TodoSettingView.swift */,
+				41540CB62F2498B0004829D3 /* TodoSettingViewModel.swift */,
+			);
+			path = TodoSetting;
+			sourceTree = "<group>";
+		};
+		41540CBC2F2498B0004829D3 /* HomePart */ = {
+			isa = PBXGroup;
+			children = (
+				41540CD32F249A7A004829D3 /* HomeViewAsset.xcassets */,
+				41540CB72F2498B0004829D3 /* TodoSetting */,
+				41540CB82F2498B0004829D3 /* HomeModel.swift */,
+				41540CB92F2498B0004829D3 /* HomePartTodoWrite.md */,
+				41540CBA2F2498B0004829D3 /* HomeView.swift */,
+				41540CBB2F2498B0004829D3 /* HomeViewModel.swift */,
+			);
+			path = HomePart;
+			sourceTree = "<group>";
+		};
 		41853A252F1145F700D6CA1C = {
 			isa = PBXGroup;
 			children = (
-				41853A812F11486B00D6CA1C /* UtilsPart */,
+				415410A02F2F9434004829D3 /* SoundSetting */,
+				4154107A2F2738E0004829D3 /* AlarmPart */,
+				41853A812F11486B00D6CA1C /* Resource */,
 				41853A6D2F11469D00D6CA1C /* LUMO_MainDevApp.swift */,
+				41540CB22F249899004829D3 /* TabBar.swift */,
 				41853A7A2F1147FE00D6CA1C /* OnBoardingPart */,
-				41853A302F1145F700D6CA1C /* LUMO_MainDev */,
-				41853A3E2F1145F900D6CA1C /* LUMO_MainDevTests */,
-				41853A482F1145F900D6CA1C /* LUMO_MainDevUITests */,
-				41853A2F2F1145F700D6CA1C /* Products */,
+				41540CBC2F2498B0004829D3 /* HomePart */,
+				415410462F270CCD004829D3 /* LUMO_MainDev.app */,
+				415410472F270CCD004829D3 /* LUMO_MainDevTests.xctest */,
+				415410482F270CCD004829D3 /* LUMO_MainDevUITests.xctest */,
 			);
-			sourceTree = "<group>";
-		};
-		41853A2F2F1145F700D6CA1C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				41853A2E2F1145F700D6CA1C /* LUMO_MainDev.app */,
-				41853A3B2F1145F900D6CA1C /* LUMO_MainDevTests.xctest */,
-				41853A452F1145F900D6CA1C /* LUMO_MainDevUITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		41853A7A2F1147FE00D6CA1C /* OnBoardingPart */ = {
@@ -143,14 +180,19 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				41853A302F1145F700D6CA1C /* LUMO_MainDev */,
-				41853A812F11486B00D6CA1C /* UtilsPart */,
+				4154107A2F2738E0004829D3 /* AlarmPart */,
+				415410A02F2F9434004829D3 /* SoundSetting */,
+				41853A812F11486B00D6CA1C /* Resource */,
 			);
 			name = LUMO_MainDev;
 			packageProductDependencies = (
+				41540CC52F249943004829D3 /* CombineMoya */,
+				41540CC72F249943004829D3 /* Moya */,
+				41540CC92F249943004829D3 /* ReactiveMoya */,
+				41540CCB2F249943004829D3 /* RxMoya */,
 			);
 			productName = LUMO_MainDev;
-			productReference = 41853A2E2F1145F700D6CA1C /* LUMO_MainDev.app */;
+			productReference = 415410462F270CCD004829D3 /* LUMO_MainDev.app */;
 			productType = "com.apple.product-type.application";
 		};
 		41853A3A2F1145F900D6CA1C /* LUMO_MainDevTests */ = {
@@ -166,14 +208,11 @@
 			dependencies = (
 				41853A3D2F1145F900D6CA1C /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				41853A3E2F1145F900D6CA1C /* LUMO_MainDevTests */,
-			);
 			name = LUMO_MainDevTests;
 			packageProductDependencies = (
 			);
 			productName = LUMO_MainDevTests;
-			productReference = 41853A3B2F1145F900D6CA1C /* LUMO_MainDevTests.xctest */;
+			productReference = 415410472F270CCD004829D3 /* LUMO_MainDevTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		41853A442F1145F900D6CA1C /* LUMO_MainDevUITests */ = {
@@ -189,14 +228,11 @@
 			dependencies = (
 				41853A472F1145F900D6CA1C /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				41853A482F1145F900D6CA1C /* LUMO_MainDevUITests */,
-			);
 			name = LUMO_MainDevUITests;
 			packageProductDependencies = (
 			);
 			productName = LUMO_MainDevUITests;
-			productReference = 41853A452F1145F900D6CA1C /* LUMO_MainDevUITests.xctest */;
+			productReference = 415410482F270CCD004829D3 /* LUMO_MainDevUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -231,8 +267,11 @@
 			);
 			mainGroup = 41853A252F1145F700D6CA1C;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				41540CC42F249943004829D3 /* XCRemoteSwiftPackageReference "Moya" */,
+			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 41853A2F2F1145F700D6CA1C /* Products */;
+			productRefGroup = 41853A252F1145F700D6CA1C;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -248,8 +287,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41540CC32F2498B0004829D3 /* HomePartTodoWrite.md in Resources */,
 				41853A802F11481A00D6CA1C /* OnBoardingAsset.xcassets in Resources */,
 				41853A7B2F1147FE00D6CA1C /* OnBoardingPartTodoWrite.md in Resources */,
+				41540CD42F249A7A004829D3 /* HomeViewAsset.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +319,13 @@
 				41853A7C2F1147FE00D6CA1C /* OnBoardingModel.swift in Sources */,
 				41853A7D2F1147FE00D6CA1C /* OnboardingViewModel.swift in Sources */,
 				41853A7E2F1147FE00D6CA1C /* OnBoardingView.swift in Sources */,
+				41540CBD2F2498B0004829D3 /* TodoSettingModel.swift in Sources */,
+				41540CBE2F2498B0004829D3 /* HomeView.swift in Sources */,
+				41540CBF2F2498B0004829D3 /* TodoSettingViewModel.swift in Sources */,
+				41540CC02F2498B0004829D3 /* HomeModel.swift in Sources */,
+				41540CC12F2498B0004829D3 /* TodoSettingView.swift in Sources */,
+				41540CC22F2498B0004829D3 /* HomeViewModel.swift in Sources */,
+				41540CB32F249899004829D3 /* TabBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -612,6 +660,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		41540CC42F249943004829D3 /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		41540CC52F249943004829D3 /* CombineMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 41540CC42F249943004829D3 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = CombineMoya;
+		};
+		41540CC72F249943004829D3 /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 41540CC42F249943004829D3 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		41540CC92F249943004829D3 /* ReactiveMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 41540CC42F249943004829D3 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = ReactiveMoya;
+		};
+		41540CCB2F249943004829D3 /* RxMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 41540CC42F249943004829D3 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = RxMoya;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 41853A262F1145F700D6CA1C /* Project object */;
 }

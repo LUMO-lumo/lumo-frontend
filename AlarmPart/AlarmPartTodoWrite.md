@@ -27,5 +27,24 @@
 알람 해제 기록 (미션완료/스누즈/수동)
 
 
+알람 생성 내용물(request body)
+{
+  "alarmTime": "07:00",
+  "label": "출근 알람",
+  "isEnabled": true,
+  "soundType": "차분한",
+  "vibration": true,
+  "volume": 70,
+  "repeatDays": ["MON", "TUE", "WED", "THU", "FRI"],
+  "snoozeSetting": {
+    "isEnabled": true,
+    "intervalSec": 300,
+    "maxCount": 3
+  }
+}
+
+
 
 #알람 개발 진행
+일람 생성과 수정의 형태는 기본을 같게 만들지만 API 메서드는 다른형식으로 개발할 예정
+

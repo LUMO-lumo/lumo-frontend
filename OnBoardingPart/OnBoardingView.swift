@@ -9,9 +9,6 @@ import SwiftUI
 
 struct OnBoardingView: View {
     @State private var PageNumber = 0
-    let coralOrange = Color(hex: "F55641")
-    let corallightGray = Color(hex: "DDE1E8")
-    let coradeepGray = Color(hex: "979DA7")
     
     var body: some View {
         ZStack {

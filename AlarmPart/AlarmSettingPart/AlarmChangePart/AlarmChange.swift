@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Foundation
-import UserNotifications //권한 설정하는 방법
+import UserNotifications
 import Combine
 
 
@@ -20,18 +20,30 @@ class AlarmChangeViewModel: ObservableObject {
     @Published var selectedTime: Date = Date()
     @Published var isSoundOn: Bool = false
     
-    // 기존 데이터를 가져오는 역활
+    // 알람음 상태 변수
+    @Published var alarmSound: String = "안 함"
+    
+    // 원본 알람 저장용
+    private var originalAlarm: Alarm?
+    
+    // 기존 데이터를 가져와서 UI 초기값으로 설정하는 역할
     init(alarm: Alarm? = nil) {
+        self.originalAlarm = alarm
+        
         if let alarm = alarm {
             print("[Debug] 알람 데이터 수신 성공: \(alarm.label), 시간: \(alarm.timeString)")
             
+            // [핵심] 기존 알람의 라벨(이름)을 텍스트 필드 변수에 할당
             self.alarmTitle = alarm.label
+            
             self.selectedTime = alarm.time
             self.isSoundOn = alarm.isEnabled
-        
+            
+            // 모델의 요일(1~7)을 뷰의 인덱스(0~6)로 변환
+            // 뷰: 0(월)~6(일) / 모델: 1(월)~0(일) 가정 (기존 로직 유지)
             self.selectedDays = Set(alarm.repeatDays.map { ($0 + 6) % 7 })
             
-            // [미션 매핑 로직]
+            // 미션 매핑 로직
             switch alarm.missionType {
             case "계산": self.selectedMission = "수학문제"
             case "받아쓰기": self.selectedMission = "따라쓰기"
@@ -40,7 +52,48 @@ class AlarmChangeViewModel: ObservableObject {
             default: self.selectedMission = "수학문제"
             }
         } else {
-            print("[Debug] 알람 데이터가 전달되지 않았습니다 (nil).")
+            print("[Debug] 알람 데이터가 전달되지 않았습니다 (새 알람 생성 모드).")
+        }
+    }
+    
+    // [핵심] 변경된 내용을 바탕으로 업데이트된 알람 객체 반환
+    func getUpdatedAlarm() -> Alarm {
+        // 1. 요일 매핑 (View -> Model)
+        // View: 0(월)~6(일) -> Model: 1(월)~0(일)
+        let mappedDays = selectedDays.map { ($0 + 1) % 7 }.sorted()
+        
+        // 2. 미션 매핑
+        let mType: String
+        switch selectedMission {
+        case "수학문제": mType = "계산"
+        case "따라쓰기": mType = "받아쓰기"
+        case "거리미션": mType = "운동"
+        case "OX 퀴즈": mType = "OX"
+        default: mType = "계산"
+        }
+        
+        // 3. 알람 객체 생성 또는 업데이트
+        if var alarm = originalAlarm {
+            // [수정] 텍스트 필드의 값(alarmTitle)을 알람 라벨에 반영
+            alarm.label = alarmTitle
+            
+            alarm.time = selectedTime
+            alarm.isEnabled = isSoundOn
+            alarm.repeatDays = mappedDays
+            alarm.missionType = mType
+            alarm.missionTitle = selectedMission
+            // alarm.alarmSound = alarmSound // 모델에 필드가 있다면 주석 해제
+            return alarm
+        } else {
+            // 새 알람 생성
+             return Alarm(
+                time: selectedTime,
+                label: alarmTitle, // 새 알람도 입력한 타이틀 사용
+                isEnabled: isSoundOn,
+                repeatDays: mappedDays,
+                missionTitle: selectedMission,
+                missionType: mType
+             )
         }
     }
     
@@ -89,7 +142,6 @@ class AlarmChangeViewModel: ObservableObject {
                 triggerDate.hour = hour
                 triggerDate.minute = minute
                 
-                // 요일 매핑: 0(월)->2 ... 6(일)->1
                 let weekday: Int
                 switch dayIndex {
                 case 6: weekday = 1 // 일요일
@@ -112,9 +164,13 @@ struct AlarmChange: View {
     // MARK: - Properties
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: AlarmChangeViewModel
-    init(alarm: Alarm? = nil) {
-        // _viewModel은 @StateObject의 내부 저장소에 접근하는 방식입니다.
+    
+    // 저장을 위한 클로저
+    var onSave: ((Alarm) -> Void)?
+    
+    init(alarm: Alarm? = nil, onSave: ((Alarm) -> Void)? = nil) {
         _viewModel = StateObject(wrappedValue: AlarmChangeViewModel(alarm: alarm))
+        self.onSave = onSave
     }
     
     // 디자인 리소스
@@ -152,9 +208,10 @@ struct AlarmChange: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 30) {
                     
-                    // 2. 알람 이름 입력
+                    // 2. 알람 이름 입력 (TextField)
                     VStack(alignment: .leading, spacing: 10) {
                         ZStack(alignment: .trailing) {
+                            // [핵심] viewModel.alarmTitle과 바인딩되어 입력값이 실시간으로 뷰모델에 반영됨
                             TextField("알람 이름을 입력해주세요", text: $viewModel.alarmTitle)
                                 .padding()
                                 .background(Color(hex: "F2F4F7"))
@@ -251,12 +308,14 @@ struct AlarmChange: View {
                                 .foregroundColor(.black)
                             Spacer()
                             HStack(spacing: 5) {
-                                Text("안 함")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.gray)
-                                Image(systemName: "chevron.right")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(.gray)
+                                NavigationLink(destination: SoundSettingView(alarmSound: $viewModel.alarmSound)) {
+                                    Text(viewModel.alarmSound)
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.gray)
+                                    Image(systemName: "chevron.right")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.gray)
+                                }
                             }
                         }
                         .padding(.vertical, 15)
@@ -266,6 +325,9 @@ struct AlarmChange: View {
                     // 7. 설정하기 버튼
                     Button(action: {
                         viewModel.scheduleAlarm()
+                        // [핵심] 변경된 내용(타이틀 포함)을 부모 뷰로 전달
+                        let updatedAlarm = viewModel.getUpdatedAlarm()
+                        onSave?(updatedAlarm)
                         dismiss()
                     }) {
                         Text("설정하기")
@@ -280,8 +342,8 @@ struct AlarmChange: View {
                     .padding(.top, 20)
                     .padding(.bottom, 40)
                 }
-               
-                .padding(.bottom, 40)
+                
+                .padding(.bottom, 50)
                 
             }
         }
@@ -293,7 +355,7 @@ struct AlarmChange: View {
     }
 }
 
-// MARK: - 버튼 기능
+// MARK: - 버튼 기능 (MissionButton, DayButton)
 
 struct MissionButton: View {
     let title: String
@@ -306,7 +368,6 @@ struct MissionButton: View {
             VStack(spacing: 8) {
                 ZStack {
                     Circle()
-                    //이후 이미지 추가할 예정
                         .fill(isSelected ? Color(hex: "FF8C68").opacity(0.1) : Color.gray.opacity(0.1))
                         .frame(width: 50, height: 50)
                     Image(systemName: iconName)
