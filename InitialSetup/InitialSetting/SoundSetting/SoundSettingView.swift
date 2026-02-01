@@ -77,7 +77,7 @@ struct SoundSettingView: View {
                                         .font(.Body1)
                                         .padding(.vertical, 10)
                                         .padding(.horizontal, 14)
-                                        .background(selectedCategory == category ? Color.main300 : Color.white)
+                                        .background(selectedCategory == category ? Color.main300 : Color.clear)
                                         .foregroundStyle(selectedCategory == category ? .white : .gray)
                                         .cornerRadius(20)
                                         .overlay(
