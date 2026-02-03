@@ -7,10 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		34A2B3CB2F317EAF00F3B9A8 /* MissionAlarmSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B3CA2F317EAF00F3B9A8 /* MissionAlarmSettingModel.swift */; };
 		34A2B45E2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */; };
-		34A2B4602F318E1700F3B9A8 /* AlarmTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B45F2F318E1700F3B9A8 /* AlarmTarget.swift */; };
+		34A2B4602F318E1700F3B9A8 /* AdvancedSettingTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B45F2F318E1700F3B9A8 /* AdvancedSettingTarget.swift */; };
 		34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */; };
+		34A2B4F72F31C30D00F3B9A8 /* AdvancedSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4F62F31C30D00F3B9A8 /* AdvancedSettingModel.swift */; };
+		34A2B4F92F31C38B00F3B9A8 /* ScreenThemeSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4F82F31C38B00F3B9A8 /* ScreenThemeSettingView.swift */; };
+		34A2B4FB2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4FA2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift */; };
+		34A2B4FE2F31C53B00F3B9A8 /* TopNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4FD2F31C53B00F3B9A8 /* TopNavigationBar.swift */; };
 		B40A01162F2BA23D00687C64 /* ProfileSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40A01152F2BA14000687C64 /* ProfileSettingView.swift */; };
 		B40A01182F2BB03300687C64 /* SettingAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B40A01172F2BB03300687C64 /* SettingAssets.xcassets */; };
 		B40A01272F2BBB7400687C64 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40A01252F2BBB7400687C64 /* APIManager.swift */; };
@@ -48,10 +51,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		34A2B3CA2F317EAF00F3B9A8 /* MissionAlarmSettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingModel.swift; sourceTree = "<group>"; };
 		34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingView.swift; sourceTree = "<group>"; };
-		34A2B45F2F318E1700F3B9A8 /* AlarmTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmTarget.swift; sourceTree = "<group>"; };
+		34A2B45F2F318E1700F3B9A8 /* AdvancedSettingTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingTarget.swift; sourceTree = "<group>"; };
 		34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingViewModel.swift; sourceTree = "<group>"; };
+		34A2B4F62F31C30D00F3B9A8 /* AdvancedSettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingModel.swift; sourceTree = "<group>"; };
+		34A2B4F82F31C38B00F3B9A8 /* ScreenThemeSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenThemeSettingView.swift; sourceTree = "<group>"; };
+		34A2B4FA2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenThemeSettingViewModel.swift; sourceTree = "<group>"; };
+		34A2B4FD2F31C53B00F3B9A8 /* TopNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopNavigationBar.swift; sourceTree = "<group>"; };
 		B40A01152F2BA14000687C64 /* ProfileSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingView.swift; sourceTree = "<group>"; };
 		B40A01172F2BB03300687C64 /* SettingAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SettingAssets.xcassets; sourceTree = "<group>"; };
 		B40A01252F2BBB7400687C64 /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
@@ -122,16 +128,33 @@
 		34A2B3C92F317E9700F3B9A8 /* MissionAlarmSetting */ = {
 			isa = PBXGroup;
 			children = (
-				34A2B3CA2F317EAF00F3B9A8 /* MissionAlarmSettingModel.swift */,
 				34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */,
 				34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */,
 			);
 			path = MissionAlarmSetting;
 			sourceTree = "<group>";
 		};
+		34A2B4F52F31C29800F3B9A8 /* ScreenThemeSetting */ = {
+			isa = PBXGroup;
+			children = (
+				34A2B4F82F31C38B00F3B9A8 /* ScreenThemeSettingView.swift */,
+				34A2B4FA2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift */,
+			);
+			path = ScreenThemeSetting;
+			sourceTree = "<group>";
+		};
+		34A2B4FC2F31C52200F3B9A8 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				34A2B4FD2F31C53B00F3B9A8 /* TopNavigationBar.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		B40A01112F2B921500687C64 /* Setting */ = {
 			isa = PBXGroup;
 			children = (
+				34A2B4FC2F31C52200F3B9A8 /* Components */,
 				B40A01142F2B923E00687C64 /* ViewModel */,
 				B40A01132F2B923800687C64 /* Model */,
 				B40A01122F2B923100687C64 /* View */,
@@ -171,7 +194,7 @@
 			isa = PBXGroup;
 			children = (
 				B40A01252F2BBB7400687C64 /* APIManager.swift */,
-				34A2B45F2F318E1700F3B9A8 /* AlarmTarget.swift */,
+				34A2B45F2F318E1700F3B9A8 /* AdvancedSettingTarget.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -260,8 +283,10 @@
 		B4E284852F2C71DC00D8FD4D /* Advanced */ = {
 			isa = PBXGroup;
 			children = (
+				34A2B4F52F31C29800F3B9A8 /* ScreenThemeSetting */,
 				34A2B3C92F317E9700F3B9A8 /* MissionAlarmSetting */,
 				B4E284862F2C71F900D8FD4D /* AdvancedSectionView.swift */,
+				34A2B4F62F31C30D00F3B9A8 /* AdvancedSettingModel.swift */,
 			);
 			path = Advanced;
 			sourceTree = "<group>";
@@ -382,7 +407,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B4E2848A2F2C864300D8FD4D /* SupportSectionView.swift in Sources */,
-				34A2B3CB2F317EAF00F3B9A8 /* MissionAlarmSettingModel.swift in Sources */,
+				34A2B4F72F31C30D00F3B9A8 /* AdvancedSettingModel.swift in Sources */,
 				B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */,
 				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
 				B42F48072F26FAFD0057284E /* TabBar.swift in Sources */,
@@ -400,10 +425,13 @@
 				B4E284842F2C52C200D8FD4D /* ProSectionView.swift in Sources */,
 				B40A012A2F2BD24D00687C64 /* LoginSectionView.swift in Sources */,
 				B40A01162F2BA23D00687C64 /* ProfileSettingView.swift in Sources */,
-				34A2B4602F318E1700F3B9A8 /* AlarmTarget.swift in Sources */,
+				34A2B4602F318E1700F3B9A8 /* AdvancedSettingTarget.swift in Sources */,
 				B4B4DAA52F2767C400C29EDC /* AddTaskView.swift in Sources */,
 				34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */,
 				B4B4DAA62F2767C400C29EDC /* AddTypeSheet.swift in Sources */,
+				34A2B4F92F31C38B00F3B9A8 /* ScreenThemeSettingView.swift in Sources */,
+				34A2B4FE2F31C53B00F3B9A8 /* TopNavigationBar.swift in Sources */,
+				34A2B4FB2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift in Sources */,
 				B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */,
 				B4B4DAA82F2767C400C29EDC /* RoutineViewModel.swift in Sources */,
 				B4B4DAA92F2767C400C29EDC /* RoutineModel.swift in Sources */,

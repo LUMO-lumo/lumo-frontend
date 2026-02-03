@@ -13,21 +13,21 @@ struct LoginSectionView : View {
             // 프로필 이미지 (기본 이미지, 클릭 X)
             Circle()
                 .frame(width: 42, height: 42)
-                .foregroundColor(.gray300)
+                .foregroundStyle(Color.gray300)
             
             
-            NavigationLink(destination: Text("로그인 화면")) { // 나중에 LoginView()로 교체
-                HStack {
-                    Text("로그인이 필요해요")
-                        .font(.Subtitle2)
-                        .foregroundStyle(Color.primary)
-                    
-                    Spacer()
-                    
-                    Image("chevronRight")
-                        .foregroundColor(.gray500)
-                }
-            }
+//            NavigationLink(destination: LoginView()) {
+//                HStack {
+//                    Text("로그인이 필요해요")
+//                        .font(.Subtitle2)
+//                        .foregroundStyle(Color.primary)
+//                    
+//                    Spacer()
+//                    
+//                    Image("chevronRight")
+//                        .foregroundStyle(Color.gray500)
+//                }
+//            }
         }
         .padding(.top, 9)
     }
