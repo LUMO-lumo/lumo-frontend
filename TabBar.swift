@@ -31,9 +31,7 @@ struct MainView: View {
                 case 2:
                     RoutineView(isTabBarHidden: $isTabBarHidden)
                 case 3:
-                    Text("설정 화면") // 나중에 SettingView()로 교체
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.white)
+                    ProfileSettingView()
                 default:
                     EmptyView()
                 }
@@ -127,7 +125,7 @@ struct TabBarButton: View {
                     .font(.caption)
                     .fontWeight(isSelected ? .bold : .regular)
             }
-            .foregroundColor(isSelected ? activeColor : inactiveColor)
+            .foregroundStyle(isSelected ? activeColor : inactiveColor)
             .frame(maxWidth: .infinity)
         }
     }
