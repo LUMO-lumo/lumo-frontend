@@ -18,7 +18,7 @@ struct AdvancedSectionView: View {
                 HStack {
                     Text("화면 테마")
                         .font(.Body1)
-                        .foregroundColor(.primary)
+                        .foregroundStyle(Color.primary)
                     
                     Spacer()
                     
