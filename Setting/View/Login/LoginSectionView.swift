@@ -7,6 +7,8 @@
 import SwiftUI
 
 struct LoginSectionView : View {
+    @Binding var isTabBarHidden: Bool
+    
     var body: some View {
         // 로그인 섹션
         HStack(spacing: 13) {
@@ -16,7 +18,7 @@ struct LoginSectionView : View {
                 .foregroundStyle(Color.gray300)
             
             
-            NavigationLink(destination: LoginView()) {
+            NavigationLink(destination: LoginView(isTabBarHidden: $isTabBarHidden)) {
                 HStack {
                     Text("로그인이 필요해요")
                         .font(.Subtitle2)

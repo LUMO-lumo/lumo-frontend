@@ -35,6 +35,12 @@
 		B4D641FE2F2FA4AC000B4C08 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D641FD2F2FA4A7000B4C08 /* LoginView.swift */; };
 		B4D642012F302C75000B4C08 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D642002F302C70000B4C08 /* LoginModel.swift */; };
 		B4D642042F302CD5000B4C08 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D642032F302CCE000B4C08 /* LoginViewModel.swift */; };
+		B4D642062F30CE94000B4C08 /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D642052F30CE8B000B4C08 /* SignUpModel.swift */; };
+		B4D642082F30CF33000B4C08 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D642072F30CF2E000B4C08 /* SignUpViewModel.swift */; };
+		B4D6420A2F30D71A000B4C08 /* Security.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = B4D642092F30D71A000B4C08 /* Security.xcconfig */; };
+		B4D6420C2F30DB2C000B4C08 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D6420B2F30DB29000B4C08 /* SignUpView.swift */; };
+		B4D6420E2F30E384000B4C08 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D6420D2F30E37D000B4C08 /* KeychainManager.swift */; };
+		B4D642742F338534000B4C08 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D642732F338530000B4C08 /* AppConfig.swift */; };
 		B4E284842F2C52C200D8FD4D /* ProSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E284832F2C52BD00D8FD4D /* ProSectionView.swift */; };
 		B4E284872F2C720000D8FD4D /* AdvancedSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E284862F2C71F900D8FD4D /* AdvancedSectionView.swift */; };
 		B4E2848A2F2C864300D8FD4D /* SupportSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E284892F2C863B00D8FD4D /* SupportSectionView.swift */; };
@@ -72,6 +78,12 @@
 		B4D641FD2F2FA4A7000B4C08 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		B4D642002F302C70000B4C08 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		B4D642032F302CCE000B4C08 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		B4D642052F30CE8B000B4C08 /* SignUpModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
+		B4D642072F30CF2E000B4C08 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
+		B4D642092F30D71A000B4C08 /* Security.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Security.xcconfig; sourceTree = "<group>"; };
+		B4D6420B2F30DB29000B4C08 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		B4D6420D2F30E37D000B4C08 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
+		B4D642732F338530000B4C08 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		B4E284832F2C52BD00D8FD4D /* ProSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProSectionView.swift; sourceTree = "<group>"; };
 		B4E284862F2C71F900D8FD4D /* AdvancedSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSectionView.swift; sourceTree = "<group>"; };
 		B4E284892F2C863B00D8FD4D /* SupportSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportSectionView.swift; sourceTree = "<group>"; };
@@ -120,6 +132,7 @@
 		B40A01112F2B921500687C64 /* Setting */ = {
 			isa = PBXGroup;
 			children = (
+				B4D6420D2F30E37D000B4C08 /* KeychainManager.swift */,
 				B40A01132F2B923800687C64 /* Model */,
 				B40A01142F2B923E00687C64 /* ViewModel */,
 				B40A01122F2B923100687C64 /* View */,
@@ -160,6 +173,7 @@
 		B40A01262F2BBB7400687C64 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				B4D642732F338530000B4C08 /* AppConfig.swift */,
 				B40A01252F2BBB7400687C64 /* APIManager.swift */,
 			);
 			path = Network;
@@ -168,6 +182,7 @@
 		B40A01282F2BD04100687C64 /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				B4D6420B2F30DB29000B4C08 /* SignUpView.swift */,
 				B4D641FD2F2FA4A7000B4C08 /* LoginView.swift */,
 				B40A01292F2BD22D00687C64 /* LoginSectionView.swift */,
 			);
@@ -200,6 +215,7 @@
 		B4B2BD362F07C3010036E720 = {
 			isa = PBXGroup;
 			children = (
+				B4D642092F30D71A000B4C08 /* Security.xcconfig */,
 				B40A01262F2BBB7400687C64 /* Network */,
 				B40A01112F2B921500687C64 /* Setting */,
 				B4B4DAA42F2767C400C29EDC /* Routine */,
@@ -242,6 +258,7 @@
 		B4D641FF2F302C67000B4C08 /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				B4D642052F30CE8B000B4C08 /* SignUpModel.swift */,
 				B4D642002F302C70000B4C08 /* LoginModel.swift */,
 			);
 			path = Login;
@@ -251,6 +268,7 @@
 			isa = PBXGroup;
 			children = (
 				B4D642032F302CCE000B4C08 /* LoginViewModel.swift */,
+				B4D642072F30CF2E000B4C08 /* SignUpViewModel.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -371,6 +389,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B4FD5F372F17E61C0022CF67 /* OnBoardingPartTodoWrite.md in Resources */,
+				B4D6420A2F30D71A000B4C08 /* Security.xcconfig in Resources */,
 				B42F48042F26FA600057284E /* HomeViewAsset.xcassets in Resources */,
 				B4B4DAAC2F2767C400C29EDC /* RoutineAssets.xcassets in Resources */,
 				B42F48052F26FA600057284E /* HomePartTodoWrite.md in Resources */,
@@ -399,10 +418,14 @@
 				B42F48012F26FA600057284E /* TodoSettingModel.swift in Sources */,
 				B42F48022F26FA600057284E /* HomeView.swift in Sources */,
 				B4D641FE2F2FA4AC000B4C08 /* LoginView.swift in Sources */,
+				B4D6420E2F30E384000B4C08 /* KeychainManager.swift in Sources */,
 				B42F48032F26FA600057284E /* HomeViewModel.swift in Sources */,
 				B4FD5F2E2F17DEE80022CF67 /* LumoApp.swift in Sources */,
 				B4E2848D2F2CA3FC00D8FD4D /* ETCSectionView.swift in Sources */,
+				B4D642742F338534000B4C08 /* AppConfig.swift in Sources */,
+				B4D642082F30CF33000B4C08 /* SignUpViewModel.swift in Sources */,
 				B4E284872F2C720000D8FD4D /* AdvancedSectionView.swift in Sources */,
+				B4D6420C2F30DB2C000B4C08 /* SignUpView.swift in Sources */,
 				B4E284842F2C52C200D8FD4D /* ProSectionView.swift in Sources */,
 				B40A012A2F2BD24D00687C64 /* LoginSectionView.swift in Sources */,
 				B40A01162F2BA23D00687C64 /* ProfileSettingView.swift in Sources */,
@@ -413,6 +436,7 @@
 				B4B4DAA92F2767C400C29EDC /* RoutineModel.swift in Sources */,
 				B4B4DAAA2F2767C400C29EDC /* RoutineCardView.swift in Sources */,
 				B4B4DAAB2F2767C400C29EDC /* RoutineTabBar.swift in Sources */,
+				B4D642062F30CE94000B4C08 /* SignUpModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -421,6 +445,7 @@
 /* Begin XCBuildConfiguration section */
 		B4B2BD482F07C3020036E720 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B4D642092F30D71A000B4C08 /* Security.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -485,6 +510,7 @@
 		};
 		B4B2BD492F07C3020036E720 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B4D642092F30D71A000B4C08 /* Security.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

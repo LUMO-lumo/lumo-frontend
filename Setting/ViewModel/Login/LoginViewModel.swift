@@ -34,8 +34,7 @@ class LoginViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        // ⚠️ 실제 서버 주소로 변경 필요 (http 사용 시 Info.plist 설정 필요)
-        let baseURL = "http://YOUR_SERVER_IP:PORT"
+        let baseURL = AppConfig.baseURL
         guard let url = URL(string: "\(baseURL)/api/member/login") else { return }
         
         // Request 생성

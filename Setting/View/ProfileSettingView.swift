@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ProfileSettingView: View {
+    @Binding var isTabBarHidden: Bool
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -18,7 +20,7 @@ struct ProfileSettingView: View {
                 
                 VStack {
                     
-                    LoginSectionView()
+                    LoginSectionView(isTabBarHidden: $isTabBarHidden)
                     
                     ProSectionView()
                     
@@ -44,7 +46,7 @@ struct ProfileSettingView: View {
 }
 
 #Preview {
-    ProfileSettingView()
+    ProfileSettingView(isTabBarHidden: .constant(false))
 }
 
 

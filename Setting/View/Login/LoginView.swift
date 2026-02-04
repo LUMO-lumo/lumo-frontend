@@ -10,6 +10,7 @@ import SwiftUI
 struct LoginView: View {
     // ViewModel 연결
     @StateObject private var viewModel = LoginViewModel()
+    @Binding var isTabBarHidden: Bool
     
     var body: some View {
         NavigationStack {
@@ -87,7 +88,7 @@ struct LoginView: View {
                         .frame(width: 1, height: 12)
                         .foregroundStyle(Color(hex: "D9D9D9"))
                     
-                    NavigationLink(destination: Text("회원가입")) {
+                    NavigationLink(destination: SignUpView(isTabBarHidden: $isTabBarHidden)) {
                         Text("회원가입")
                     }
                 }
@@ -118,9 +119,13 @@ struct LoginView: View {
                 .padding(.bottom, 22)
             }
             .padding(.horizontal, 24)
+            .navigationBarHidden(true)
+            .onAppear {
+                isTabBarHidden = true
+            }
             // 로그인 성공 시 화면 전환 로직 (예시)
             .navigationDestination(isPresented: $viewModel.isLoggedIn) {
-                Text("메인 화면입니다!") // 여기에 MainView()를 넣으면 됩니다.
+                MainView() // 여기에 MainView()를 넣으면 됩니다.
             }
         }
     }
@@ -158,5 +163,5 @@ struct CheckboxButton: View {
 }
 
 #Preview {
-    LoginView()
+    LoginView(isTabBarHidden: .constant(false))
 }

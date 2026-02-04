@@ -31,7 +31,7 @@ struct MainView: View {
                 case 2:
                     RoutineView(isTabBarHidden: $isTabBarHidden)
                 case 3:
-                    ProfileSettingView()
+                    ProfileSettingView(isTabBarHidden: $isTabBarHidden)
                 default:
                     EmptyView()
                 }
