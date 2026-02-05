@@ -19,7 +19,7 @@ class MissionAlarmSettingViewModel {
             switch result {
             case .success:
                 self?.selectedSeconds = seconds
-                print("서버 설정 변경 및 AlarmKit 동기화 완료")
+                print("미션 제한시간 설정 변경 완료")
             case .failure(let error):
                 print("설정 변경 실패: \(error.localizedDescription)")
             }

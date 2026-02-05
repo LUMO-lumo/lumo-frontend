@@ -26,7 +26,7 @@ struct ProSectionView: View {
                 }
             }
             
-            NavigationLink(destination: Text("미션 난이도 조정")) {
+            NavigationLink(destination: SmartBriefingView()) {
                 HStack {
                     Text("스마트 브리핑")
                         .font(.Body1)
