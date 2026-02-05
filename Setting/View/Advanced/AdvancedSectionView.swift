@@ -40,7 +40,7 @@ struct AdvancedSectionView: View {
                 }
             }
             
-            NavigationLink(destination: Text("브리핑 목소리 설정")) {
+            NavigationLink(destination: BriefingVoiceView()) {
                 HStack {
                     Text("브리핑 목소리 설정")
                         .font(.Body1)
