@@ -70,6 +70,7 @@ struct BriefingVoiceView: View {
         }
     } message: {
         Text("Pro 버전에서는 원하는 목소리를 포함해서\n더 많은 기능을 사용할 수 있어요.")
+            .font(.Body3)
     }
     }
 }
