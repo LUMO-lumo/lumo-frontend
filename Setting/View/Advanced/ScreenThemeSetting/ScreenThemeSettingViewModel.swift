@@ -19,7 +19,7 @@ class ScreenThemeSettingViewModel {
             switch result {
             case .success:
                 self?.selectedTheme = theme
-                print("서버 설정 변경 및 AlarmKit 동기화 완료")
+                print("화면 테마 설정 변경 완료")
             case .failure(let error):
                 print("설정 변경 실패: \(error.localizedDescription)")
             }

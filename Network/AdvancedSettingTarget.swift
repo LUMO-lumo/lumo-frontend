@@ -12,6 +12,7 @@ import Alamofire
 enum AdvancedSettingTarget {
     case updateSeconds(second: Int)
     case updateTheme(theme: String)
+    case updateVoice(voice: String)
 }
 
 extension AdvancedSettingTarget: TargetType {
@@ -28,10 +29,15 @@ extension AdvancedSettingTarget: TargetType {
         case .updateTheme(let theme):
             let params: [String: Any] = ["theme": theme]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
+        case .updateVoice(let voice):
+            let params: [String: Any] = ["briefingVoiceDefaultType": voice]
+            return .requestParameters(parameters: params, encoding: JSONEncoding.default)
         }
+        
     }
     
     var headers: [String : String]? {
-        return ["Content-Type": "application/json"]
+        return ["Content-Type": "application/json",
+                "Authorization": ""]
     }
 }
