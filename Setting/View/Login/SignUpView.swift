@@ -5,28 +5,43 @@
 //  Created by 김승겸 on 2/2/26.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct SignUpView: View {
-    @StateObject private var viewModel = SignUpViewModel()
-    @Environment(\.dismiss) private var dismiss // 성공 후 나가기 위해 필요
-    @Environment(\.modelContext) private var modelContext // ⭐️ SwiftData 컨텍스트 가져오기
+    
+    @StateObject var viewModel: SignUpViewModel
+    
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    
     @Binding var isTabBarHidden: Bool
+    
+    // 프로필 설정 화면으로 이동하기 위한 상태 변수
+    @State private var navigateToProfile = false
+    
+    init(
+        viewModel: SignUpViewModel = SignUpViewModel(),
+        isTabBarHidden: Binding<Bool>
+    ) {
+        // 입력받은 viewModel로 StateObject를 초기화
+        _viewModel = StateObject(wrappedValue: viewModel)
+        _isTabBarHidden = isTabBarHidden
+    }
     
     var body: some View {
         VStack {
-            // 상단 네비게이션 바 (뒤로가기 버튼 등)
-            // 성공 화면이 아닐 때만 표시
             if viewModel.step != .success {
                 HStack {
-                    Button(action: { dismiss() }) {
+                    Button(action: {
+                        dismiss()
+                    }) {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(.black)
+                            .foregroundStyle(Color.black)
                     }
                     Spacer()
                 }
-                .padding()
+                .padding(.bottom, 20)
             }
             
             // 단계별 화면 전환
@@ -39,10 +54,15 @@ struct SignUpView: View {
                 successView
             }
         }
+        .padding(.horizontal, 24)
         .navigationBarHidden(true) // 기본 네비게이션 바 숨김 (커스텀 사용)
+        .navigationDestination(isPresented: $navigateToProfile) {
+            ProfileSettingView(isTabBarHidden: $isTabBarHidden)
+        }
     }
     
     // MARK: - 1단계: 정보 입력 화면
+    
     var inputInfoView: some View {
         VStack(alignment: .leading) {
             Text("회원가입")
@@ -58,32 +78,47 @@ struct SignUpView: View {
                 TextField("이메일", text: $viewModel.email)
                     .padding()
                     .frame(height: 52)
-                    .background(RoundedRectangle(cornerRadius: 8).strokeBorder(Color.gray.opacity(0.3)))
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .strokeBorder(Color.gray300)
+                    )
                     .keyboardType(.emailAddress)
                     .textInputAutocapitalization(.never)
                 
                 SecureField("비밀번호", text: $viewModel.password)
                     .padding()
                     .frame(height: 52)
-                    .background(RoundedRectangle(cornerRadius: 8).strokeBorder(Color.gray.opacity(0.3)))
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .strokeBorder(Color.gray300)
+                    )
             }
             
-            // 체크박스 (LoginView에 있던 CheckboxButton 재사용)
+            // 체크박스
             HStack(spacing: 12) {
-                CheckboxButton(title: "자동로그인", isChecked: $viewModel.isAutoLogin)
-                CheckboxButton(title: "이메일 기억하기", isChecked: $viewModel.rememberEmail)
+                CheckboxButton(
+                    title: "자동로그인",
+                    isChecked: $viewModel.isAutoLogin
+                )
+                CheckboxButton(
+                    title: "이메일 기억하기",
+                    isChecked: $viewModel.rememberEmail
+                )
+                
                 Spacer()
                 
                 if let error = viewModel.errorMessage {
-                    Text(error) // "사용자 이메일을 다시 확인해주세요" 등
-                        .font(.caption)
-                        .foregroundColor(.red)
+                    Text(error)
+                        .font(.pretendardSemiBold10)
+                        .foregroundStyle(Color(hex: "F06D5B"))
                 }
             }
             .padding(.top, 14)
             
             Button(action: {
-                Task { await viewModel.userRequestVerificationCode() }
+                Task {
+                    await viewModel.userRequestVerificationCode()
+                }
             }) {
                 HStack {
                     if viewModel.isLoading {
@@ -96,7 +131,7 @@ struct SignUpView: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 56)
                 .background(viewModel.isInputStepValid ? Color.main300 : Color.gray300)
-                .foregroundColor(.gray700)
+                .foregroundStyle(Color.gray700)
                 .cornerRadius(8)
             }
             .disabled(!viewModel.isInputStepValid || viewModel.isLoading)
@@ -107,41 +142,45 @@ struct SignUpView: View {
     }
     
     // MARK: - 2단계: 이메일 인증 화면
+    
     var verificationView: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("이메일 인증")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+                .font(.Headline2)
+                .padding(.bottom, 4)
             
             Text("메일로 발송된 인증번호를 입력해주세요")
-                .font(.body)
-                .foregroundColor(.gray)
-                .padding(.bottom, 20)
+                .font(.Body1)
+                .padding(.bottom, 36)
             
             TextField("인증번호", text: $viewModel.verificationCode)
                 .padding()
-                .frame(height: 52)
-                .background(RoundedRectangle(cornerRadius: 8).strokeBorder(Color.gray.opacity(0.3)))
-                .keyboardType(.numberPad)
+                .frame(height: 54)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(Color.gray300)
+                )
+                .keyboardType(.default)
             
-            // 인증번호 재전송 버튼 (기능 구현은 선택)
+            // 인증번호 재전송 버튼
             HStack {
                 Spacer()
                 Button("인증번호 재전송") {
-                    Task { await viewModel.userRequestVerificationCode() }
+                    Task {
+                        await viewModel.userRequestVerificationCode()
+                    }
                 }
-                .font(.caption)
-                .foregroundColor(.gray)
+                .font(.pretendardSemiBold10)
+                .foregroundStyle(Color.black)
                 .underline()
+                
                 Spacer()
             }
             
-            Spacer()
-            
             if let error = viewModel.errorMessage {
                 Text(error)
-                    .foregroundColor(.red)
-                    .font(.caption)
+                    .foregroundStyle(Color(hex: "F06D5B"))
+                    .font(.pretendardSemiBold10)
                     .frame(maxWidth: .infinity, alignment: .center)
             }
             
@@ -152,54 +191,79 @@ struct SignUpView: View {
                 }
             }) {
                 HStack {
-                    if viewModel.isLoading { ProgressView() }
+                    if viewModel.isLoading {
+                        ProgressView()
+                    }
                     Text("확인")
+                        .font(.Subtitle3)
                 }
                 .frame(maxWidth: .infinity)
-                .frame(height: 56)
-                .background(viewModel.isVerifyStepValid ? Color.orange : Color.gray.opacity(0.3))
-                .foregroundColor(.white)
+                .frame(height: 55)
+                .background(viewModel.isVerifyStepValid ? Color.main300 : Color.gray300)
+                .foregroundStyle(Color.gray700)
                 .cornerRadius(8)
             }
             .disabled(!viewModel.isVerifyStepValid || viewModel.isLoading)
             .padding(.bottom, 20)
+            
+            Spacer()
         }
     }
     
     // MARK: - 3단계: 가입 완료 화면
+    
     var successView: some View {
         VStack {
             Spacer()
             
-            Image(systemName: "checkmark") // 체크 아이콘 (에셋 이미지로 교체 가능)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 80, height: 80)
-                .foregroundColor(.orange)
-                .padding(.bottom, 20)
-            
-            Text("가입을 완료했어요")
-                .font(.title2)
-                .fontWeight(.bold)
+            VStack {
+                // 체크 아이콘 (에셋 이미지)
+                Image("SignUpCompleted")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 102, height: 63)
+                    .padding(.bottom, 36)
+                
+                Text("가입을 완료했어요")
+                    .font(.Headline1)
+            }
             
             Spacer()
-            
-            // 완료 버튼을 누르면 로그인 화면으로 돌아가거나 메인으로 이동
-            Button(action: {
-                dismiss() // 로그인 화면으로 복귀
-            }) {
-                Text("로그인하러 가기")
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 56)
-                    .background(Color.orange)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                // 3초 뒤 프로필 설정 화면으로 이동
+                withAnimation {
+                    navigateToProfile = true
+                }
             }
-            .padding(.bottom, 20)
         }
     }
 }
 
-#Preview {
-    SignUpView(isTabBarHidden: .constant(false))
+// MARK: - Previews
+
+#Preview("가입 완료 화면") {
+    let successVM = SignUpViewModel(step: .success)
+    
+    return SignUpView(
+        viewModel: successVM,
+        isTabBarHidden: .constant(false)
+    )
+    .modelContainer(for: UserModel.self, inMemory: true)
+}
+
+#Preview("입력 화면 (기본)") {
+    SignUpView(isTabBarHidden: .constant(true))
+        .modelContainer(for: UserModel.self, inMemory: true)
+}
+
+#Preview("이메일 인증 화면") {
+    let verificationVM = SignUpViewModel(step: .verification)
+    
+    return SignUpView(
+        viewModel: verificationVM,
+        isTabBarHidden: .constant(true)
+    )
+    .modelContainer(for: UserModel.self, inMemory: true)
 }
