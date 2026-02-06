@@ -11,14 +11,14 @@ import SwiftData
 
 /// 회원가입 화면의 단계를 정의하는 열거형
 enum SignUpStep {
-    case inputInfo        // 1. 이메일/비번 입력
-    case verification    // 2. 인증번호 입력
-    case success        // 3. 가입 완료
+    case inputInfo      // 이메일/비번 입력
+    case verification   // 인증번호 입력
+    case success        // 가입 완료
 }
 
 class SignUpViewModel: ObservableObject {
     
-    // MARK: - 입력 데이터
+    // MARK: - Properties
     
     @Published var email: String = ""
     @Published var password: String = ""
@@ -27,8 +27,6 @@ class SignUpViewModel: ObservableObject {
     
     @Published var isAutoLogin: Bool = false
     @Published var rememberEmail: Bool = false
-    
-    // MARK: - 화면 상태
     
     @Published var step: SignUpStep = .inputInfo
     @Published var isLoading: Bool = false
@@ -44,31 +42,92 @@ class SignUpViewModel: ObservableObject {
         return !verificationCode.isEmpty
     }
     
+    // MARK: - Initialization
+    
     init(step: SignUpStep = .inputInfo) {
         self.step = step
     }
     
     // MARK: - Action Functions
     
-    /// 1단계: 인증 코드 요청 (POST + Query Param)
+    /// 0단계: 이메일 중복 체크 (GET)
+    @MainActor
+    func userCheckEmailDuplicate() async -> Bool {
+        guard var urlComponents = URLComponents(string: "\(baseURL)/api/member/email-duplicate")
+        else {
+            return false
+        }
+        
+        urlComponents.queryItems = [
+            URLQueryItem(
+                name: "email",
+                value: email
+            )
+        ]
+        
+        guard let url = urlComponents.url
+        else {
+            return false
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            if let httpResponse = response as? HTTPURLResponse,
+               (200...299).contains(httpResponse.statusCode) {
+                print("이메일 중복 통과 (사용 가능)")
+                return true
+            } else {
+                let decoded = try JSONDecoder().decode(
+                    APIResponse.self,
+                    from: data
+                )
+                self.errorMessage = decoded.message ?? "이미 가입된 이메일입니다."
+                return false
+            }
+        } catch {
+            self.errorMessage = "서버 통신 오류"
+            return false
+        }
+    }
+    
+    /// 1단계: 인증 코드 요청 (POST)
     @MainActor
     func userRequestVerificationCode() async {
-        guard isInputStepValid else {
+        guard isInputStepValid
+        else {
             return
         }
         
         isLoading = true
         errorMessage = nil
         
-        guard var urlComponents = URLComponents(string: "\(baseURL)/api/member/request-code") else {
+        // 이메일 중복 체크 실행
+        let isAvailable = await userCheckEmailDuplicate()
+        
+        guard isAvailable
+        else {
+            isLoading = false
+            return
+        }
+        
+        guard var urlComponents = URLComponents(string: "\(baseURL)/api/member/request-code")
+        else {
             return
         }
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "email", value: email)
+            URLQueryItem(
+                name: "email",
+                value: email
+            )
         ]
         
-        guard let url = urlComponents.url else {
+        guard let url = urlComponents.url
+        else {
             return
         }
         
@@ -96,26 +155,35 @@ class SignUpViewModel: ObservableObject {
         isLoading = false
     }
     
-    /// 2단계: 인증 코드 검증 (POST + Query Param)
+    /// 2단계: 인증 코드 검증 (POST)
     @MainActor
     func userVerifyCodeAndSignUp(modelContext: ModelContext) async {
-        guard isVerifyStepValid else {
+        guard isVerifyStepValid
+        else {
             return
         }
         
         isLoading = true
         errorMessage = nil
         
-        guard var urlComponents = URLComponents(string: "\(baseURL)/api/member/verify-code") else {
+        guard var urlComponents = URLComponents(string: "\(baseURL)/api/member/verify-code")
+        else {
             return
         }
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "email", value: email),
-            URLQueryItem(name: "code", value: verificationCode)
+            URLQueryItem(
+                name: "email",
+                value: email
+            ),
+            URLQueryItem(
+                name: "code",
+                value: verificationCode
+            )
         ]
         
-        guard let url = urlComponents.url else {
+        guard let url = urlComponents.url
+        else {
             return
         }
         
@@ -143,10 +211,11 @@ class SignUpViewModel: ObservableObject {
         }
     }
     
-    /// 3단계: 최종 회원가입 요청 (POST + JSON Body)
+    /// 3단계: 최종 회원가입 요청 (POST)
     @MainActor
     func userRequestSignUp(modelContext: ModelContext) async {
-        guard let url = URL(string: "\(baseURL)/api/member/signin") else {
+        guard let url = URL(string: "\(baseURL)/api/member/signin")
+        else {
             return
         }
         
@@ -176,7 +245,7 @@ class SignUpViewModel: ObservableObject {
                 )
                 
                 if decoded.success {
-                    print("회원가입 성공")
+                    print("회원가입 최종 성공")
                     
                     if let token = decoded.result?.accessToken {
                         KeychainManager.shared.save(
