@@ -66,6 +66,7 @@ class AlarmCreateViewModel: ObservableObject {
     
     // 로컬 알림 스케줄링
     func scheduleLocalNotification() {
+        // 위젯에서 알람이 울리게 하는 방법
         let content = UNMutableNotificationContent()
         content.title = alarmTitle.isEmpty ? "알람" : alarmTitle
         content.body = "\(selectedMission) 미션을 수행할 시간입니다!"

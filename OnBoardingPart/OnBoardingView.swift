@@ -33,7 +33,7 @@ struct OnBoardingView: View {
                         ForEach(1..<onboardingData.count, id: \.self) { index in
                             Circle()
                                 .frame(width: PageNumber == index ? 8 : 6, height: PageNumber == index ? 8 : 6)
-                                .foregroundColor(PageNumber == index ? Color(hex: "979DA7") : Color(hex: "DDE1E8"))
+                                .foregroundStyle(PageNumber == index ? Color(hex: "979DA7") : Color(hex: "DDE1E8"))
                                 .animation(.spring(), value: PageNumber)
                         }
                     }
@@ -51,7 +51,7 @@ struct OnBoardingView: View {
                     }) {
                         Text(PageNumber == onboardingData.count - 1 ? "시작하기" : "다음")
                             .font(.system(size: 20, weight: .semibold))
-                            .foregroundColor(PageNumber == onboardingData.count - 1 ? .white : .black.opacity(0.6))
+                            .foregroundStyle(PageNumber == onboardingData.count - 1 ? .white : .black.opacity(0.6))
                             .frame(maxWidth: .infinity)
                             .frame(height: 56)
                             .background(
@@ -99,7 +99,7 @@ struct OnboardingFirstPageView: View {
                 
                 Text("LUMO")
                     .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(Color(hex: "F55641"))
+                    .foregroundStyle(Color(hex: "F55641"))
                     .tracking(2)
                 
                 
@@ -108,11 +108,11 @@ struct OnboardingFirstPageView: View {
                     Text(item.title)
                         .font(.system(size: 24, weight: .bold))
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.black)
+                        .foregroundStyle(.black)
                     
                     Text(item.description)
                         .font(.system(size: 15))
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                         .lineSpacing(4)
@@ -139,11 +139,11 @@ struct OnboardingPageView: View {
                     Text(item.title)
                         .font(.system(size: 24, weight: .bold))
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.black)
+                        .foregroundStyle(.black)
                     
                     Text(item.description)
                         .font(.system(size: 15))
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                         .lineSpacing(4)

@@ -77,6 +77,11 @@
 			path = SoundSetting;
 			sourceTree = "<group>";
 		};
+		415410C32F33AF4A004829D3 /* Network */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Network;
+			sourceTree = "<group>";
+		};
 		41853A812F11486B00D6CA1C /* Resource */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Resource;
@@ -139,13 +144,14 @@
 		41853A252F1145F700D6CA1C = {
 			isa = PBXGroup;
 			children = (
+				415410C32F33AF4A004829D3 /* Network */,
 				415410A02F2F9434004829D3 /* SoundSetting */,
 				4154107A2F2738E0004829D3 /* AlarmPart */,
 				41853A812F11486B00D6CA1C /* Resource */,
 				41853A6D2F11469D00D6CA1C /* LUMO_MainDevApp.swift */,
 				41540CB22F249899004829D3 /* TabBar.swift */,
-				41853A7A2F1147FE00D6CA1C /* OnBoardingPart */,
 				41540CBC2F2498B0004829D3 /* HomePart */,
+				41853A7A2F1147FE00D6CA1C /* OnBoardingPart */,
 				415410462F270CCD004829D3 /* LUMO_MainDev.app */,
 				415410472F270CCD004829D3 /* LUMO_MainDevTests.xctest */,
 				415410482F270CCD004829D3 /* LUMO_MainDevUITests.xctest */,
@@ -182,6 +188,7 @@
 			fileSystemSynchronizedGroups = (
 				4154107A2F2738E0004829D3 /* AlarmPart */,
 				415410A02F2F9434004829D3 /* SoundSetting */,
+				415410C32F33AF4A004829D3 /* Network */,
 				41853A812F11486B00D6CA1C /* Resource */,
 			);
 			name = LUMO_MainDev;
@@ -485,6 +492,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BF564SQ936;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -516,6 +524,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BF564SQ936;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

@@ -32,14 +32,19 @@ struct AlarmMenuView: View {
                         LazyVStack(spacing: 20) {
                             ForEach($viewModel.alarms) { $alarm in
                                 // AlarmSettedView에 바인딩된 알람 객체를 전달
-                                AlarmSettedView(alarm: $alarm, onDelete: {
-                                    // 알람 삭제 로직
-                                    if let index = viewModel.alarms.firstIndex(where: { $0.id == alarm.id }) {
-                                        _ = withAnimation {
-                                            viewModel.alarms.remove(at: index)
+                                AlarmSettedView(
+                                    alarm: $alarm,
+                                    onDelete: {
+                                        // ViewModel의 삭제 로직을 호출하여 데이터와 UI 동기화
+                                        withAnimation {
+                                            viewModel.deleteAlarm(id: alarm.id)
                                         }
+                                    },
+                                    onUpdate: { updatedAlarm in
+                                        // 알람 수정 시 ViewModel 업데이트 호출 (데이터 일관성 유지)
+                                        viewModel.updateAlarm(updatedAlarm)
                                     }
-                                })
+                                )
                                 .padding(.horizontal, 20)
                             }
                         }
@@ -50,10 +55,16 @@ struct AlarmMenuView: View {
                 }
                 
                 // 알람 생성 버튼 (FAB)
-                NavigationLink(destination: AlarmCreate()) {
+                // [핵심] destination에 onCreate 클로저를 전달하여, 생성된 알람을 ViewModel에 추가합니다.
+                NavigationLink(destination: AlarmCreate(onCreate: { newAlarm in
+                    // 생성된 알람을 받아와서 뷰모델의 리스트에 추가
+                    withAnimation {
+                        viewModel.addAlarm(newAlarm)
+                    }
+                })) {
                     Image(systemName: "plus")
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                         .frame(width: 60, height: 60)
                         .background(Color(hex: "FF8C68")) // 코랄색 버튼
                         .clipShape(Circle())
@@ -63,7 +74,7 @@ struct AlarmMenuView: View {
                 .padding(.bottom, 100)
                 .zIndex(1)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity) // [수정] 전체 화면을 꽉 채우도록 설정
+            .frame(maxWidth: .infinity, maxHeight: .infinity) // 전체 화면을 꽉 채우도록 설정
             .navigationBarHidden(true)
             .background(Color.white)
         }

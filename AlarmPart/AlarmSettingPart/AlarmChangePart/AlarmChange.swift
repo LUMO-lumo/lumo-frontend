@@ -101,6 +101,7 @@ struct AlarmChange: View {
                                     text: AlarmChangeModel.days[index],
                                     isSelected: viewModel.selectedDays.contains(index)
                                 ) {
+                                    //중복 확인하는 기능
                                     if viewModel.selectedDays.contains(index) {
                                         viewModel.selectedDays.remove(index)
                                     } else {
@@ -147,25 +148,22 @@ struct AlarmChange: View {
                         }
                         .padding(.vertical, 15)
                         Divider()
-                        
-                        // [수정] 사운드 설정 버튼 (NavigationLink 적용)
-                        NavigationLink(destination: SoundSettingView(alarmSound: $viewModel.alarmSound)) {
-                            HStack {
-                                Text("사운드")
+                        HStack {
+                            Text("사운드")
+                                .font(.system(size: 14))
+                                .foregroundStyle(.black)
+                            Spacer()
+                            // SoundSettingView가 있다면 연결
+                            HStack(spacing: 5) {
+                                Text(viewModel.alarmSound)
                                     .font(.system(size: 14))
-                                    .foregroundStyle(.black)
-                                Spacer()
-                                HStack(spacing: 5) {
-                                    Text(viewModel.alarmSound)
-                                        .font(.system(size: 14))
-                                        .foregroundStyle(.gray)
-                                    Image(systemName: "chevron.right")
-                                        .font(.system(size: 12))
-                                        .foregroundStyle(.gray)
-                                }
+                                    .foregroundStyle(.gray)
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(.gray)
                             }
-                            .padding(.vertical, 15)
                         }
+                        .padding(.vertical, 15)
                     }
                     .padding(.horizontal, 20)
                     

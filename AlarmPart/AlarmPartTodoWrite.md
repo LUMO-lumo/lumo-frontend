@@ -27,7 +27,9 @@
 알람 해제 기록 (미션완료/스누즈/수동)
 
 
-알람 생성 내용물(request body)
+#Post: 알람 생성 API
+/api/alarms
+- request body
 {
   "alarmTime": "07:00",
   "label": "출근 알람",
@@ -43,8 +45,113 @@
   }
 }
 
+- response
+{
+  "code": "string",
+  "message": "string",
+  "result": {
+    "alarmId": 0,
+    "alarmTime": "string",
+    "label": "string",
+    "isEnabled": true,
+    "soundType": "string",
+    "vibration": true,
+    "volume": 0,
+    "repeatDays": [
+      "MON"
+    ],
+    "snoozeSetting": {
+      "snoozeId": 0,
+      "isEnabled": true,
+      "intervalSec": 0,
+      "maxCount": 0
+    }
+  },
+  "success": true
+}
+
+#Get: 내 알람 목록 조회 API
+- request body
+{
+  "code": "string",
+  "message": "string",
+  "result": [
+    {
+      "alarmId": 0,
+      "alarmTime": "string",
+      "label": "string",
+      "isEnabled": true,
+      "soundType": "string",
+      "vibration": true,
+      "volume": 0,
+      "repeatDays": [
+        "MON"
+      ],
+      "snoozeSetting": {
+        "snoozeId": 0,
+        "isEnabled": true,
+        "intervalSec": 0,
+        "maxCount": 0
+      }
+    }
+  ],
+  "success": true
+}
+
+- response
+{
+  "code": "string",
+  "message": "string",
+  "result": [
+    {
+      "alarmId": 0,
+      "alarmTime": "string",
+      "label": "string",
+      "isEnabled": true,
+      "soundType": "string",
+      "vibration": true,
+      "volume": 0,
+      "repeatDays": [
+        "MON"
+      ],
+      "snoozeSetting": {
+        "snoozeId": 0,
+        "isEnabled": true,
+        "intervalSec": 0,
+        "maxCount": 0
+      }
+    }
+  ],
+  "success": true
+}
 
 
-#알람 개발 진행
-일람 생성과 수정의 형태는 기본을 같게 만들지만 API 메서드는 다른형식으로 개발할 예정
+# Get: 알람 상세 조회 API--> 알람 수정하는 파트를 염두하고 개발
+- request body
+{
+  "code": "string",
+  "message": "string",
+  "result": {
+    "alarmId": 0,
+    "alarmTime": "string",
+    "label": "string",
+    "isEnabled": true,
+    "soundType": "string",
+    "vibration": true,
+    "volume": 0,
+    "repeatDays": [
+      "MON"
+    ],
+    "snoozeSetting": {
+      "snoozeId": 0,
+      "isEnabled": true,
+      "intervalSec": 0,
+      "maxCount": 0
+    }
+  },
+  "success": true
+}
+
+- response
+
 

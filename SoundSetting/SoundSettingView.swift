@@ -196,6 +196,7 @@ struct SoundSettingView: View {
                 }
             }
         }
+        .padding(.bottom, 50)
     }
 }
 

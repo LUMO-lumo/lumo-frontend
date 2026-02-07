@@ -12,14 +12,26 @@ import SwiftData
 // 추후 SwiftData 적용 시 @Model class Alarm: Identifiable { ... } 형태로 변경 가능합니다.
 struct Alarm: Identifiable {
     let id: UUID = UUID()
-    var time: Date
-    var label: String
-    var isEnabled: Bool
+    var time: Date // 알람시간
+    var label: String //알람 이름
+    var isEnabled: Bool //
     var repeatDays: [Int] // 0: 일요일, 1: 월요일 ... 6: 토요일
     var missionTitle: String
     var missionType: String // 예: "계산", "받아쓰기"
     
-    // 시간 표시를 위한 포맷터
+// MARK: 기본 알람 request body 내용물
+//    "alarmTime": "07:00",
+//    "label": "출근 알람",
+//    "isEnabled": true,
+//    "soundType": "차분한",
+//    "vibration": true,
+//    "volume": 70,
+//    "repeatDays": ["MON", "TUE", "WED", "THU", "FRI"],
+//    "snoozeSetting": {
+//      "isEnabled": true,
+//      "intervalSec": 300,
+//      "maxCount": 3
+    
     var timeString: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"

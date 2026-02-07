@@ -92,7 +92,7 @@ class AlarmChangeViewModel: ObservableObject {
         }
     }
     
-    /// 알림 권한 요청
+    /// 알림 권한 요청 ----------원하는 부분에 넣으면 됨
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if granted {
@@ -104,7 +104,9 @@ class AlarmChangeViewModel: ObservableObject {
     }
     
     /// 로컬 알림 스케줄링
+    ///  UserNotifiaction을 이용한 위젯 알람
     func scheduleAlarm() {
+        //잠금위젯에서 나오는 알람
         let content = UNMutableNotificationContent()
         content.title = alarmTitle.isEmpty ? "알람" : alarmTitle
         content.body = "\(selectedMission) 미션을 수행할 시간입니다!"

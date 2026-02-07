@@ -46,7 +46,7 @@ struct AlarmSettedView: View {
                         
                         Image(systemName: "trash.fill")
                             .font(.system(size: 22))
-                            .foregroundColor(.white)
+                            .foregroundStyle(.white)
                     }
                 }
                 .padding(.trailing, 10)
@@ -60,7 +60,7 @@ struct AlarmSettedView: View {
                 HStack(alignment: .center) {
                     Text(alarm.timeString)
                         .font(.system(size: 32, weight: .bold))
-                        .foregroundColor(.black)
+                        .foregroundStyle(.black)
                     
                     Spacer()
                     
@@ -77,7 +77,7 @@ struct AlarmSettedView: View {
                 // 2. 라벨 (아침 기상 등) - TextField로 변경됨
                 TextField("알람 이름", text: $alarm.label)
                     .font(.system(size: 14))
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
                     .onSubmit {
                         // 엔터(완료)를 누르면 서버 동기화 함수 호출
                         updateAlarmOnServer()
@@ -97,7 +97,7 @@ struct AlarmSettedView: View {
                                 
                                 Text(days[index])
                                     .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(alarm.repeatDays.contains(index) ? .white : .gray)
+                                    .foregroundStyle(alarm.repeatDays.contains(index) ? .white : .gray)
                             }
                         }
                     }
@@ -108,7 +108,7 @@ struct AlarmSettedView: View {
                     HStack(spacing: 6) {
                         Text(alarm.missionType)
                             .font(.system(size: 12, weight: .bold))
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
                             .background(Color.gray.opacity(0.2))
@@ -116,7 +116,7 @@ struct AlarmSettedView: View {
                         
                         Text(alarm.missionTitle)
                             .font(.system(size: 13))
-                            .foregroundColor(.black.opacity(0.8))
+                            .foregroundStyle(.black.opacity(0.8))
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
@@ -134,7 +134,7 @@ struct AlarmSettedView: View {
                         updateAlarmOnServer()
                     })) {
                         Image(systemName: "ellipsis")
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                             .rotationEffect(.degrees(90))
                             .padding(4)
                     }

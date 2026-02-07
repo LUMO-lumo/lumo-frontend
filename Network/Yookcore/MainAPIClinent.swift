@@ -11,10 +11,12 @@ import Moya
 import Alamofire
 
 // 실제로 서버에 전송을 수행하고 응답을 받는 공통 엔진입니다.
+//
 class YookAPIClient<T: TargetType> {
     private let provider = MoyaProvider<T>()
 
     func request<D: Decodable>(_ target: T, completion: @escaping (Result<D, YookAPIError>) -> Void) {
+        //Moya 실행 요청
         provider.request(target) { result in
             switch result {
             case .success(let response):

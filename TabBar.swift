@@ -122,7 +122,7 @@ struct TabBarButton: View {
                     .font(.caption)
                     .fontWeight(isSelected ? .bold : .regular)
             }
-            .foregroundColor(isSelected ? activeColor : inactiveColor)
+            .foregroundStyle(isSelected ? activeColor : inactiveColor)
             .frame(maxWidth: .infinity)
         }
     }
