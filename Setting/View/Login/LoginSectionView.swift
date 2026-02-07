@@ -1,22 +1,24 @@
 //
-//  LoginSectionView.swift
-//  Lumo
+//    LoginSectionView.swift
+//    Lumo
 //
-//  Created by 김승겸 on 1/30/26.
+//    Created by 김승겸 on 1/30/26.
 //
 
+import Foundation
+import SwiftData
 import SwiftUI
 
 struct LoginSectionView: View {
+    
     @Binding var isTabBarHidden: Bool
     
-    // 상위 뷰에서 전달받은 유저 데이터
+    /// 상위 뷰에서 전달받은 유저 데이터
     let user: UserModel?
     
-    // 토큰 존재 여부 확인 (Computed Property)
-    // KeychainManager에 저장된 "accessToken"이 있으면 true
+    /// 토큰 존재 여부 확인: KeychainManager에 저장된 "userSession"이 있으면 true
     private var isLoggedIn: Bool {
-        return KeychainManager.shared.read(for: "accessToken") != nil
+        KeychainManager.standard.loadSession(for: "userSession") != nil
     }
     
     var body: some View {
@@ -29,15 +31,13 @@ struct LoginSectionView: View {
             
             // 2. 텍스트 및 이동 로직 분기
             if let user = user, isLoggedIn {
-                // 로그인 된 경우: 닉네임 표시 & 이동 로직 없음
+                // 로그인 된 경우: 닉네임 표시
                 HStack {
-                    Text(user.nickname) // 저장된 닉네임 표시
+                    Text(user.nickname)
                         .font(.Subtitle2)
                         .foregroundStyle(Color.primary)
                     
                     Spacer()
-                    
-                    // 이동 로직이 없으므로 화살표(Chevron)도 숨김 (필요하면 추가 가능)
                 }
             } else {
                 // 로그인 안 된 경우: "로그인이 필요해요" & 로그인 화면 이동
@@ -57,4 +57,9 @@ struct LoginSectionView: View {
         }
         .padding(.top, 9)
     }
+}
+
+#Preview {
+    LoginSectionView(isTabBarHidden: .constant(false), user: nil)
+        .modelContainer(for: UserModel.self, inMemory: true)
 }

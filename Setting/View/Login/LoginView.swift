@@ -1,23 +1,28 @@
 //
-//  LoginView.swift
-//  Lumo
+//    LoginView.swift
+//    Lumo
 //
-//  Created by 김승겸 on 2/2/26.
+//    Created by 김승겸 on 2/2/26.
 //
 
+import SwiftData
 import SwiftUI
 
 struct LoginView: View {
     
-    // ViewModel 연결
-    @StateObject private var viewModel = LoginViewModel()
+    // MARK: - Properties
+    
+    @StateObject private var viewModel: LoginViewModel = LoginViewModel()
     
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    
     @Binding var isTabBarHidden: Bool
     
     var body: some View {
         NavigationStack {
             VStack {
+                // 1. 상단 네비게이션 (뒤로가기)
                 HStack {
                     Button(action: {
                         dismiss()
@@ -26,11 +31,12 @@ struct LoginView: View {
                             .font(.system(size: 20))
                             .foregroundStyle(.black)
                     }
+                    
                     Spacer()
                 }
                 .padding(.bottom, 20)
                 
-                // 1. 로고 영역
+                // 2. 로고 영역
                 VStack(spacing: 10) {
                     Image("Logo")
                         .resizable()
@@ -50,18 +56,21 @@ struct LoginView: View {
                     }
                     .padding(.top, 10)
                 }
-                .padding(.top, 79)
+                .padding(.top, 20)
                 
                 Spacer()
                 
-                // 2. 입력 필드
+                // 3. 입력 필드
                 VStack(spacing: 10) {
                     TextField("이메일", text: $viewModel.email)
                         .padding()
                         .frame(height: 52)
                         .background(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder(Color.gray300, lineWidth: 1)
+                                .strokeBorder(
+                                    Color.gray300,
+                                    lineWidth: 1
+                                )
                         )
                         .textInputAutocapitalization(.never)
                         .keyboardType(.emailAddress)
@@ -71,16 +80,20 @@ struct LoginView: View {
                         .frame(height: 52)
                         .background(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder(Color.gray300, lineWidth: 1)
+                                .strokeBorder(
+                                    Color.gray300,
+                                    lineWidth: 1
+                                )
                         )
                 }
                 
-                // 3. 체크박스 & 에러 메시지
+                // 4. 체크박스 & 에러 메시지
                 HStack(alignment: .center, spacing: 12) {
                     CheckboxButton(
                         title: "자동로그인",
                         isChecked: $viewModel.isAutoLogin
                     )
+                    
                     CheckboxButton(
                         title: "이메일 기억하기",
                         isChecked: $viewModel.rememberEmail
@@ -99,7 +112,7 @@ struct LoginView: View {
                 
                 Spacer()
                 
-                // 4. 하단 링크
+                // 5. 하단 링크 (비밀번호 찾기 | 회원가입)
                 HStack(spacing: 12) {
                     NavigationLink(destination: Text("비밀번호 찾기")) {
                         Text("비밀번호 찾기")
@@ -119,10 +132,10 @@ struct LoginView: View {
                 .foregroundStyle(.primary)
                 .padding(.bottom, 12)
                 
-                // 5. 로그인 버튼
+                // 6. 로그인 버튼
                 Button(action: {
                     Task {
-                        await viewModel.login()
+                        await viewModel.userLogin(modelContext: modelContext)
                     }
                 }) {
                     HStack {
@@ -149,6 +162,7 @@ struct LoginView: View {
                 .disabled(!viewModel.isButtonEnabled || viewModel.isLoading)
                 .padding(.bottom, 22)
             }
+            .padding(.horizontal, 24)
             .navigationBarHidden(true)
             .onAppear {
                 isTabBarHidden = true
@@ -156,7 +170,6 @@ struct LoginView: View {
             .navigationDestination(isPresented: $viewModel.isLoggedIn) {
                 MainView()
             }
-            .padding(.horizontal, 24)
         }
     }
 }
@@ -204,4 +217,5 @@ struct CheckboxButton: View {
 
 #Preview {
     LoginView(isTabBarHidden: .constant(false))
+        .modelContainer(for: UserModel.self, inMemory: true)
 }
