@@ -1,8 +1,8 @@
 //
-//  ETCSectionView.swift
-//  Lumo
+//    ETCSectionView.swift
+//    Lumo
 //
-//  Created by 김승겸 on 1/30/26.
+//    Created by 김승겸 on 1/30/26.
 //
 
 import SwiftData
@@ -12,14 +12,14 @@ struct ETCSectionView: View {
     
     @Binding var isTabBarHidden: Bool
     
-    // 로그아웃 상태 관리 (필요시 바인딩으로 연결)
+    // 로그아웃 상태 관리
     @Environment(\.modelContext) private var modelContext
     
     let user: UserModel?
     
-    // 로그인 상태 확인 (유저 정보 있음 + 토큰 있음)
+    // 로그인 상태 확인: 유저 정보 있음 + 토큰 있음
     private var isLoggedIn: Bool {
-        return user != nil && KeychainManager.shared.read(for: "accessToken") != nil
+        user != nil && KeychainManager.standard.loadSession(for: "userSession") != nil
     }
     
     var body: some View {
@@ -67,10 +67,10 @@ struct ETCSectionView: View {
     
     /// 로그아웃 처리
     private func logout(user: UserModel) {
-        // 1. 키체인에서 토큰 삭제 (보안)
-        KeychainManager.shared.delete(for: "accessToken")
+        // 1. 키체인에서 토큰 삭제
+        KeychainManager.standard.deleteSession(for: "userSession")
         
-        // 2. SwiftData에서 유저 정보 삭제 (UI 자동 업데이트 트리거)
+        // 2. SwiftData에서 유저 정보 삭제
         modelContext.delete(user)
         
         print("로그아웃 완료: 데이터 삭제됨")
