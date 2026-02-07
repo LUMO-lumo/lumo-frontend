@@ -11,19 +11,21 @@ import Combine
 import Moya
 
 class HomeViewModel: ObservableObject {
-    
     // MARK: - Published Properties
     @Published var tasks: [Task] = []
     @Published var missionStat: MissionStat = MissionStat(consecutiveDays: 0, monthlyAchievementRate: 0)
     
-    // 초기화
+    // [수정] homeSubtitle 제거 (HomeView에서 직접 텍스트로 관리)
+    
+    // [유지] 서버에서 받아올 오늘의 명언 문구 (사용자 요청에 따라 이 부분은 동적으로 유지)
+    @Published var dailyQuote: String = "당신의 영향력의 한계는\n상상력입니다!"
+    
     init() {
         loadInitialData()
     }
     
-    // MARK: - 더미 데이터 사용
+    // MARK: - 데이터 로드 (추후 API 연결)
     private func loadInitialData() {
-        // 기존 HomeView의 더미 데이터와 동일한 구성으로 초기화
         self.tasks = [
             Task(title: "일반쓰레기 버리기", isCompleted: false, date: Date()),
             Task(title: "과제 제출하기", isCompleted: false, date: Date()),
@@ -33,48 +35,37 @@ class HomeViewModel: ObservableObject {
         ]
         
         // 통계 더미 데이터
-        // 추후에 연결할 예정
         self.missionStat = MissionStat(consecutiveDays: 5, monthlyAchievementRate: 0.94)
     }
     
-    // MARK: - 추후에 서버하고 각각의 메서드와 연결할 예정
-    
-    // 할 일 추가
+    // MARK: - 인터랙션 메서드
     func addTask(title: String) {
-        let newTask = Task(title: title, isCompleted: false, date: Date())
+        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedTitle.isEmpty else { return }
+        let newTask = Task(title: trimmedTitle, isCompleted: false, date: Date())
         tasks.append(newTask)
     }
     
-    // 할 일 삭제 (ID를 통한 삭제 추가 - View와의 연동을 위해)
     func deleteTask(id: UUID) {
-        if let index = tasks.firstIndex(where: { $0.id == id }) {
-            tasks.remove(at: index)
-        }
+        tasks.removeAll { $0.id == id }
     }
     
-    // 할 일 삭제 (IndexSet을 통한 삭제 - 기존 로직 유지)
     func deleteTask(at offsets: IndexSet) {
-        tasks.remove(atOffsets: offsets)
+        offsets.map { tasks[$0].id }.forEach { deleteTask(id: $0) }
     }
     
-    // 할 일 완료 상태 토글 (추후 체크박스 기능 구현 시 사용)
-    func toggleTask(task: Task) {
-        if let index = tasks.firstIndex(where: { $0.id == task.id }) {
+    func toggleTask(id: UUID) {
+        if let index = tasks.firstIndex(where: { $0.id == id }) {
             tasks[index].isCompleted.toggle()
         }
     }
     
-    // MARK: - 오늘 날짜의 할 일만 필터링
+    // MARK: - 필터링 로직
     var todayTasks: [Task] {
         let calendar = Calendar.current
-        let today = Date()
-        
-        return tasks.filter { task in
-            calendar.isDate(task.date, inSameDayAs: today)
-        }
+        return tasks.filter { calendar.isDate($0.date, inSameDayAs: Date()) }
     }
     
-    // 홈 화면 미리보기용 (오늘 할 일 중 상위 3개)
     var previewTasks: [Task] {
         return Array(todayTasks.prefix(3))
     }
