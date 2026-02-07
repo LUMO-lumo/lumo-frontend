@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SwiftUI
+import SwiftUI 
 import Combine
 import Moya
 
@@ -45,14 +45,7 @@ class HomeViewModel: ObservableObject {
         tasks.append(newTask)
     }
     
-    // 할 일 삭제 (ID를 통한 삭제 추가 - View와의 연동을 위해)
-    func deleteTask(id: UUID) {
-        if let index = tasks.firstIndex(where: { $0.id == id }) {
-            tasks.remove(at: index)
-        }
-    }
-    
-    // 할 일 삭제 (IndexSet을 통한 삭제 - 기존 로직 유지)
+    // 할 일 삭제
     func deleteTask(at offsets: IndexSet) {
         tasks.remove(atOffsets: offsets)
     }
@@ -64,18 +57,8 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    // MARK: - 오늘 날짜의 할 일만 필터링
-    var todayTasks: [Task] {
-        let calendar = Calendar.current
-        let today = Date()
-        
-        return tasks.filter { task in
-            calendar.isDate(task.date, inSameDayAs: today)
-        }
-    }
-    
-    // 홈 화면 미리보기용 (오늘 할 일 중 상위 3개)
+    // 홈 화면 미리보기용 (상위 3개)
     var previewTasks: [Task] {
-        return Array(todayTasks.prefix(3))
+        return Array(tasks.prefix(3))
     }
 }

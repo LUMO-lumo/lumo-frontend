@@ -11,7 +11,6 @@ import Combine
 import Moya
 
 // MARK: - 할 일(Task) 데이터 모델
-// 프로젝트 전체에서 이 정의 하나만 사용합니다. 다른 파일의 Task 정의는 삭제해야 합니다.
 struct Task: Identifiable, Codable {
     var id: UUID = UUID()
     var title: String

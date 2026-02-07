@@ -1,221 +1,210 @@
 //
-//  TodosettingView.swift
+//
+//  TodoSettingView.swift
 //  LUMO_PersonalDev
 //
 //  Created by 육도연 on 1/6/26.
 //
 import SwiftUI
 import Foundation
-import Moya
-import CombineMoya
-import SwiftData
 
 struct TodoSettingView: View {
     @Environment(\.dismiss) var dismiss
-    @ObservedObject var viewModel: HomeViewModel // HomeViewModel 연결
     
-    // [수정] 인라인 수정을 위한 상태 변수
-    // 현재 수정 중인 할 일의 ID를 추적합니다.
-    @State private var editingTaskId: UUID?
+    // 데이터 관리를 위한 메인 뷰모델
+    @ObservedObject var viewModel: HomeViewModel
     
-    // UI 표시용 더미 데이터
-    let days = ["일", "월", "화", "수", "목", "금", "토"]
+    // UI 상태 관리를 위한 전용 뷰모델
+    @StateObject private var vm = TodoSettingViewModel()
     
-    // 달력 날짜 예시 (2025년 12월 기준)
-    let calendarDays: [String] = [
-        "", "1", "2", "3", "4", "5", "6",
-        "7", "8", "9", "10", "11", "12", "13",
-        "14", "15", "16", "17", "18", "19", "20",
-        "21", "22", "23", "24", "25", "26", "27",
-        "28", "29", "30", "31", "", "", ""
-    ]
-    
-    // 메인 테마 색상 (이미지 참고: 코랄/오렌지 계열)
     let themeColor = Color(hex: "E86457")
     
     var body: some View {
         VStack(spacing: 0) {
-            // 1. 헤더 (뒤로가기 + 타이틀)
+            // 1. 헤더
             HStack {
-                Button(action: {
-                    dismiss()
-                }) {
+                Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 20))
                         .foregroundStyle(.gray)
                 }
-                
                 Spacer()
-                
                 Text("오늘의 할 일")
                     .font(.headline)
                     .fontWeight(.bold)
-                
                 Spacer()
-                
-                // 우측 균형을 맞추기 위한 빈 뷰
-                Image(systemName: "chevron.left").opacity(0)
-                    .frame(width: 20)
+                Image(systemName: "chevron.left").opacity(0).frame(width: 20)
             }
             .padding(.horizontal)
             .padding(.top, 10)
-            .padding(.bottom, 20)
+            .padding(.bottom, 15)
             
-            // 전체 콘텐츠 영역
             VStack(alignment: .leading, spacing: 0) {
-                
                 // 2. 년월 표시
-                Text("2025년 12월")
+                Text(vm.monthTitle)
                     .font(.title3)
                     .fontWeight(.bold)
                     .padding(.horizontal, 24)
                     .padding(.bottom, 20)
                 
-                // 3. 캘린더
-                VStack(spacing: 0) {
-                    // 요일 헤더
-                    HStack(spacing: 0) {
-                        ForEach(days, id: \.self) { day in
-                            Text(day)
-                                .font(.caption)
-                                .foregroundStyle(.gray)
-                                .frame(maxWidth: .infinity)
-                        }
-                    }
-                    .padding(.bottom, 10)
-                    .padding(.top, 10)
-                    
-                    // 날짜 그리드
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 20) {
-                        ForEach(Array(calendarDays.enumerated()), id: \.offset) { index, day in
-                            if day.isEmpty {
-                                Text("")
-                            } else {
-                                Text(day)
-                                    .font(.system(size: 16))
-                                    .fontWeight(day == "22" ? .bold : .regular) // 22일 강조
-                                    .foregroundStyle(day == "22" ? .white : .black)
-                                    .frame(width: 32, height: 32)
-                                    .background(
-                                        day == "22"
-                                        ? Circle().fill(themeColor) // 선택된 날짜 배경
-                                        : nil
-                                    )
-                            }
-                        }
-                    }
-                    .padding(.bottom, 20)
-                }
-                .padding(.horizontal, 24)
+                // 3. 캘린더 그리드
+                calendarView
                 
-                
-                // 4. 할 일 리스트 (ViewModel 연결)
-                // 리스트 영역에 높이 제한을 두고 내부 스크롤 적용
-                ScrollView(.vertical, showsIndicators: true) {
-                    VStack(spacing: 12) {
-                        // [수정] Binding($)을 사용하여 데이터 실시간 연동
-                        ForEach($viewModel.tasks) { $task in
-                            TaskRow(
-                                task: $task,
-                                themeColor: themeColor,
-                                isEditing: editingTaskId == task.id,
-                                startEditing: {
-                                    editingTaskId = task.id
-                                },
-                                finishEditing: {
-                                    editingTaskId = nil
-                                },
-                                deleteAction: {
-                                    deleteTask(task)
-                                }
-                            )
-                        }
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 5) // 위아래 살짝 여백
-                }
-                .frame(height: 220) // 약 3개 아이템이 보일 정도의 높이로 고정
+                // 4. 할 일 리스트 영역
+                listView
                 
                 // 5. 작성하기 버튼
                 Button(action: {
-                    // 작성하기 액션
+                    withAnimation {
+                        vm.startCreatingTask()
+                    }
                 }) {
                     Text("작성하기")
                         .font(.headline)
-                        .fontWeight(.bold)
+                        .bold()
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
-                        .background(themeColor)
+                        .background(vm.isCreatingNewTask ? Color.gray : themeColor)
                         .cornerRadius(12)
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 20)
-                
-                Spacer() // 남은 공간 채우기
+                .padding(.bottom, 10)
             }
+            
+            Spacer()
         }
         .navigationBarBackButtonHidden(true)
+        .onTapGesture {
+            vm.cancelNewTask()
+            vm.editingTaskId = nil
+        }
     }
     
-    // 할 일 삭제 함수
-    private func deleteTask(_ task: Task) {
-        if let index = viewModel.tasks.firstIndex(where: { $0.id == task.id }) {
-            // 애니메이션과 함께 삭제
-            withAnimation {
-                _ = viewModel.tasks.remove(at: index)
+    private var calendarView: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                ForEach(vm.days, id: \.self) { day in
+                    Text(day)
+                        .font(.caption)
+                        .foregroundStyle(.gray)
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            .padding(.vertical, 10)
+            
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 20) {
+                ForEach(Array(vm.calendarDays.enumerated()), id: \.offset) { _, day in
+                    if day.isEmpty {
+                        Text("").frame(width: 32, height: 32)
+                    } else {
+                        let isSelected = (day == vm.selectedDay)
+                        Text(day)
+                            .font(.system(size: 16))
+                            .fontWeight(isSelected ? .bold : .regular)
+                            .foregroundStyle(isSelected ? .white : .black)
+                            .frame(width: 32, height: 32)
+                            .background(isSelected ? Circle().fill(themeColor) : nil)
+                            .onTapGesture {
+                                vm.cancelNewTask()
+                                withAnimation(.spring()) {
+                                    vm.selectDay(day)
+                                }
+                            }
+                    }
+                }
+            }
+            .padding(.bottom, 20)
+        }
+        .padding(.horizontal, 24)
+    }
+    
+    private var listView: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.vertical) {
+                VStack(spacing: 12) {
+                    // [수정] ForEach 문법을 최신 SwiftUI 방식으로 간결하게 변경
+                    // $viewModel.tasks를 사용하면 클로저 내부에서 $task라는 Binding을 바로 얻을 수 있습니다.
+                    ForEach($viewModel.tasks) { $task in
+                        TaskRow(
+                            task: $task,
+                            themeColor: themeColor,
+                            isEditing: vm.editingTaskId == task.id,
+                            startEditing: {
+                                vm.cancelNewTask()
+                                vm.editingTaskId = task.id
+                            },
+                            finishEditing: { vm.editingTaskId = nil },
+                            deleteAction: {
+                                viewModel.deleteTask(id: task.id)
+                            }
+                        )
+                    }
+                    
+                    if vm.isCreatingNewTask {
+                        NewTaskRow(
+                            taskTitle: $vm.newTaskTitle,
+                            themeColor: themeColor,
+                            onConfirm: {
+                                vm.addTask { title in
+                                    withAnimation {
+                                        viewModel.addTask(title: title)
+                                    }
+                                }
+                            },
+                            onCancel: { vm.cancelNewTask() }
+                        )
+                        .id("newTaskRow")
+                    }
+                }
+                .padding(.horizontal, 24)
+            }
+            .frame(height: 220)
+            .onChange(of: vm.isCreatingNewTask) { _, newValue in
+                if newValue {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        withAnimation {
+                            proxy.scrollTo("newTaskRow", anchor: .bottom)
+                        }
+                    }
+                }
             }
         }
     }
 }
 
-// [수정] 리스트 아이템 뷰 (인라인 수정 기능 추가)
+// MARK: - 하위 뷰 컴포넌트
+
 struct TaskRow: View {
-    @Binding var task: Task // 데이터 수정을 위해 Binding 사용
+    // Task 타입 충돌 방지를 위해 명시적으로 지정하거나 상위에서 추론하게 둠
+    @Binding var task: Task
     let themeColor: Color
-    
-    let isEditing: Bool          // 현재 수정 모드인지 여부
-    let startEditing: () -> Void // 수정 시작 액션
-    let finishEditing: () -> Void // 수정 완료 액션
-    let deleteAction: () -> Void // 삭제 액션
-    
-    @FocusState private var isFocused: Bool // 텍스트 필드 포커스 제어
+    let isEditing: Bool
+    let startEditing: () -> Void
+    let finishEditing: () -> Void
+    let deleteAction: () -> Void
     
     var body: some View {
         HStack {
             if isEditing {
-                // [수정 모드] TextField 표시
-                TextField("할 일 입력", text: $task.title)
+                TextField("수정", text: $task.title)
                     .font(.subheadline)
-                    .foregroundStyle(.black)
-                    .focused($isFocused) // 포커스 연결
-                    .onSubmit { // 엔터 누르면 저장
-                        finishEditing()
-                    }
+                    .onSubmit { finishEditing() }
             } else {
-                // [일반 모드] Text 표시
                 Text(task.title)
                     .font(.subheadline)
                     .foregroundStyle(.black.opacity(0.8))
             }
-            
             Spacer()
-            
-            // 수정 아이콘 (연필 <-> 체크마크)
             Button(action: {
-                if isEditing {
-                    finishEditing() // 저장(완료)
-                } else {
-                    startEditing() // 수정 시작
-                }
+                if isEditing { finishEditing() } else { startEditing() }
             }) {
                 Image(systemName: "square.and.pencil")
                     .font(.system(size: 16))
-                    .foregroundStyle(isEditing ? themeColor : .gray) // 수정 중일 때 색상 강조
+                    .foregroundStyle(isEditing ? themeColor : .gray)
             }
             .padding(.trailing, 8)
-            
-            // 삭제 아이콘 (휴지통 모양)
             Button(action: deleteAction) {
                 Image(systemName: "trash")
                     .font(.system(size: 16))
@@ -224,18 +213,51 @@ struct TaskRow: View {
         }
         .padding(.vertical, 16)
         .padding(.horizontal, 16)
-        .background(Color(hex: "FFF0EF")) // 리스트 아이템 배경 (연한 핑크)
+        .background(Color(hex: "FFF0EF"))
         .cornerRadius(12)
-        // 수정 모드가 되면 자동으로 포커스 주기
-        .onChange(of: isEditing) { oldValue, newValue in
-            if newValue {
-                isFocused = true
+    }
+}
+
+struct NewTaskRow: View {
+    @Binding var taskTitle: String
+    let themeColor: Color
+    let onConfirm: () -> Void
+    let onCancel: () -> Void
+    
+    @FocusState private var isFocused: Bool
+    
+    var body: some View {
+        HStack {
+            TextField("할 일을 입력하세요", text: $taskTitle)
+                .font(.subheadline)
+                .focused($isFocused)
+                .onSubmit { onConfirm() }
+            
+            Spacer()
+            
+            Button(action: onConfirm) {
+                Image(systemName: "checkmark.square.fill")
+                    .font(.system(size: 16))
+                    .foregroundStyle(themeColor)
             }
+            .padding(.trailing, 8)
+            
+            Button(action: onCancel) {
+                Image(systemName: "trash")
+                    .font(.system(size: 16))
+                    .foregroundStyle(themeColor)
+            }
+        }
+        .padding(.vertical, 16)
+        .padding(.horizontal, 16)
+        .background(Color(hex: "FFF0EF"))
+        .cornerRadius(12)
+        .onAppear {
+            isFocused = true
         }
     }
 }
 
 #Preview {
-   // Preview용 더미 ViewModel 주입
-   TodoSettingView(viewModel: HomeViewModel())
+    TodoSettingView(viewModel: HomeViewModel())
 }
