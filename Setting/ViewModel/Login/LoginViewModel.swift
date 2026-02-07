@@ -1,83 +1,100 @@
 //
-//  LoginViewModel.swift
-//  Lumo
+//    LoginViewModel.swift
+//    Lumo
 //
-//  Created by 김승겸 on 2/2/26.
+//    Created by 김승겸 on 2/2/26.
 //
 
-import Foundation
 import Combine
+import Foundation
+import SwiftData
+
+import Moya
 
 class LoginViewModel: ObservableObject {
     
-    // MARK: - Input (화면 입력값)
+    // MARK: - Properties
+    
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var isAutoLogin: Bool = false
     @Published var rememberEmail: Bool = false
     
-    // MARK: - Output (화면 상태)
-    @Published var errorMessage: String? = nil // 에러 문구
-    @Published var isLoading: Bool = false     // 로딩 중 여부
-    @Published var isLoggedIn: Bool = false    // 로그인 성공 여부 (화면 이동용)
+    @Published var errorMessage: String? = nil
+    @Published var isLoading: Bool = false
+    @Published var isLoggedIn: Bool = false
     
-    // 버튼 활성화 로직 (이메일, 비번 입력 시 true)
+    private let baseURL: String = AppConfig.baseURL
+    
     var isButtonEnabled: Bool {
-        return !email.isEmpty && !password.isEmpty
+        !email.isEmpty && !password.isEmpty
     }
     
-    // MARK: - Business Logic (로그인 함수)
+    private let provider: MoyaProvider<UserTarget> = MoyaProvider()
+    
+    init() {}
+    
+    // MARK: - Action Functions
+    
+    /// 로그인 요청 (POST)
     @MainActor
-    func login() async {
-        guard isButtonEnabled else { return }
+    func userLogin(modelContext: ModelContext) async {
+        guard isButtonEnabled else {
+            return
+        }
         
         isLoading = true
         errorMessage = nil
         
-        let baseURL = AppConfig.baseURL
-        guard let url = URL(string: "\(baseURL)/api/member/login") else { return }
+        let requestBody = LoginRequest(email: email, password: password)
         
-        // Request 생성
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        // Moya 요청
+        let result = await provider.request(.login(request: requestBody))
         
-        let body: [String: String] = [
-            "email": email,
-            "password": password
-        ]
-        
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: body)
-            
-            // 통신 시작
-            let (data, response) = try await URLSession.shared.data(for: request)
-            
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode) else {
-                errorMessage = "서버 오류가 발생했습니다."
-                isLoading = false
-                return
+        switch result {
+        case .success(let response):
+            do {
+                // 성공(200~299)인지 확인
+                _ = try response.filterSuccessfulStatusCodes()
+                
+                let decoded = try response.map(APIResponse.self)
+                
+                if decoded.success {
+                    print("✅ 로그인 성공")
+                    
+                    if let token = decoded.result?.accessToken {
+                        // UserInfo 객체 생성
+                        let userInfo = UserInfo(accessToken: token, refreshToken: nil)
+                        _ = KeychainManager.standard.saveSession(userInfo, for: "userSession")
+                    }
+                    
+                    let user = UserModel(nickname: "LumoUser")
+                    modelContext.insert(user)
+                    
+                    isLoggedIn = true
+                } else {
+                    errorMessage = decoded.message ?? "로그인 실패"
+                }
+            } catch {
+                // 실패(400~500) 처리
+                if let errorData = try? response.map(APIResponse.self) {
+                    errorMessage = errorData.message
+                } else {
+                    errorMessage = "서버 오류가 발생했습니다."
+                }
             }
             
-            // 데이터 디코딩
-            let decodedResponse = try JSONDecoder().decode(LoginResponse.self, from: data)
-            
-            if decodedResponse.success {
-                // 성공: 토큰 저장 및 화면 전환 트리거
-                print("토큰: \(decodedResponse.result?.accessToken ?? "")")
-                // UserDefaults.standard.set(decodedResponse.result?.accessToken, forKey: "accessToken")
-                self.isLoggedIn = true
-            } else {
-                // 실패: 서버 메시지 표시
-                self.errorMessage = decodedResponse.message
-            }
-            
-        } catch {
-            print("에러: \(error)")
-            self.errorMessage = "네트워크 연결을 확인해주세요."
+        case .failure(let error):
+            print("❌ Moya 에러: \(error)")
+            errorMessage = "네트워크 연결을 확인해주세요."
         }
         
         isLoading = false
     }
+}
+
+/// 로그인 요청 바디
+struct LoginRequest: Encodable {
+    let email: String
+    let password: String
 }
