@@ -24,6 +24,9 @@
 		B42F480E2F26FDE60057284E /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = B42F480D2F26FDE60057284E /* ReactiveMoya */; };
 		B42F48102F26FDE60057284E /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = B42F480F2F26FDE60057284E /* RxMoya */; };
 		B44CC1422F363B9F004D19A6 /* UserTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1412F363B9B004D19A6 /* UserTarget.swift */; };
+		B44CC1442F36F4DF004D19A6 /* PWResetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1432F36F4C6004D19A6 /* PWResetViewModel.swift */; };
+		B44CC1462F36F528004D19A6 /* PWResetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1452F36F523004D19A6 /* PWResetView.swift */; };
+		B44CC1482F388D7C004D19A6 /* PWResetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1472F388D73004D19A6 /* PWResetModel.swift */; };
 		B4B4DAA52F2767C400C29EDC /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B4DA9C2F2767C400C29EDC /* AddTaskView.swift */; };
 		B4B4DAA62F2767C400C29EDC /* AddTypeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B4DA9D2F2767C400C29EDC /* AddTypeSheet.swift */; };
 		B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B4DAA22F2767C400C29EDC /* RoutineView.swift */; };
@@ -66,6 +69,9 @@
 		B42F47FC2F26FA600057284E /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		B42F48062F26FAFD0057284E /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
 		B44CC1412F363B9B004D19A6 /* UserTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTarget.swift; sourceTree = "<group>"; };
+		B44CC1432F36F4C6004D19A6 /* PWResetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWResetViewModel.swift; sourceTree = "<group>"; };
+		B44CC1452F36F523004D19A6 /* PWResetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWResetView.swift; sourceTree = "<group>"; };
+		B44CC1472F388D73004D19A6 /* PWResetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWResetModel.swift; sourceTree = "<group>"; };
 		B4B2BD3F2F07C3010036E720 /* Lumo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4B4DA9C2F2767C400C29EDC /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
 		B4B4DA9D2F2767C400C29EDC /* AddTypeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTypeSheet.swift; sourceTree = "<group>"; };
@@ -181,6 +187,7 @@
 		B40A01282F2BD04100687C64 /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				B44CC1452F36F523004D19A6 /* PWResetView.swift */,
 				B4D6420B2F30DB29000B4C08 /* SignUpView.swift */,
 				B4D641FD2F2FA4A7000B4C08 /* LoginView.swift */,
 				B40A01292F2BD22D00687C64 /* LoginSectionView.swift */,
@@ -258,6 +265,7 @@
 		B4D641FF2F302C67000B4C08 /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				B44CC1472F388D73004D19A6 /* PWResetModel.swift */,
 				B4D642052F30CE8B000B4C08 /* SignUpModel.swift */,
 				B4D642002F302C70000B4C08 /* LoginModel.swift */,
 			);
@@ -267,6 +275,7 @@
 		B4D642022F302CCA000B4C08 /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				B44CC1432F36F4C6004D19A6 /* PWResetViewModel.swift */,
 				B4D642032F302CCE000B4C08 /* LoginViewModel.swift */,
 				B4D642072F30CF2E000B4C08 /* SignUpViewModel.swift */,
 			);
@@ -430,13 +439,16 @@
 				B40A012A2F2BD24D00687C64 /* LoginSectionView.swift in Sources */,
 				B40A01162F2BA23D00687C64 /* ProfileSettingView.swift in Sources */,
 				B4B4DAA52F2767C400C29EDC /* AddTaskView.swift in Sources */,
+				B44CC1462F36F528004D19A6 /* PWResetView.swift in Sources */,
 				B4B4DAA62F2767C400C29EDC /* AddTypeSheet.swift in Sources */,
 				B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */,
 				B4B4DAA82F2767C400C29EDC /* RoutineViewModel.swift in Sources */,
+				B44CC1482F388D7C004D19A6 /* PWResetModel.swift in Sources */,
 				B4B4DAA92F2767C400C29EDC /* RoutineModel.swift in Sources */,
 				B4B4DAAA2F2767C400C29EDC /* RoutineCardView.swift in Sources */,
 				B4B4DAAB2F2767C400C29EDC /* RoutineTabBar.swift in Sources */,
 				B4D642062F30CE94000B4C08 /* SignUpModel.swift in Sources */,
+				B44CC1442F36F4DF004D19A6 /* PWResetViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

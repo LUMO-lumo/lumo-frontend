@@ -114,7 +114,7 @@ struct LoginView: View {
                 
                 // 5. 하단 링크 (비밀번호 찾기 | 회원가입)
                 HStack(spacing: 12) {
-                    NavigationLink(destination: Text("비밀번호 찾기")) {
+                    NavigationLink(destination: PWResetView(isTabBarHidden: $isTabBarHidden)) {
                         Text("비밀번호 찾기")
                     }
                     
