@@ -77,9 +77,9 @@
 			path = SoundSetting;
 			sourceTree = "<group>";
 		};
-		415410C32F33AF4A004829D3 /* Network */ = {
+		415410C32F33AF4A004829D3 /* HANetwork */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Network;
+			path = HANetwork;
 			sourceTree = "<group>";
 		};
 		41853A812F11486B00D6CA1C /* Resource */ = {
@@ -144,7 +144,7 @@
 		41853A252F1145F700D6CA1C = {
 			isa = PBXGroup;
 			children = (
-				415410C32F33AF4A004829D3 /* Network */,
+				415410C32F33AF4A004829D3 /* HANetwork */,
 				415410A02F2F9434004829D3 /* SoundSetting */,
 				4154107A2F2738E0004829D3 /* AlarmPart */,
 				41853A812F11486B00D6CA1C /* Resource */,
@@ -188,7 +188,7 @@
 			fileSystemSynchronizedGroups = (
 				4154107A2F2738E0004829D3 /* AlarmPart */,
 				415410A02F2F9434004829D3 /* SoundSetting */,
-				415410C32F33AF4A004829D3 /* Network */,
+				415410C32F33AF4A004829D3 /* HANetwork */,
 				41853A812F11486B00D6CA1C /* Resource */,
 			);
 			name = LUMO_MainDev;

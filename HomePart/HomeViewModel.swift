@@ -38,7 +38,7 @@ class HomeViewModel: ObservableObject {
         self.missionStat = MissionStat(consecutiveDays: 5, monthlyAchievementRate: 0.94)
     }
     
-    // MARK: - 인터랙션 메서드
+    // MARK: - 인터랙션 메서드-------추후에 메서드하고 연결할 예정
     func addTask(title: String) {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedTitle.isEmpty else { return }

@@ -19,11 +19,18 @@ struct TodoSettingView: View {
         VStack(spacing: 0) {
             // 헤더
             HStack {
-                Button(action: { dismiss() }) { Image(systemName: "chevron.left").foregroundStyle(.gray) }
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                    .foregroundStyle(.gray) }
                 Spacer()
-                Text("오늘의 할 일").font(.headline).bold()
+                Text("오늘의 할 일")
+                    .font(.headline)
+                    .bold()
                 Spacer()
-                Image(systemName: "chevron.left").opacity(0)
+                Image(systemName: "chevron.left")
+                    .opacity(0)
             }
             .padding(.horizontal)
             .padding(.top, 10)
@@ -41,9 +48,13 @@ struct TodoSettingView: View {
                 listView
                 
                 Button(action: { withAnimation { vm.startCreatingTask() } }) {
-                    Text("작성하기").font(.headline).bold().foregroundStyle(.white)
-                        .frame(maxWidth: .infinity).padding(.vertical, 16)
-                        .background(Color(hex: "F55641")).cornerRadius(12)
+                    Text("작성하기")
+                        .font(.headline)
+                        .bold().foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(Color(hex: "F55641"))
+                        .cornerRadius(12)
                 }
                 .padding(.horizontal, 24).padding(.vertical, 20)
             }
@@ -66,14 +77,17 @@ struct TodoSettingView: View {
             
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 20) {
                 ForEach(Array(vm.calendarDays.enumerated()), id: \.offset) { _, day in
-                    if day.isEmpty { Spacer().frame(width: 32, height: 32) }
+                    if day.isEmpty { Spacer()
+                        .frame(width: 32, height: 32) }
                     else {
                         let isSelected = (day == vm.selectedDay)
                         Text(day)
                             .font(.system(size: 16))
                             .fontWeight(isSelected ? .bold : .regular)
                             .foregroundStyle(isSelected ? .white : .black)
-                            .frame(width: 32, height: 32).background(isSelected ? Circle().fill(themeColor) : nil)
+                            .frame(width: 32, height: 32)
+                            .background(isSelected ? Circle()
+                                .fill(themeColor) : nil)
                             .onTapGesture { vm.cancelNewTask(); withAnimation { vm.selectDay(day) } }
                     }
                 }

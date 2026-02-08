@@ -158,7 +158,9 @@ struct ToDoSheetView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("전체 할 일").font(.title2).fontWeight(.bold)
+                Text("전체 할 일")
+                    .font(.title2)
+                    .fontWeight(.bold)
                 Spacer()
                 Button("자세히 보기 >") {
                     showSheet = false
@@ -166,6 +168,8 @@ struct ToDoSheetView: View {
                 }
                 .font(.subheadline)
                 .foregroundStyle(Color(hex: "BBC0C7"))
+                .padding(.top, 16)
+                
             }
             .padding([.top, .horizontal], 24)
             .padding(.bottom, 16)
@@ -181,6 +185,7 @@ struct ToDoSheetView: View {
                 }.padding(.horizontal)
             }
         }
+        .background(.white)
     }
 }
 
@@ -209,7 +214,8 @@ struct SheetTaskRow: View {
                     Image(systemName: isEditing ? "checkmark.circle.fill" : "pencil")
                         .foregroundStyle(themeColor)
                 }
-                Button(action: deleteAction) { Image(systemName: "trash").foregroundStyle(themeColor) }
+                Button(action: deleteAction) { Image(systemName: "trash")
+                    .foregroundStyle(themeColor) }
             }
             .padding(.vertical, 16)
             .padding(.horizontal, 16)
