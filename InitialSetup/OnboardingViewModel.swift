@@ -141,7 +141,7 @@ let onboardingData: [OnboardingItem] = [
     OnboardingItem(
         title: "확실하게 깨워주는 진짜 알람",
         description: "마무리 피곤하고 지쳐도 개운하게",
-        imageName: "OnBoardingLogo"
+        imageName: "Logo"
     ),
     OnboardingItem(
         title: "하루의 빛과 모멘텀을 만듭니다",
