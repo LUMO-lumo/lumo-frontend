@@ -167,8 +167,10 @@ struct LoginView: View {
             .onAppear {
                 isTabBarHidden = true
             }
-            .navigationDestination(isPresented: $viewModel.isLoggedIn) {
-                MainView()
+            .onChange(of: viewModel.isLoggedIn) { oldValue, newValue in
+                if newValue {
+                    dismiss() 
+                }
             }
         }
     }

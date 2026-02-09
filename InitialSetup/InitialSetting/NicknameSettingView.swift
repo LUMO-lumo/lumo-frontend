@@ -41,6 +41,10 @@ struct NicknameSettingView: View {
                     .textInputAutocapitalization(.never) // 첫 글자 자동 대문자 방지
                     .disableAutocorrection(true) // 자동 수정 방지
                     .padding(.vertical, 10)
+                    .onChange(of: viewModel.nickname) { _, newValue in
+                        UserDefaults.standard.set(newValue, forKey: "tempNickname")
+                        print("📝 닉네임 입력 중: \(newValue) 저장됨")
+                    }
                 
                 Rectangle()
                     .frame(height: 1)
@@ -59,6 +63,9 @@ struct NicknameSettingView: View {
             }
         }
         .padding(.vertical, 10)
+        .onAppear {
+            UserDefaults.standard.set(viewModel.nickname, forKey: "tempNickname")
+        }
     }
 }
 

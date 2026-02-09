@@ -1,8 +1,8 @@
 //
-//    LoginViewModel.swift
-//    Lumo
+//  LoginViewModel.swift
+//  Lumo
 //
-//    Created by 김승겸 on 2/2/26.
+//  Created by 김승겸 on 2/2/26.
 //
 
 import Combine
@@ -27,7 +27,7 @@ class LoginViewModel: ObservableObject {
     private let baseURL: String = AppConfig.baseURL
     
     var isButtonEnabled: Bool {
-        !email.isEmpty && !password.isEmpty
+        return !email.isEmpty && !password.isEmpty
     }
     
     private let provider: MoyaProvider<UserTarget> = MoyaProvider()
@@ -46,7 +46,10 @@ class LoginViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        let requestBody = LoginRequest(email: email, password: password)
+        let requestBody = LoginRequest(
+            email: email,
+            password: password
+        )
         
         // Moya 요청
         let result = await provider.request(.login(request: requestBody))
@@ -62,14 +65,56 @@ class LoginViewModel: ObservableObject {
                 if decoded.success {
                     print("✅ 로그인 성공")
                     
-                    if let token = decoded.result?.accessToken {
-                        // UserInfo 객체 생성
-                        let userInfo = UserInfo(accessToken: token, refreshToken: nil)
-                        _ = KeychainManager.standard.saveSession(userInfo, for: "userSession")
+                    if let resultData = decoded.result {
+                        
+                        // 1. 토큰 저장 (원본 로직 유지)
+                        if let token = decoded.result?.accessToken {
+                            let userInfo = UserInfo(
+                                accessToken: token,
+                                refreshToken: nil
+                            )
+                            _ = KeychainManager.standard.saveSession(
+                                userInfo,
+                                for: "userSession"
+                            )
+                        }
+                        
+                        // 🔍 [디버깅] 현재 값 확인하기 (로그로 확인해보세요)
+                        let serverNickname = resultData.username
+                        let tempNickname = UserDefaults.standard.string(forKey: "tempNickname")
+                        
+                        print("🌍 서버 닉네임: \(serverNickname ?? "없음")")
+                        print("📱 임시 닉네임: \(tempNickname ?? "없음")")
+                        
+                        // ⭐️ [수정 핵심] 우선순위 변경
+                        // 1순위: 방금 입력한 임시 닉네임 (tempNickname)
+                        // 2순위: 서버에 저장된 닉네임 (serverNickname)
+                        // 3순위: 기본값 ("LumoUser")
+                        let realNickname = tempNickname ?? serverNickname ?? "LumoUser"
+                        
+                        print("✅ 최종 결정된 닉네임: \(realNickname)")
+                        
+                        // 2. 유저 데이터 생성 또는 업데이트
+                        let descriptor = FetchDescriptor<UserModel>()
+                        let existingUsers = try? modelContext.fetch(descriptor)
+                        
+                        if let existingUser = existingUsers?.first {
+                            existingUser.nickname = realNickname
+                            print("♻️ 기존 유저 닉네임 업데이트 완료")
+                        } else {
+                            let newUser = UserModel(nickname: realNickname)
+                            modelContext.insert(newUser)
+                            print("✨ 새 유저 생성 완료")
+                        }
+                        
+                        // 3. SwiftData 저장
+                        try? modelContext.save()
+                        
+                        // [중요] 사용한 임시 닉네임 삭제
+                        // 이 코드가 실행된 후에는 tempNickname이 사라지므로,
+                        // 다음 로그인부터는 서버 값을 따라가게 됩니다. (의도된 동작)
+                        UserDefaults.standard.removeObject(forKey: "tempNickname")
                     }
-                    
-                    let user = UserModel(nickname: "LumoUser")
-                    modelContext.insert(user)
                     
                     isLoggedIn = true
                 } else {
