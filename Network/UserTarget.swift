@@ -33,12 +33,8 @@ enum UserTarget {
     case changePassword(request: ChangePasswordRequest)
 }
 
-extension UserTarget: TargetType {
+extension UserTarget: @MainActor APITargetType {
     
-    // 기본 도메인 주소
-    var baseURL: URL {
-        return URL(string: AppConfig.baseURL)!
-    }
     
     // 각 API의 경로
     var path: String {
@@ -122,10 +118,5 @@ extension UserTarget: TargetType {
         case .login(let request):
             return .requestJSONEncodable(request)
         }
-    }
-    
-    // 헤더 설정
-    var headers: [String: String]? {
-        return ["Content-Type": "application/json"]
     }
 }

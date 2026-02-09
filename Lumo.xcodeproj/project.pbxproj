@@ -27,6 +27,13 @@
 		B44CC1442F36F4DF004D19A6 /* PWResetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1432F36F4C6004D19A6 /* PWResetViewModel.swift */; };
 		B44CC1462F36F528004D19A6 /* PWResetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1452F36F523004D19A6 /* PWResetView.swift */; };
 		B44CC1482F388D7C004D19A6 /* PWResetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1472F388D73004D19A6 /* PWResetModel.swift */; };
+		B44CC14A2F3998A0004D19A6 /* APIManger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1492F39989C004D19A6 /* APIManger.swift */; };
+		B44CC14D2F3998D9004D19A6 /* AccessTokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC14C2F3998C9004D19A6 /* AccessTokenRefresher.swift */; };
+		B44CC14F2F3998EC004D19A6 /* TokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC14E2F3998EA004D19A6 /* TokenProvider.swift */; };
+		B44CC1512F3A21D7004D19A6 /* TokenProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1502F3A21D2004D19A6 /* TokenProviding.swift */; };
+		B44CC1532F3A26AF004D19A6 /* AuthRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1522F3A26AA004D19A6 /* AuthRouter.swift */; };
+		B44CC1552F3A2A33004D19A6 /* APITargetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1542F3A2A2D004D19A6 /* APITargetType.swift */; };
+		B44CC1572F3A39E9004D19A6 /* TokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1562F3A39E2004D19A6 /* TokenResponse.swift */; };
 		B4B4DAA52F2767C400C29EDC /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B4DA9C2F2767C400C29EDC /* AddTaskView.swift */; };
 		B4B4DAA62F2767C400C29EDC /* AddTypeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B4DA9D2F2767C400C29EDC /* AddTypeSheet.swift */; };
 		B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B4DAA22F2767C400C29EDC /* RoutineView.swift */; };
@@ -72,6 +79,13 @@
 		B44CC1432F36F4C6004D19A6 /* PWResetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWResetViewModel.swift; sourceTree = "<group>"; };
 		B44CC1452F36F523004D19A6 /* PWResetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWResetView.swift; sourceTree = "<group>"; };
 		B44CC1472F388D73004D19A6 /* PWResetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWResetModel.swift; sourceTree = "<group>"; };
+		B44CC1492F39989C004D19A6 /* APIManger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManger.swift; sourceTree = "<group>"; };
+		B44CC14C2F3998C9004D19A6 /* AccessTokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenRefresher.swift; sourceTree = "<group>"; };
+		B44CC14E2F3998EA004D19A6 /* TokenProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProvider.swift; sourceTree = "<group>"; };
+		B44CC1502F3A21D2004D19A6 /* TokenProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProviding.swift; sourceTree = "<group>"; };
+		B44CC1522F3A26AA004D19A6 /* AuthRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRouter.swift; sourceTree = "<group>"; };
+		B44CC1542F3A2A2D004D19A6 /* APITargetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITargetType.swift; sourceTree = "<group>"; };
+		B44CC1562F3A39E2004D19A6 /* TokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenResponse.swift; sourceTree = "<group>"; };
 		B4B2BD3F2F07C3010036E720 /* Lumo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4B4DA9C2F2767C400C29EDC /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
 		B4B4DA9D2F2767C400C29EDC /* AddTypeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTypeSheet.swift; sourceTree = "<group>"; };
@@ -178,6 +192,11 @@
 		B40A01262F2BBB7400687C64 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				B44CC1542F3A2A2D004D19A6 /* APITargetType.swift */,
+				B44CC1522F3A26AA004D19A6 /* AuthRouter.swift */,
+				B44CC1502F3A21D2004D19A6 /* TokenProviding.swift */,
+				B44CC14B2F3998C4004D19A6 /* Token */,
+				B44CC1492F39989C004D19A6 /* APIManger.swift */,
 				B44CC1412F363B9B004D19A6 /* UserTarget.swift */,
 				B4D642732F338530000B4C08 /* AppConfig.swift */,
 			);
@@ -216,6 +235,16 @@
 				B42F47FC2F26FA600057284E /* HomeViewModel.swift */,
 			);
 			path = HomePart;
+			sourceTree = "<group>";
+		};
+		B44CC14B2F3998C4004D19A6 /* Token */ = {
+			isa = PBXGroup;
+			children = (
+				B44CC1562F3A39E2004D19A6 /* TokenResponse.swift */,
+				B44CC14E2F3998EA004D19A6 /* TokenProvider.swift */,
+				B44CC14C2F3998C9004D19A6 /* AccessTokenRefresher.swift */,
+			);
+			path = Token;
 			sourceTree = "<group>";
 		};
 		B4B2BD362F07C3010036E720 = {
@@ -415,6 +444,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B4E2848A2F2C864300D8FD4D /* SupportSectionView.swift in Sources */,
+				B44CC1552F3A2A33004D19A6 /* APITargetType.swift in Sources */,
 				B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */,
 				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
 				B42F48072F26FAFD0057284E /* TabBar.swift in Sources */,
@@ -433,7 +463,12 @@
 				B4D642742F338534000B4C08 /* AppConfig.swift in Sources */,
 				B4D642082F30CF33000B4C08 /* SignUpViewModel.swift in Sources */,
 				B4E284872F2C720000D8FD4D /* AdvancedSectionView.swift in Sources */,
+				B44CC1572F3A39E9004D19A6 /* TokenResponse.swift in Sources */,
+				B44CC1532F3A26AF004D19A6 /* AuthRouter.swift in Sources */,
+				B44CC14F2F3998EC004D19A6 /* TokenProvider.swift in Sources */,
 				B44CC1422F363B9F004D19A6 /* UserTarget.swift in Sources */,
+				B44CC14A2F3998A0004D19A6 /* APIManger.swift in Sources */,
+				B44CC14D2F3998D9004D19A6 /* AccessTokenRefresher.swift in Sources */,
 				B4D6420C2F30DB2C000B4C08 /* SignUpView.swift in Sources */,
 				B4E284842F2C52C200D8FD4D /* ProSectionView.swift in Sources */,
 				B40A012A2F2BD24D00687C64 /* LoginSectionView.swift in Sources */,
@@ -441,6 +476,7 @@
 				B4B4DAA52F2767C400C29EDC /* AddTaskView.swift in Sources */,
 				B44CC1462F36F528004D19A6 /* PWResetView.swift in Sources */,
 				B4B4DAA62F2767C400C29EDC /* AddTypeSheet.swift in Sources */,
+				B44CC1512F3A21D7004D19A6 /* TokenProviding.swift in Sources */,
 				B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */,
 				B4B4DAA82F2767C400C29EDC /* RoutineViewModel.swift in Sources */,
 				B44CC1482F388D7C004D19A6 /* PWResetModel.swift in Sources */,
