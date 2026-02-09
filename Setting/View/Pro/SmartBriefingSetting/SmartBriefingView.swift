@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SmartBriefingView: View {
-    @State private var isBriefingEnabled = true
+    @State private var viewModel = SmartBriefingViewModel()
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -34,7 +34,7 @@ struct SmartBriefingView: View {
             }
             
             HStack {
-                Toggle("스마트 브리핑 활성화", isOn: $isBriefingEnabled)
+                Toggle("스마트 브리핑 활성화", isOn: $viewModel.SmartBriefingEnabled)
                     .font(.Subtitle3)
                     .foregroundStyle(Color.gray800)
                     .tint(Color.main300)
@@ -46,6 +46,10 @@ struct SmartBriefingView: View {
         .padding(.top, 20)
         .topNavigationBar(title: "스마트 브리핑")
         .navigationBarHidden(true)
+        .onChange(of: viewModel.SmartBriefingEnabled) { oldValue, newValue in
+            print("토글 상태: \(newValue)")
+            viewModel.updateSmartBriefing(isEnabled: newValue)
+        }
     }
 }
 

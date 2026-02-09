@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AdvancedSettingRequest: Codable {
+struct SettingRequest: Codable {
     var theme: String = "LIGHT"
     var language: String = "KO"
     var batterySaving: Bool = true
@@ -16,4 +16,5 @@ struct AdvancedSettingRequest: Codable {
     var alarmOffMissionDefaultDuration: Int
     var briefingSentence: String = ""
     var briefingVoiceDefaultType: String = "WOMAN"
+    var smartBriefing: Bool = false
 }

@@ -11,7 +11,7 @@ import AlarmKit
 
 @Observable
 class BriefingVoiceViewModel {
-    private let provider = MoyaProvider<AdvancedSettingTarget>()
+    private let provider = MoyaProvider<SettingTarget>()
     var selectedVoice: String = "WOMAN" // UI 반영용
 
     func updateVoice(voice: String) {
