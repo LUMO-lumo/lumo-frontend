@@ -9,13 +9,14 @@ import Foundation
 import Moya
 import Alamofire
 
-enum AdvancedSettingTarget {
+enum SettingTarget {
     case updateSeconds(second: Int)
     case updateTheme(theme: String)
     case updateVoice(voice: String)
+    case smartVoice(smartvoice: Bool)
 }
 
-extension AdvancedSettingTarget: TargetType {
+extension SettingTarget: TargetType {
     var baseURL: URL { return URL(string: "http://13.124.31.129")! } // Swagger 베이스 URL
     var path: String { return "/api/setting" }
     var method: Moya.Method { return .patch }
@@ -31,6 +32,9 @@ extension AdvancedSettingTarget: TargetType {
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
         case .updateVoice(let voice):
             let params: [String: Any] = ["briefingVoiceDefaultType": voice]
+            return .requestParameters(parameters: params, encoding: JSONEncoding.default)
+        case .smartVoice(let smartvoice):
+            let params: [String: Any] = ["smartBriefing": smartvoice]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
         }
         

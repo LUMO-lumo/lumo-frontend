@@ -11,7 +11,7 @@ import AlarmKit
 
 @Observable
 class ScreenThemeSettingViewModel {
-    private let provider = MoyaProvider<AdvancedSettingTarget>()
+    private let provider = MoyaProvider<SettingTarget>()
     var selectedTheme: String = "Light" // UI 반영용
 
     func updateTheme(theme: String) {

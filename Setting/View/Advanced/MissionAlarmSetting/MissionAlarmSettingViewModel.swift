@@ -11,7 +11,7 @@ import AlarmKit
 
 @Observable
 class MissionAlarmSettingViewModel {
-    private let provider = MoyaProvider<AdvancedSettingTarget>()
+    private let provider = MoyaProvider<SettingTarget>()
     var selectedSeconds: Int = 20 // UI 반영용
 
     func updateMissionAlarmTime(seconds: Int) {
