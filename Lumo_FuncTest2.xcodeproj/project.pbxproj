@@ -7,13 +7,18 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		415410D22F34EA2C004829D3 /* Lumo_FuncTest2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumo_FuncTest2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		415411042F34F11E004829D3 /* Lumo_FuncTest2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Lumo_FuncTest2.app; path = "/Users/yookdoyeon/Project/UMC9_Lumo/Lumo_FuncTest2/build/Debug-iphoneos/Lumo_FuncTest2.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		415410D42F34EA2C004829D3 /* Lumo_FuncTest2 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Lumo_FuncTest2;
+			sourceTree = "<group>";
+		};
+		415410E12F34ED7B004829D3 /* AlarmKitDemo */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AlarmKitDemo;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -33,16 +38,8 @@
 			isa = PBXGroup;
 			children = (
 				415410D42F34EA2C004829D3 /* Lumo_FuncTest2 */,
-				415410D32F34EA2C004829D3 /* Products */,
+				415410E12F34ED7B004829D3 /* AlarmKitDemo */,
 			);
-			sourceTree = "<group>";
-		};
-		415410D32F34EA2C004829D3 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				415410D22F34EA2C004829D3 /* Lumo_FuncTest2.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -62,12 +59,13 @@
 			);
 			fileSystemSynchronizedGroups = (
 				415410D42F34EA2C004829D3 /* Lumo_FuncTest2 */,
+				415410E12F34ED7B004829D3 /* AlarmKitDemo */,
 			);
 			name = Lumo_FuncTest2;
 			packageProductDependencies = (
 			);
 			productName = Lumo_FuncTest2;
-			productReference = 415410D22F34EA2C004829D3 /* Lumo_FuncTest2.app */;
+			productReference = 415411042F34F11E004829D3 /* Lumo_FuncTest2.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -95,7 +93,7 @@
 			mainGroup = 415410C92F34EA2C004829D3;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 415410D32F34EA2C004829D3 /* Products */;
+			productRefGroup = 415410C92F34EA2C004829D3;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -251,8 +249,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BF564SQ936;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Lumo-FuncTest2-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -282,8 +282,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BF564SQ936;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Lumo-FuncTest2-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
