@@ -6,9 +6,24 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		34C4EC2B2F3A4F52009DBDC9 /* alex-20sec.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 34C4EC272F3A4DED009DBDC9 /* alex-20sec.mp3 */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		415411042F34F11E004829D3 /* Lumo_FuncTest2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Lumo_FuncTest2.app; path = "/Users/yookdoyeon/Project/UMC9_Lumo/Lumo_FuncTest2/build/Debug-iphoneos/Lumo_FuncTest2.app"; sourceTree = "<absolute>"; };
+		34C4EC0C2F3A4459009DBDC9 /* Lumo_FuncTest2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumo_FuncTest2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		34C4EC272F3A4DED009DBDC9 /* alex-20sec.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "alex-20sec.mp3"; path = "AlarmKitDemo/Lumo_FuncTest2.app/alex-20sec.mp3"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		34C4EC2C2F3A4F55009DBDC9 /* Exceptions for "AlarmKitDemo" folder in "Lumo_FuncTest2" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Resources/alex-20sec.mp3",
+			);
+			target = 415410D12F34EA2C004829D3 /* Lumo_FuncTest2 */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		415410D42F34EA2C004829D3 /* Lumo_FuncTest2 */ = {
@@ -18,6 +33,9 @@
 		};
 		415410E12F34ED7B004829D3 /* AlarmKitDemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				34C4EC2C2F3A4F55009DBDC9 /* Exceptions for "AlarmKitDemo" folder in "Lumo_FuncTest2" target */,
+			);
 			path = AlarmKitDemo;
 			sourceTree = "<group>";
 		};
@@ -37,8 +55,10 @@
 		415410C92F34EA2C004829D3 = {
 			isa = PBXGroup;
 			children = (
+				34C4EC272F3A4DED009DBDC9 /* alex-20sec.mp3 */,
 				415410D42F34EA2C004829D3 /* Lumo_FuncTest2 */,
 				415410E12F34ED7B004829D3 /* AlarmKitDemo */,
+				34C4EC0C2F3A4459009DBDC9 /* Lumo_FuncTest2.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -65,7 +85,7 @@
 			packageProductDependencies = (
 			);
 			productName = Lumo_FuncTest2;
-			productReference = 415411042F34F11E004829D3 /* Lumo_FuncTest2.app */;
+			productReference = 34C4EC0C2F3A4459009DBDC9 /* Lumo_FuncTest2.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -107,6 +127,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34C4EC2B2F3A4F52009DBDC9 /* alex-20sec.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,7 +270,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BF564SQ936;
+				DEVELOPMENT_TEAM = 4HP2RU9G92;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Lumo-FuncTest2-Info.plist";
@@ -263,7 +284,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.testdev.Lumo-FuncTest2";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.testdev.Lumo-FuncTest2-sy";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -282,7 +303,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BF564SQ936;
+				DEVELOPMENT_TEAM = 4HP2RU9G92;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Lumo-FuncTest2-Info.plist";
@@ -296,7 +317,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.testdev.Lumo-FuncTest2";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.testdev.Lumo-FuncTest2-sy";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;

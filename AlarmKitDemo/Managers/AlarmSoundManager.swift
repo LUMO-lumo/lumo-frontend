@@ -4,6 +4,7 @@ import AVFoundation
 import SwiftUI
 import Combine
 import UserNotifications
+import ActivityKit
 
 // MARK: - 빈 Metadata 타입 정의
 // AlarmAttributes에 제네릭으로 전달할 메타데이터입니다. 특별한 데이터가 없으므로 빈 구조체로 정의합니다.
@@ -36,7 +37,8 @@ class AlarmSoundManager: NSObject, ObservableObject {
     // 사용 가능한 사운드 리소스 목록 (Bundle에 포함된 파일명과 일치해야 함)
     let availableSounds = [
         "alexgrohl-burn-the-track-inspiring-rock-trailer-478796",
-        "kornevmusic-epic-478847"
+        "kornevmusic-epic-478847",
+        "alex-20sec"
     ]
     
     // MARK: - 초기화
@@ -176,7 +178,7 @@ class AlarmSoundManager: NSObject, ObservableObject {
         let schedule = Alarm.Schedule.fixed(alarmDate)
         
         let alert = AlarmPresentation.Alert(
-            title: LocalizedStringResource(stringLiteral: alarm.label)
+            title: LocalizedStringResource(stringLiteral: alarm.label),
         )
         
         let presentation = AlarmPresentation(alert: alert)
@@ -190,7 +192,8 @@ class AlarmSoundManager: NSObject, ObservableObject {
         // 잠금상태일 때 알람이 울리는 기본 기능 구현
         let config = AlarmManager.AlarmConfiguration<EmptyAlarmMetadata>.alarm(
             schedule: schedule,
-            attributes: attributes
+            attributes: attributes,
+            sound: .named("alex-20sec.mp3")
         )
         
         let alarmId = UUID()
@@ -218,6 +221,13 @@ class AlarmSoundManager: NSObject, ObservableObject {
     // MARK: - Local Notification 등록
     // 잠금화면에서 울리게 하는 함수
     private func scheduleLocalNotification(for alarm: AlarmModel, at date: Date) async {
+        
+        if let path = Bundle.main.path(forResource: "alex-20sec", ofType: "mp3") {
+            print("✅ 파일 찾음! 경로: \(path)")
+        } else {
+            print("❌ 파일 못 찾음! (파일명이나 Target Membership 문제)")
+        }
+        
         //위젯으로 알람이 오게 하는 부분
         let content = UNMutableNotificationContent()
         content.title = "⏰ 알람"
@@ -228,6 +238,11 @@ class AlarmSoundManager: NSObject, ObservableObject {
         
         // Critical Alert: 무음 모드 무시 (권한 필요, 여기서는 timeSensitive로 설정)
         content.interruptionLevel = .timeSensitive
+        
+        let soundFileName = "\(alarm.soundName).mp3"
+            
+            // 시스템에게 "이 파일 틀어줘"라고 명령
+            content.sound = UNNotificationSound(named: UNNotificationSoundName("alex-20sec.mp3"))
         
         // 정확한 날짜/시간에 트리거 설정
         let calendar = Calendar.current
@@ -382,32 +397,47 @@ class AlarmSoundManager: NSObject, ObservableObject {
 // MARK: - UNUserNotificationCenterDelegate 구현
 extension AlarmSoundManager: UNUserNotificationCenterDelegate {
     
-    // 1. 앱이 실행 중(포그라운드)일 때 알림이 오면 호출됩니다.
+    // 1. 앱이 켜져있을 때 (포그라운드)
     nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
-        // 상단 배너 표시 및 기본 사운드 재생 허용
-        completionHandler([.banner, .sound, .badge])
+        completionHandler([.banner, .badge])
         
-        // 중요: 여기서 AVAudioPlayer를 통해 커스텀 사운드(mp3)를 무한 반복 재생합니다.
         Task { @MainActor in
-            // 알람 객체를 찾아서 해당 사운드 재생 (여기서는 단순화를 위해 첫 번째 사운드 또는 기본값 사용)
-            let soundName = self.alarms.first?.soundName ?? "alexgrohl-burn-the-track-inspiring-rock-trailer-478796"
-            self.playCustomAlarmSound(soundName: soundName)
+            // 알림 ID와 일치하는 알람을 찾아서 그 알람의 설정된 소리를 재생
+            let reqId = notification.request.identifier
+            if let alarm = AlarmSoundManager.shared.alarms.first(where: { $0.id.uuidString == reqId }) {
+                AlarmSoundManager.shared.playCustomAlarmSound(soundName: alarm.soundName)
+            } else {
+                // 못 찾으면 기본값
+                AlarmSoundManager.shared.playCustomAlarmSound(soundName: "alex-20sec")
+            }
         }
     }
     
-    // 2. 사용자가 알림 배너를 탭했거나, 백그라운드에서 포그라운드로 올 때 호출됩니다.
+    // 2. 알림 배너를 눌렀을 때 (백그라운드 -> 앱 진입)
     nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        // 알림을 탭하고 들어오면 알람을 끕니다. (원하는 로직에 따라 변경 가능)
         Task { @MainActor in
-            self.stopAlarmSound()
+            print("📱 알림 탭 -> 앱 열림: 사운드 계속 재생")
+            
+            // 1. 알림 ID 확인
+            let reqId = response.notification.request.identifier
+            
+            // 2. 저장된 알람 목록에서 ID가 같은 녀석을 찾음
+            let matchingAlarm = AlarmSoundManager.shared.alarms.first(where: { $0.id.uuidString == reqId })
+            
+            // 3. 그 알람의 소리 이름 가져오기 (없으면 기본값)
+            let soundName = matchingAlarm?.soundName ?? "alex-20sec"
+            
+            // 4. 재생
+            AlarmSoundManager.shared.isAlarmPlaying = true
+            AlarmSoundManager.shared.playCustomAlarmSound(soundName: soundName)
         }
         completionHandler()
     }
