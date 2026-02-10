@@ -14,7 +14,7 @@ struct AdvancedSectionView: View {
                 .foregroundStyle(Color.primary)
             
             
-            NavigationLink(destination: Text("화면 테마 설정")) {
+            NavigationLink(destination: ScreenThemeSettingView()) {
                 HStack {
                     Text("화면 테마")
                         .font(.Body1)
@@ -27,7 +27,7 @@ struct AdvancedSectionView: View {
                 }
             }
             
-            NavigationLink(destination: Text("미션 알람 설정")) {
+            NavigationLink(destination: MissionAlarmSettingView()) {
                 HStack {
                     Text("미션 알람 설정")
                         .font(.Body1)
@@ -40,7 +40,7 @@ struct AdvancedSectionView: View {
                 }
             }
             
-            NavigationLink(destination: Text("브리핑 목소리 설정")) {
+            NavigationLink(destination: BriefingVoiceView()) {
                 HStack {
                     Text("브리핑 목소리 설정")
                         .font(.Body1)

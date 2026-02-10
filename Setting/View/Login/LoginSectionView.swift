@@ -29,6 +29,7 @@ struct LoginSectionView: View {
                 .frame(width: 42, height: 42)
                 .foregroundStyle(Color.gray300)
             
+<<<<<<< HEAD
             // 2. 텍스트 및 이동 로직 분기
             if let user = user, isLoggedIn {
                 // 로그인 된 경우: 닉네임 표시
@@ -54,6 +55,21 @@ struct LoginSectionView: View {
                     }
                 }
             }
+=======
+            
+//            NavigationLink(destination: LoginView()) {
+//                HStack {
+//                    Text("로그인이 필요해요")
+//                        .font(.Subtitle2)
+//                        .foregroundStyle(Color.primary)
+//                    
+//                    Spacer()
+//                    
+//                    Image("chevronRight")
+//                        .foregroundStyle(Color.gray500)
+//                }
+//            }
+>>>>>>> origin/test/merge-check
         }
         .padding(.top, 9)
     }

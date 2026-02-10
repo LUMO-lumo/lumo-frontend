@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		348C8B622F345FF000C384BC /* BriefingVoiceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348C8B612F345FF000C384BC /* BriefingVoiceViewModel.swift */; };
+		348C8B642F345FF700C384BC /* BriefingVoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348C8B632F345FF700C384BC /* BriefingVoiceView.swift */; };
+		348C8B672F3463CD00C384BC /* SmartBriefingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348C8B662F3463CD00C384BC /* SmartBriefingView.swift */; };
+		34A2B45E2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */; };
+		34A2B4602F318E1700F3B9A8 /* SettingTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B45F2F318E1700F3B9A8 /* SettingTarget.swift */; };
+		34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */; };
+		34A2B4F72F31C30D00F3B9A8 /* SettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */; };
+		34A2B4F92F31C38B00F3B9A8 /* ScreenThemeSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4F82F31C38B00F3B9A8 /* ScreenThemeSettingView.swift */; };
+		34A2B4FB2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4FA2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift */; };
+		34A2B4FE2F31C53B00F3B9A8 /* TopNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4FD2F31C53B00F3B9A8 /* TopNavigationBar.swift */; };
+		34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */; };
 		B40A01162F2BA23D00687C64 /* ProfileSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40A01152F2BA14000687C64 /* ProfileSettingView.swift */; };
 		B40A01182F2BB03300687C64 /* SettingAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B40A01172F2BB03300687C64 /* SettingAssets.xcassets */; };
 		B40A012A2F2BD24D00687C64 /* LoginSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40A01292F2BD22D00687C64 /* LoginSectionView.swift */; };
@@ -63,6 +74,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		348C8B612F345FF000C384BC /* BriefingVoiceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BriefingVoiceViewModel.swift; sourceTree = "<group>"; };
+		348C8B632F345FF700C384BC /* BriefingVoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BriefingVoiceView.swift; sourceTree = "<group>"; };
+		348C8B662F3463CD00C384BC /* SmartBriefingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBriefingView.swift; sourceTree = "<group>"; };
+		34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingView.swift; sourceTree = "<group>"; };
+		34A2B45F2F318E1700F3B9A8 /* SettingTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTarget.swift; sourceTree = "<group>"; };
+		34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingViewModel.swift; sourceTree = "<group>"; };
+		34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModel.swift; sourceTree = "<group>"; };
+		34A2B4F82F31C38B00F3B9A8 /* ScreenThemeSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenThemeSettingView.swift; sourceTree = "<group>"; };
+		34A2B4FA2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenThemeSettingViewModel.swift; sourceTree = "<group>"; };
+		34A2B4FD2F31C53B00F3B9A8 /* TopNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopNavigationBar.swift; sourceTree = "<group>"; };
+		34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBriefingViewModel.swift; sourceTree = "<group>"; };
 		B40A01152F2BA14000687C64 /* ProfileSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingView.swift; sourceTree = "<group>"; };
 		B40A01172F2BB03300687C64 /* SettingAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SettingAssets.xcassets; sourceTree = "<group>"; };
 		B40A01292F2BD22D00687C64 /* LoginSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSectionView.swift; sourceTree = "<group>"; };
@@ -149,13 +171,59 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		348C8B602F345FDD00C384BC /* BriefingVoiceSetting */ = {
+			isa = PBXGroup;
+			children = (
+				348C8B612F345FF000C384BC /* BriefingVoiceViewModel.swift */,
+				348C8B632F345FF700C384BC /* BriefingVoiceView.swift */,
+			);
+			path = BriefingVoiceSetting;
+			sourceTree = "<group>";
+		};
+		348C8B652F3463C100C384BC /* SmartBriefingSetting */ = {
+			isa = PBXGroup;
+			children = (
+				348C8B662F3463CD00C384BC /* SmartBriefingView.swift */,
+				34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */,
+			);
+			path = SmartBriefingSetting;
+			sourceTree = "<group>";
+		};
+		34A2B3C92F317E9700F3B9A8 /* MissionAlarmSetting */ = {
+			isa = PBXGroup;
+			children = (
+				34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */,
+				34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */,
+			);
+			path = MissionAlarmSetting;
+			sourceTree = "<group>";
+		};
+		34A2B4F52F31C29800F3B9A8 /* ScreenThemeSetting */ = {
+			isa = PBXGroup;
+			children = (
+				34A2B4F82F31C38B00F3B9A8 /* ScreenThemeSettingView.swift */,
+				34A2B4FA2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift */,
+			);
+			path = ScreenThemeSetting;
+			sourceTree = "<group>";
+		};
+		34A2B4FC2F31C52200F3B9A8 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				34A2B4FD2F31C53B00F3B9A8 /* TopNavigationBar.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		B40A01112F2B921500687C64 /* Setting */ = {
 			isa = PBXGroup;
 			children = (
-				B40A01132F2B923800687C64 /* Model */,
+				34A2B4FC2F31C52200F3B9A8 /* Components */,
 				B40A01142F2B923E00687C64 /* ViewModel */,
+				B40A01132F2B923800687C64 /* Model */,
 				B40A01122F2B923100687C64 /* View */,
 				B40A01172F2BB03300687C64 /* SettingAssets.xcassets */,
+				34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */,
 			);
 			path = Setting;
 			sourceTree = "<group>";
@@ -176,7 +244,6 @@
 		B40A01132F2B923800687C64 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				B4D641FF2F302C67000B4C08 /* Login */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -184,7 +251,6 @@
 		B40A01142F2B923E00687C64 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				B4D642022F302CCA000B4C08 /* Login */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -199,6 +265,8 @@
 				B44CC1492F39989C004D19A6 /* APIManger.swift */,
 				B44CC1412F363B9B004D19A6 /* UserTarget.swift */,
 				B4D642732F338530000B4C08 /* AppConfig.swift */,
+				B40A01252F2BBB7400687C64 /* APIManager.swift */,
+				34A2B45F2F318E1700F3B9A8 /* SettingTarget.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -314,6 +382,7 @@
 		B4E284822F2C529300D8FD4D /* Pro */ = {
 			isa = PBXGroup;
 			children = (
+				348C8B652F3463C100C384BC /* SmartBriefingSetting */,
 				B4E284832F2C52BD00D8FD4D /* ProSectionView.swift */,
 			);
 			path = Pro;
@@ -322,6 +391,9 @@
 		B4E284852F2C71DC00D8FD4D /* Advanced */ = {
 			isa = PBXGroup;
 			children = (
+				348C8B602F345FDD00C384BC /* BriefingVoiceSetting */,
+				34A2B4F52F31C29800F3B9A8 /* ScreenThemeSetting */,
+				34A2B3C92F317E9700F3B9A8 /* MissionAlarmSetting */,
 				B4E284862F2C71F900D8FD4D /* AdvancedSectionView.swift */,
 			);
 			path = Advanced;
@@ -445,13 +517,13 @@
 			files = (
 				B4E2848A2F2C864300D8FD4D /* SupportSectionView.swift in Sources */,
 				B44CC1552F3A2A33004D19A6 /* APITargetType.swift in Sources */,
+				34A2B4F72F31C30D00F3B9A8 /* SettingModel.swift in Sources */,
 				B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */,
 				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
+				34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */,
 				B42F48072F26FAFD0057284E /* TabBar.swift in Sources */,
 				B42F47FE2F26FA600057284E /* TodoSettingView.swift in Sources */,
 				B42F47FF2F26FA600057284E /* TodoSettingViewModel.swift in Sources */,
-				B4D642012F302C75000B4C08 /* LoginModel.swift in Sources */,
-				B4D642042F302CD5000B4C08 /* LoginViewModel.swift in Sources */,
 				B42F48002F26FA600057284E /* HomeModel.swift in Sources */,
 				B42F48012F26FA600057284E /* TodoSettingModel.swift in Sources */,
 				B42F48022F26FA600057284E /* HomeView.swift in Sources */,
@@ -459,6 +531,7 @@
 				B4D6420E2F30E384000B4C08 /* KeychainManager.swift in Sources */,
 				B42F48032F26FA600057284E /* HomeViewModel.swift in Sources */,
 				B4FD5F2E2F17DEE80022CF67 /* LumoApp.swift in Sources */,
+				34A2B45E2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift in Sources */,
 				B4E2848D2F2CA3FC00D8FD4D /* ETCSectionView.swift in Sources */,
 				B4D642742F338534000B4C08 /* AppConfig.swift in Sources */,
 				B4D642082F30CF33000B4C08 /* SignUpViewModel.swift in Sources */,
@@ -470,17 +543,26 @@
 				B44CC14A2F3998A0004D19A6 /* APIManger.swift in Sources */,
 				B44CC14D2F3998D9004D19A6 /* AccessTokenRefresher.swift in Sources */,
 				B4D6420C2F30DB2C000B4C08 /* SignUpView.swift in Sources */,
+				348C8B642F345FF700C384BC /* BriefingVoiceView.swift in Sources */,
 				B4E284842F2C52C200D8FD4D /* ProSectionView.swift in Sources */,
 				B40A012A2F2BD24D00687C64 /* LoginSectionView.swift in Sources */,
 				B40A01162F2BA23D00687C64 /* ProfileSettingView.swift in Sources */,
+				34A2B4602F318E1700F3B9A8 /* SettingTarget.swift in Sources */,
 				B4B4DAA52F2767C400C29EDC /* AddTaskView.swift in Sources */,
 				B44CC1462F36F528004D19A6 /* PWResetView.swift in Sources */,
 				B4B4DAA62F2767C400C29EDC /* AddTypeSheet.swift in Sources */,
 				B44CC1512F3A21D7004D19A6 /* TokenProviding.swift in Sources */,
+				34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */,
+				B4B4DAA62F2767C400C29EDC /* AddTypeSheet.swift in Sources */,
+				348C8B622F345FF000C384BC /* BriefingVoiceViewModel.swift in Sources */,
+				34A2B4F92F31C38B00F3B9A8 /* ScreenThemeSettingView.swift in Sources */,
+				34A2B4FE2F31C53B00F3B9A8 /* TopNavigationBar.swift in Sources */,
+				34A2B4FB2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift in Sources */,
 				B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */,
 				B4B4DAA82F2767C400C29EDC /* RoutineViewModel.swift in Sources */,
 				B44CC1482F388D7C004D19A6 /* PWResetModel.swift in Sources */,
 				B4B4DAA92F2767C400C29EDC /* RoutineModel.swift in Sources */,
+				348C8B672F3463CD00C384BC /* SmartBriefingView.swift in Sources */,
 				B4B4DAAA2F2767C400C29EDC /* RoutineCardView.swift in Sources */,
 				B4B4DAAB2F2767C400C29EDC /* RoutineTabBar.swift in Sources */,
 				B4D642062F30CE94000B4C08 /* SignUpModel.swift in Sources */,

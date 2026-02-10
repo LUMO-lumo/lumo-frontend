@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct ETCSectionView: View {
+<<<<<<< HEAD
     
     @Binding var isTabBarHidden: Bool
     
@@ -21,6 +22,11 @@ struct ETCSectionView: View {
     private var isLoggedIn: Bool {
         user != nil && KeychainManager.standard.loadSession(for: "userSession") != nil
     }
+=======
+    // 로그아웃 상태 관리 (필요시 바인딩으로 연결)
+    @State private var isLoggedIn: Bool = true
+    @State private var LogoutAlert = false
+>>>>>>> origin/test/merge-check
     
     var body: some View {
         HStack(spacing: 30) {
@@ -37,6 +43,7 @@ struct ETCSectionView: View {
                     .foregroundStyle(Color.gray)
             }
             
+<<<<<<< HEAD
             // 상태에 따라 버튼(로그아웃) vs 링크(로그인) 분기
             if isLoggedIn {
                 // 로그인 상태 -> 로그아웃 버튼
@@ -60,11 +67,31 @@ struct ETCSectionView: View {
                         .foregroundStyle(Color.main300)
                         .underline()
                 }
+=======
+            Button(action: {
+                LogoutAlert = true
+                print("로그아웃 탭")
+            }) {
+                Text(isLoggedIn ? "로그아웃" : "로그인")
+                    .font(.Body2)
+                    .foregroundStyle(Color.main300)
+                    .underline()
+>>>>>>> origin/test/merge-check
             }
+        }
+        .alert("로그아웃 하시겠어요?", isPresented: $LogoutAlert) {
+                Button("아니요", role: .cancel) { }
+                Button("네") {
+                    print("로그아웃 시도")
+                }
+            } message: {
+                Text("로그아웃 상태에서 이용 시 개인정보가 저장되지 않아요. 저장하려면 로그인해주세요.")
+                    .font(.Body3)
         }
         .frame(maxWidth: .infinity)
     }
     
+<<<<<<< HEAD
     /// 로그아웃 처리
     private func logout(user: UserModel) {
         // 1. 키체인에서 토큰 삭제
@@ -75,6 +102,8 @@ struct ETCSectionView: View {
         
         print("로그아웃 완료: 데이터 삭제됨")
     }
+=======
+>>>>>>> origin/test/merge-check
 }
 
 #Preview {
