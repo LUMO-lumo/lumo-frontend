@@ -8,7 +8,13 @@
 import SwiftUI
 
 struct OnBoardingView: View {
+    @Environment(OnboardingViewModel.self) var viewModel
     @State private var PageNumber = 0
+
+    let coralOrange = Color(hex: "F55641")
+    let corallightGray = Color(hex: "DDE1E8")
+    let coradeepGray = Color(hex: "979DA7")
+
     
     var body: some View {
         ZStack {
@@ -68,14 +74,14 @@ struct OnBoardingView: View {
         }
     }
     
-//기능적으로 확인을 하는 부분
+    //기능적으로 확인을 하는 부분
     private func handleButtonTap() {
         if PageNumber < onboardingData.count - 1 {
             withAnimation {
                 PageNumber += 1
             }
         } else {
-            print("온보딩 완료!")
+            viewModel.path.append(OnboardingStep.initialSetup)
         }
     }
 }
@@ -89,7 +95,7 @@ struct OnboardingFirstPageView: View {
             Spacer()
             
             VStack(spacing: 24) {
-
+                
                 
                 Image(item.imageName)
                     .resizable()
@@ -103,7 +109,7 @@ struct OnboardingFirstPageView: View {
                     .tracking(2)
                 
                 
-  
+                
                 VStack(spacing: 8) {
                     Text(item.title)
                         .font(.system(size: 24, weight: .bold))
@@ -154,7 +160,7 @@ struct OnboardingPageView: View {
                     .scaledToFit()
                     .frame(maxHeight: 400)
                     .padding(.horizontal, 20)
-  
+                
             }
             
             Spacer()

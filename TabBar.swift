@@ -10,10 +10,16 @@ import Foundation
 import SwiftData
 import PhotosUI
 
-// MARK: - [핵심] 앱의 새로운 시작점 (MainView)
+
+// MARK: - 앱의 시작점
 struct MainView: View {
     // 현재 선택된 탭 (0: 홈, 1: 알람, 2: 루틴, 3: 설정)
+    
+    @Environment(OnboardingViewModel.self) var viewModel
     @State private var selectedTab = 0
+    
+    // 탭바 숨김 여부를 관리하는 변수
+    @State private var isTabBarHidden: Bool = false
     var body: some View {
         ZStack(alignment: .bottom) {
             Group {
@@ -21,23 +27,22 @@ struct MainView: View {
                 case 0:
                     HomeView()
                 case 1:
-                    AlarmMenuView()
+
+                    Text(" 알람 파트")
                 case 2:
-                    Text("루틴 화면") // 나중에 RoutineView()로 교체
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.white)
+                    RoutineView(isTabBarHidden: $isTabBarHidden)
                 case 3:
-                    Text("설정 화면") // 나중에 SettingView()로 교체
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.white)
+                    ProfileSettingView(isTabBarHidden: $isTabBarHidden)
                 default:
                     EmptyView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            // 2. 커스텀 탭바 (화면 하단에 고정)
-            CustomTabBar(selectedTab: $selectedTab)
+
+          if !isTabBarHidden {
+              CustomTabBar(selectedTab: $selectedTab)
+            }
         }
         .ignoresSafeArea(.keyboard) // 키보드 올라올 때 탭바 찌그러짐 방지
     }
