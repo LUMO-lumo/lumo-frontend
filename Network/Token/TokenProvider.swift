@@ -107,4 +107,24 @@ class TokenProvider: TokenProviding {
             }
         }
     }
+    
+    func refreshToken() async throws -> Bool {
+            // 'withCheckedThrowingContinuation'은 클로저 방식을 async 방식으로 바꿔줍니다.
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                // 기존에 만들어둔 함수를 호출합니다.
+                self.refreshToken { newToken, error in
+                    if let error = error {
+                        // 실패하면 에러를 던집니다.
+                        continuation.resume(throwing: error)
+                    } else if newToken != nil {
+                        // 토큰이 있으면 성공(true)을 반환합니다.
+                        continuation.resume(returning: true)
+                    } else {
+                        // 에러도 없고 토큰도 없는 이상한 경우 처리
+                        continuation.resume(throwing: NSError(domain: "LumoError", code: -999, userInfo: [NSLocalizedDescriptionKey: "Unknown Error"]))
+                    }
+                }
+            }
+        }
 }

@@ -190,50 +190,49 @@ struct AlarmChange: View {
             viewModel.requestNotificationPermission()
         }
     }
-}
-
-struct MissionButton: View {
-    let title: String
-    let imageName: String
-    let isSelected: Bool
-    let action: () -> Void
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 8) {
-                ZStack {
-                    Circle()
-                        .fill(isSelected ? Color(hex: "FF8C68").opacity(0.1) : Color.gray.opacity(0.1))
-                        .frame(width: 50, height: 50)
-                    Image(imageName)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 30, height: 30)
-                        .opacity(isSelected ? 1.0 : 0.4)
+    
+    struct MissionButton: View {
+        let title: String
+        let imageName: String
+        let isSelected: Bool
+        let action: () -> Void
+        var body: some View {
+            Button(action: action) {
+                VStack(spacing: 8) {
+                    ZStack {
+                        Circle()
+                            .fill(isSelected ? Color(hex: "FF8C68").opacity(0.1) : Color.gray.opacity(0.1))
+                            .frame(width: 50, height: 50)
+                        Image(imageName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 30, height: 30)
+                            .opacity(isSelected ? 1.0 : 0.4)
+                    }
+                    Text(title)
+                        .font(.system(size: 12))
+                        .foregroundStyle(isSelected ? .black : .gray)
                 }
-                Text(title)
-                    .font(.system(size: 12))
-                    .foregroundStyle(isSelected ? .black : .gray)
+            }
+        }
+    }
+    
+    struct DayButton: View {
+        let text: String
+        let isSelected: Bool
+        let action: () -> Void
+        var body: some View {
+            Button(action: action) {
+                Text(text)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(isSelected ? .white : .gray)
+                    .frame(width: 36, height: 36)
+                    .background(isSelected ? Color(hex: "F55641") : Color(hex: "F2F4F7"))
+                    .clipShape(Circle())
             }
         }
     }
 }
-
-struct DayButton: View {
-    let text: String
-    let isSelected: Bool
-    let action: () -> Void
-    var body: some View {
-        Button(action: action) {
-            Text(text)
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(isSelected ? .white : .gray)
-                .frame(width: 36, height: 36)
-                .background(isSelected ? Color(hex: "F55641") : Color(hex: "F2F4F7"))
-                .clipShape(Circle())
-        }
-    }
-}
-
 #Preview {
     AlarmChange(alarm: Alarm.dummyData[0])
 }

@@ -22,7 +22,7 @@ extension SettingTarget: TargetType {
     var method: Moya.Method { return .patch }
 
     // alarmOffMissionDefaultDuration, theme 항목 수정
-    var task: Task {
+    var task:  Moya.Task {
         switch self {
         case .updateSeconds(let second):
             let params: [String: Any] = ["alarmOffMissionDefaultDuration": second]
@@ -41,7 +41,7 @@ extension SettingTarget: TargetType {
     }
     
     var headers: [String : String]? {
-        return ["Content-Type": "application/json",
-                "Authorization": ""]
+        return ["Content-Type": "application/json"
+                ]
     }
 }

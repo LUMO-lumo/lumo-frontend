@@ -16,10 +16,10 @@ struct EmptyAlarmMetadata: AlarmMetadata, Codable, Hashable {
     struct ContentState: Codable, Hashable {}
 }
 
+@MainActor
 final class AlarmKitManager {
     
     static let shared = AlarmKitManager()
-    private let alarmManager = AlarmManager.shared
     
     private init() {}
     
@@ -55,7 +55,7 @@ final class AlarmKitManager {
             attributes: attributes
         )
         
-        _ = try await alarmManager.schedule(id: alarm.id, configuration: config)
+        _ = try await AlarmManager.shared.schedule(id: alarm.id, configuration: config)
         print("✅ [AlarmKit] 등록 완료. 시간: \(nextAlarmDate), 사운드: \(alarm.soundName)")
         
         // --- [B] Local Notification 등록 (사운드 포함) ---
@@ -63,7 +63,7 @@ final class AlarmKitManager {
     }
     
     func removeAlarm(id: UUID) async {
-        try? alarmManager.cancel(id: id)
+        try? AlarmManager.shared.cancel(id: id)
         
         let center = UNUserNotificationCenter.current()
         var identifiersToRemove = [id.uuidString]

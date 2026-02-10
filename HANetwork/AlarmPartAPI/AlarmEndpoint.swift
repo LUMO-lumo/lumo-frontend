@@ -9,7 +9,7 @@ import Foundation
 import Moya
 import Alamofire
 
-enum AlarmEndpoint: MainEndpoint {
+enum AlarmEndpoint: @MainActor MainEndpoint {
     
     // MARK: - Cases
     

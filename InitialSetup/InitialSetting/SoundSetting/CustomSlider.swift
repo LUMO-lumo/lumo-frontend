@@ -1,8 +1,8 @@
 //
 //  CustomSlider.swift
-//  Lumo
+//  LUMO_MainDev
 //
-//  Created by 김승겸 on 2/1/26.
+//  Created by 육도연 on 2/1/26.
 //
 
 import SwiftUI

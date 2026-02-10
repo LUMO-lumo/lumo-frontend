@@ -10,7 +10,7 @@ import Moya
 import Alamofire
 
 
-enum HomeEndpoint: MainEndpoint {
+enum HomeEndpoint: @MainActor MainEndpoint {
     case getHomeInfo
 
     var path: String { "/api/home" }

@@ -30,7 +30,7 @@ extension AuthRouter: @MainActor APITargetType {
         }
     }
     
-    var task: Task {
+    var task: Moya.Task {
         switch self {
         case .sendRefreshToken:
             return .requestPlain

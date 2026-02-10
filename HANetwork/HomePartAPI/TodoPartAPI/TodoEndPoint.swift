@@ -10,7 +10,7 @@ import Moya
 import Alamofire
 
 
-enum TodoEndpoint: MainEndpoint {
+enum TodoEndpoint: @MainActor MainEndpoint {
     case fetchTodoList(date: String)
     case createTodo(date: String, content: String)
     case deleteTodo(id: Int)

@@ -71,7 +71,7 @@ extension UserTarget: @MainActor APITargetType {
     }
     
     // 데이터 전송 방식 (QueryString vs JSON Body)
-    var task: Task {
+    var task: Moya.Task {
         switch self {
             // GET 방식 - 쿼리 파라미터
         case .checkEmailDuplicate(let email):

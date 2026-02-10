@@ -14,6 +14,6 @@ protocol TokenProviding {
     var accessToken: String? { get set }
     
     /// 토큰 갱신 요청
-    /// - Parameter completion: 갱신된 토큰 또는 에러를 반환하는 클로저
     func refreshToken(completion: @escaping (String?, Error?) -> Void)
+    func refreshToken() async throws -> Bool
 }

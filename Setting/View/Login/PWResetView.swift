@@ -127,8 +127,7 @@ struct PWResetView: View {
             Spacer()
             
             Button(action: {
-                Task {
-                    // ✅ 변경된 함수명 적용
+                _Concurrency.Task{ // ✅ 변경된 함수명 적용
                     await viewModel.userRequestAuthCode()
                 }
             }) {
@@ -186,7 +185,7 @@ struct PWResetView: View {
             HStack {
                 Spacer()
                 Button(action: {
-                    Task {
+                    _Concurrency.Task {
                         // ✅ 변경된 함수명 적용 (재전송)
                         await viewModel.userRequestAuthCode()
                     }
@@ -203,7 +202,7 @@ struct PWResetView: View {
             Spacer()
             
             Button(action: {
-                Task {
+                _Concurrency.Task {
                     // ✅ 변경된 함수명 적용
                     await viewModel.userVerifyAuthCode()
                 }
@@ -284,7 +283,7 @@ struct PWResetView: View {
             Spacer()
             
             Button(action: {
-                Task {
+                _Concurrency.Task {
                     // ✅ 변경된 함수명 적용
                     let isSuccess = await viewModel.userUpdatePassword()
                     if isSuccess {

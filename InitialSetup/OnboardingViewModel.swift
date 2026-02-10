@@ -75,7 +75,7 @@ class OnboardingViewModel {
     /// PhotosPickerItem을 UIImage로 변환하는 비동기 함수
     private func loadImage(from selections: [PhotosPickerItem]) {
         
-        Task {
+        _Concurrency.Task {
             var loadedImages: [UIImage] = []
             
             for item in selections {

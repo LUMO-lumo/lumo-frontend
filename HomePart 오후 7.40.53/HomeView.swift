@@ -12,39 +12,130 @@ struct HomeView: View {
     @State private var navigateToDetail = false
     
     var body: some View {
+
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    // 1. 헤더 (요청하신 대로 직접 텍스트로 수정)
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("LUMO")
-                            .font(.system(size: 24, weight: .heavy))
-                            .foregroundStyle(Color(hex: "F55641"))
-                        
-                        // [수정] 뷰모델 참조 대신 직접 텍스트 입력
-                        Text("단순한 알람이 아닌,\n당신을 행동으로 이끄는 AI 미션 알람 서비스")
-                            .font(.headline)
-                            .foregroundStyle(.black)
-                            .lineSpacing(4)
-                    }
-                    .padding(.top, 10)
+
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                
+                // 1. 상단 헤더
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("LUMO")
+                        .font(.system(size: 24, weight: .heavy))
+                        .foregroundColor(Color(red: 1.0, green: 0.4, blue: 0.4))
                     
-                    quoteCardSection
-                    todoPreviewSection
-                    missionStatSection
-                    
-                    Spacer().frame(height: 40)
+                    Text("단순한 알람이 아닌,\n당신을 행동으로 이끄는 AI 미션 알람 서비스")
+                        .font(.headline)
+                        .foregroundColor(.black)
+                        .lineSpacing(4)
                 }
-                .padding(.horizontal, 24)
+                .padding(.top, 10)
+                
+                // 2. 명언 카드
+                ZStack {
+                    Image("HomePartImage") // Assets 이미지 확인 필요
+                        .resizable()
+                        .frame(height: 180)
+                        .clipped()
+                    
+                    Color.black.opacity(0.3)
+                    
+                    VStack(spacing: 5) {
+                        Text("오늘의 한마디")
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.9))
+                        
+                        Text("당신의 영향력의 한계는\n상상력입니다!")
+                            .font(.headline)
+                            .bold()
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.white)
+                    }
+                }
+                .frame(height: 180)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                
+                // 3. 오늘의 할 일 (수정된 부분)
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        Text("오늘의 할 일")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                        
+                        Spacer()
+                        
+                        NavigationLink(destination: DetailPageView()) {
+                            Text("자세히 보기 >")
+                                .font(.subheadline)
+                                .foregroundColor(.gray.opacity(0.6))
+                        }
+                    }
+                    
+                    // 기존 버튼 대신 리스트 미리보기(3개) 표시
+                    VStack(alignment: .leading, spacing: 16) {
+                        if dummyTasks.isEmpty {
+                            Text("등록된 할 일이 없습니다.")
+                                .foregroundColor(.gray)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding()
+                        } else {
+                            // 상위 3개만 표시
+                            ForEach(Array(dummyTasks.prefix(3).enumerated()), id: \.offset) { index, task in
+                                VStack(alignment: .leading, spacing: 12) {
+                                    Text(task)
+                                        .font(.body)
+                                        .foregroundColor(.black.opacity(0.8))
+                                        .padding(.horizontal, 4)
+                                    
+                                    // 마지막 아이템이 아니면 구분선 추가 (선택사항, 디자인에 따라 제거 가능)
+                                    if index < 2 && index < dummyTasks.count - 1 {
+                                        Divider()
+                                            .background(Color.black.opacity(0.1))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(20)
+                    .background((Color(hex: "F2F4F7")))
+                    .cornerRadius(16)
+                    .onTapGesture {
+                        // 탭하면 전체 리스트 시트 열기
+                        showToDoSheet = true
+                    }
+                }
+                
+                // 4. 최근 미션 성공
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        Text("최근 미션 성공")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                        
+                        Spacer()
+                        
+                        Text("자세히 보기 >")
+                            .font(.subheadline)
+                            .foregroundColor(.gray.opacity(0.6))
+                    }
+                    // 나중에 평균값을 저장하는 부분(더미 데이터)
+                    HStack(spacing: 12) {
+                        StatCard(number: "5일", label: "연속성공")
+                        StatCard(number: "94%", label: "이번달 달성률")
+                    }
+                }
+                
+                Spacer().frame(height: 40) // 탭바에 가려지지 않도록 하단 여백 추가
             }
-            .toolbar(.hidden)
-            .navigationDestination(isPresented: $navigateToDetail) {
-                TodoSettingView(viewModel: viewModel)
-            }
-            .sheet(isPresented: $showToDoSheet) {
-                ToDoSheetView(viewModel: viewModel, showSheet: $showToDoSheet, showDetail: $navigateToDetail)
-                    .presentationDetents([.medium, .large])
-            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 10)
+        }
+        .toolbar(.hidden)
+        .sheet(isPresented: $showToDoSheet) {
+            // 전체 데이터를 전달
+            ToDoSheetView(tasks: dummyTasks)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
     }
 }

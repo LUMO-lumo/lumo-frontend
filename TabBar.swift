@@ -27,7 +27,6 @@ struct MainView: View {
                 case 0:
                     HomeView()
                 case 1:
-
                     Text(" 알람 파트")
                 case 2:
                     RoutineView(isTabBarHidden: $isTabBarHidden)

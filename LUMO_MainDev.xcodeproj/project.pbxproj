@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		41540CB32F249899004829D3 /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41540CB22F249899004829D3 /* TabBar.swift */; };
 		41540CBD2F2498B0004829D3 /* TodoSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41540CB42F2498B0004829D3 /* TodoSettingModel.swift */; };
 		41540CBE2F2498B0004829D3 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41540CBA2F2498B0004829D3 /* HomeView.swift */; };
 		41540CBF2F2498B0004829D3 /* TodoSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41540CB62F2498B0004829D3 /* TodoSettingViewModel.swift */; };
@@ -187,12 +186,6 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				4154107A2F2738E0004829D3 /* AlarmPart */,
-				415410A02F2F9434004829D3 /* SoundSetting */,
-				415410C32F33AF4A004829D3 /* HANetwork */,
-				41853A812F11486B00D6CA1C /* Resource */,
-			);
 			name = LUMO_MainDev;
 			packageProductDependencies = (
 				41540CC52F249943004829D3 /* CombineMoya */,
@@ -334,7 +327,6 @@
 				41540CC02F2498B0004829D3 /* HomeModel.swift in Sources */,
 				41540CC12F2498B0004829D3 /* TodoSettingView.swift in Sources */,
 				41540CC22F2498B0004829D3 /* HomeViewModel.swift in Sources */,
-				41540CB32F249899004829D3 /* TabBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

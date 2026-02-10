@@ -116,7 +116,7 @@ struct SignUpView: View {
             .padding(.top, 14)
             
             Button(action: {
-                Task {
+                _Concurrency.Task {
                     await viewModel.userRequestVerificationCode()
                 }
             }) {
@@ -166,7 +166,7 @@ struct SignUpView: View {
             HStack {
                 Spacer()
                 Button("인증번호 재전송") {
-                    Task {
+                    _Concurrency.Task {
                         await viewModel.userRequestVerificationCode()
                     }
                 }
@@ -185,7 +185,7 @@ struct SignUpView: View {
             }
             
             Button(action: {
-                Task {
+                _Concurrency.Task {
                     // 검증 성공 시 회원가입 요청 함수를 부를 때 context 전달
                     await viewModel.userVerifyCodeAndSignUp(modelContext: modelContext)
                 }

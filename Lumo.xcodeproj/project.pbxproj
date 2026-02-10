@@ -10,6 +10,14 @@
 		348C8B622F345FF000C384BC /* BriefingVoiceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348C8B612F345FF000C384BC /* BriefingVoiceViewModel.swift */; };
 		348C8B642F345FF700C384BC /* BriefingVoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348C8B632F345FF700C384BC /* BriefingVoiceView.swift */; };
 		348C8B672F3463CD00C384BC /* SmartBriefingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348C8B662F3463CD00C384BC /* SmartBriefingView.swift */; };
+		3492C5922F3B419000958A4D /* HomeViewAsset.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3492C5882F3B419000958A4D /* HomeViewAsset.xcassets */; };
+		3492C5932F3B419000958A4D /* HomePartTodoWrite.md in Resources */ = {isa = PBXBuildFile; fileRef = 3492C58E2F3B419000958A4D /* HomePartTodoWrite.md */; };
+		3492C5942F3B419000958A4D /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3492C58D2F3B419000958A4D /* HomeModel.swift */; };
+		3492C5952F3B419000958A4D /* TodoSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3492C58B2F3B419000958A4D /* TodoSettingViewModel.swift */; };
+		3492C5962F3B419000958A4D /* TodoSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3492C58A2F3B419000958A4D /* TodoSettingView.swift */; };
+		3492C5972F3B419000958A4D /* TodoSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3492C5892F3B419000958A4D /* TodoSettingModel.swift */; };
+		3492C5982F3B419000958A4D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3492C58F2F3B419000958A4D /* HomeView.swift */; };
+		3492C5992F3B419000958A4D /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3492C5902F3B419000958A4D /* HomeViewModel.swift */; };
 		34A2B45E2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */; };
 		34A2B4602F318E1700F3B9A8 /* SettingTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B45F2F318E1700F3B9A8 /* SettingTarget.swift */; };
 		34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */; };
@@ -28,14 +36,6 @@
 		B40A01162F2BA23D00687C64 /* ProfileSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40A01152F2BA14000687C64 /* ProfileSettingView.swift */; };
 		B40A01182F2BB03300687C64 /* SettingAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B40A01172F2BB03300687C64 /* SettingAssets.xcassets */; };
 		B40A012A2F2BD24D00687C64 /* LoginSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40A01292F2BD22D00687C64 /* LoginSectionView.swift */; };
-		B42F47FE2F26FA600057284E /* TodoSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42F47F52F26FA600057284E /* TodoSettingView.swift */; };
-		B42F47FF2F26FA600057284E /* TodoSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42F47F62F26FA600057284E /* TodoSettingViewModel.swift */; };
-		B42F48002F26FA600057284E /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42F47F82F26FA600057284E /* HomeModel.swift */; };
-		B42F48012F26FA600057284E /* TodoSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42F47F42F26FA600057284E /* TodoSettingModel.swift */; };
-		B42F48022F26FA600057284E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42F47FA2F26FA600057284E /* HomeView.swift */; };
-		B42F48032F26FA600057284E /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42F47FC2F26FA600057284E /* HomeViewModel.swift */; };
-		B42F48042F26FA600057284E /* HomeViewAsset.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B42F47FB2F26FA600057284E /* HomeViewAsset.xcassets */; };
-		B42F48052F26FA600057284E /* HomePartTodoWrite.md in Resources */ = {isa = PBXBuildFile; fileRef = B42F47F92F26FA600057284E /* HomePartTodoWrite.md */; };
 		B42F48072F26FAFD0057284E /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42F48062F26FAFD0057284E /* TabBar.swift */; };
 		B42F480A2F26FDE60057284E /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = B42F48092F26FDE60057284E /* CombineMoya */; };
 		B42F480C2F26FDE60057284E /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B42F480B2F26FDE60057284E /* Moya */; };
@@ -77,6 +77,14 @@
 		348C8B612F345FF000C384BC /* BriefingVoiceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BriefingVoiceViewModel.swift; sourceTree = "<group>"; };
 		348C8B632F345FF700C384BC /* BriefingVoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BriefingVoiceView.swift; sourceTree = "<group>"; };
 		348C8B662F3463CD00C384BC /* SmartBriefingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBriefingView.swift; sourceTree = "<group>"; };
+		3492C5882F3B419000958A4D /* HomeViewAsset.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = HomeViewAsset.xcassets; sourceTree = "<group>"; };
+		3492C5892F3B419000958A4D /* TodoSettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoSettingModel.swift; sourceTree = "<group>"; };
+		3492C58A2F3B419000958A4D /* TodoSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoSettingView.swift; sourceTree = "<group>"; };
+		3492C58B2F3B419000958A4D /* TodoSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoSettingViewModel.swift; sourceTree = "<group>"; };
+		3492C58D2F3B419000958A4D /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
+		3492C58E2F3B419000958A4D /* HomePartTodoWrite.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = HomePartTodoWrite.md; sourceTree = "<group>"; };
+		3492C58F2F3B419000958A4D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		3492C5902F3B419000958A4D /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingView.swift; sourceTree = "<group>"; };
 		34A2B45F2F318E1700F3B9A8 /* SettingTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTarget.swift; sourceTree = "<group>"; };
 		34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingViewModel.swift; sourceTree = "<group>"; };
@@ -95,14 +103,6 @@
 		B40A01152F2BA14000687C64 /* ProfileSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingView.swift; sourceTree = "<group>"; };
 		B40A01172F2BB03300687C64 /* SettingAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SettingAssets.xcassets; sourceTree = "<group>"; };
 		B40A01292F2BD22D00687C64 /* LoginSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSectionView.swift; sourceTree = "<group>"; };
-		B42F47F42F26FA600057284E /* TodoSettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoSettingModel.swift; sourceTree = "<group>"; };
-		B42F47F52F26FA600057284E /* TodoSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoSettingView.swift; sourceTree = "<group>"; };
-		B42F47F62F26FA600057284E /* TodoSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoSettingViewModel.swift; sourceTree = "<group>"; };
-		B42F47F82F26FA600057284E /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
-		B42F47F92F26FA600057284E /* HomePartTodoWrite.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = HomePartTodoWrite.md; sourceTree = "<group>"; };
-		B42F47FA2F26FA600057284E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		B42F47FB2F26FA600057284E /* HomeViewAsset.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = HomeViewAsset.xcassets; sourceTree = "<group>"; };
-		B42F47FC2F26FA600057284E /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		B42F48062F26FAFD0057284E /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
 		B44CC1412F363B9B004D19A6 /* UserTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTarget.swift; sourceTree = "<group>"; };
 		B44CC1432F36F4C6004D19A6 /* PWResetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWResetViewModel.swift; sourceTree = "<group>"; };
@@ -143,6 +143,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		3492C5572F3B416500958A4D /* HANetwork */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = HANetwork;
+			sourceTree = "<group>";
+		};
+		3492C57B2F3B417600958A4D /* AlarmPart */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AlarmPart;
+			sourceTree = "<group>";
+		};
 		B4FD5FC22F1A35B30022CF67 /* InitialSetup */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = InitialSetup;
@@ -191,6 +201,29 @@
 				34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */,
 			);
 			path = SmartBriefingSetting;
+			sourceTree = "<group>";
+		};
+		3492C58C2F3B419000958A4D /* TodoSetting */ = {
+			isa = PBXGroup;
+			children = (
+				3492C5892F3B419000958A4D /* TodoSettingModel.swift */,
+				3492C58A2F3B419000958A4D /* TodoSettingView.swift */,
+				3492C58B2F3B419000958A4D /* TodoSettingViewModel.swift */,
+			);
+			path = TodoSetting;
+			sourceTree = "<group>";
+		};
+		3492C5912F3B419000958A4D /* HomePart */ = {
+			isa = PBXGroup;
+			children = (
+				3492C5882F3B419000958A4D /* HomeViewAsset.xcassets */,
+				3492C58C2F3B419000958A4D /* TodoSetting */,
+				3492C58D2F3B419000958A4D /* HomeModel.swift */,
+				3492C58E2F3B419000958A4D /* HomePartTodoWrite.md */,
+				3492C58F2F3B419000958A4D /* HomeView.swift */,
+				3492C5902F3B419000958A4D /* HomeViewModel.swift */,
+			);
+			path = HomePart;
 			sourceTree = "<group>";
 		};
 		34A2B3C92F317E9700F3B9A8 /* MissionAlarmSetting */ = {
@@ -318,29 +351,6 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
-		B42F47F72F26FA600057284E /* TodoSetting */ = {
-			isa = PBXGroup;
-			children = (
-				B42F47F42F26FA600057284E /* TodoSettingModel.swift */,
-				B42F47F52F26FA600057284E /* TodoSettingView.swift */,
-				B42F47F62F26FA600057284E /* TodoSettingViewModel.swift */,
-			);
-			path = TodoSetting;
-			sourceTree = "<group>";
-		};
-		B42F47FD2F26FA600057284E /* HomePart */ = {
-			isa = PBXGroup;
-			children = (
-				B42F47F72F26FA600057284E /* TodoSetting */,
-				B42F47F82F26FA600057284E /* HomeModel.swift */,
-				B42F47F92F26FA600057284E /* HomePartTodoWrite.md */,
-				B42F47FA2F26FA600057284E /* HomeView.swift */,
-				B42F47FB2F26FA600057284E /* HomeViewAsset.xcassets */,
-				B42F47FC2F26FA600057284E /* HomeViewModel.swift */,
-			);
-			path = HomePart;
-			sourceTree = "<group>";
-		};
 		B44CC14B2F3998C4004D19A6 /* Token */ = {
 			isa = PBXGroup;
 			children = (
@@ -356,11 +366,13 @@
 			children = (
 				B4D642092F30D71A000B4C08 /* Security.xcconfig */,
 				B4D6420D2F30E37D000B4C08 /* KeychainManager.swift */,
+				3492C57B2F3B417600958A4D /* AlarmPart */,
+				3492C5572F3B416500958A4D /* HANetwork */,
 				B40A01262F2BBB7400687C64 /* Network */,
 				B40A01112F2B921500687C64 /* Setting */,
 				B4B4DAA42F2767C400C29EDC /* Routine */,
 				B42F48062F26FAFD0057284E /* TabBar.swift */,
-				B42F47FD2F26FA600057284E /* HomePart */,
+				3492C5912F3B419000958A4D /* HomePart */,
 				B4FD5F142F17DEE80022CF67 /* LumoApp.swift */,
 				B4FD5FE82F1A3BAF0022CF67 /* Domain */,
 				B4FD5FC22F1A35B30022CF67 /* InitialSetup */,
@@ -458,6 +470,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				3492C5572F3B416500958A4D /* HANetwork */,
+				3492C57B2F3B417600958A4D /* AlarmPart */,
 				B4FD5FC22F1A35B30022CF67 /* InitialSetup */,
 				B4FD5FDE2F1A35B90022CF67 /* Resources */,
 				B4FD5FE82F1A3BAF0022CF67 /* Domain */,
@@ -517,9 +531,9 @@
 			files = (
 				B4FD5F372F17E61C0022CF67 /* OnBoardingPartTodoWrite.md in Resources */,
 				B4D6420A2F30D71A000B4C08 /* Security.xcconfig in Resources */,
-				B42F48042F26FA600057284E /* HomeViewAsset.xcassets in Resources */,
 				B4B4DAAC2F2767C400C29EDC /* RoutineAssets.xcassets in Resources */,
-				B42F48052F26FA600057284E /* HomePartTodoWrite.md in Resources */,
+				3492C5922F3B419000958A4D /* HomeViewAsset.xcassets in Resources */,
+				3492C5932F3B419000958A4D /* HomePartTodoWrite.md in Resources */,
 				B4FD5F382F17E61C0022CF67 /* Assets.xcassets in Resources */,
 				B40A01182F2BB03300687C64 /* SettingAssets.xcassets in Resources */,
 			);
@@ -539,14 +553,8 @@
 				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
 				34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */,
 				B42F48072F26FAFD0057284E /* TabBar.swift in Sources */,
-				B42F47FE2F26FA600057284E /* TodoSettingView.swift in Sources */,
-				B42F47FF2F26FA600057284E /* TodoSettingViewModel.swift in Sources */,
-				B42F48002F26FA600057284E /* HomeModel.swift in Sources */,
-				B42F48012F26FA600057284E /* TodoSettingModel.swift in Sources */,
-				B42F48022F26FA600057284E /* HomeView.swift in Sources */,
 				B4D641FE2F2FA4AC000B4C08 /* LoginView.swift in Sources */,
 				B4D6420E2F30E384000B4C08 /* KeychainManager.swift in Sources */,
-				B42F48032F26FA600057284E /* HomeViewModel.swift in Sources */,
 				B4FD5F2E2F17DEE80022CF67 /* LumoApp.swift in Sources */,
 				34A2B45E2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift in Sources */,
 				B4E2848D2F2CA3FC00D8FD4D /* ETCSectionView.swift in Sources */,
@@ -580,6 +588,12 @@
 				34A2B4FE2F31C53B00F3B9A8 /* TopNavigationBar.swift in Sources */,
 				34A2B4FB2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift in Sources */,
 				B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */,
+				3492C5942F3B419000958A4D /* HomeModel.swift in Sources */,
+				3492C5952F3B419000958A4D /* TodoSettingViewModel.swift in Sources */,
+				3492C5962F3B419000958A4D /* TodoSettingView.swift in Sources */,
+				3492C5972F3B419000958A4D /* TodoSettingModel.swift in Sources */,
+				3492C5982F3B419000958A4D /* HomeView.swift in Sources */,
+				3492C5992F3B419000958A4D /* HomeViewModel.swift in Sources */,
 				B4B4DAA82F2767C400C29EDC /* RoutineViewModel.swift in Sources */,
 				B4B4DAA92F2767C400C29EDC /* RoutineModel.swift in Sources */,
 				348C8B672F3463CD00C384BC /* SmartBriefingView.swift in Sources */,
@@ -730,7 +744,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -764,7 +778,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
