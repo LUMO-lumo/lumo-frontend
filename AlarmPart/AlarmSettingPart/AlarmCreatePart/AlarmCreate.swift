@@ -12,21 +12,19 @@ import Foundation
 import UserNotifications
 import AlarmKit
 
-// MARK: - ViewModel for Creation
+// MARK: - ViewModel
 class AlarmCreateViewModel: ObservableObject {
-    // UI 상태 프로퍼티 (초기값은 비어있거나 기본값)
     @Published var alarmTitle: String = ""
     @Published var selectedMission: String = "수학문제"
-    @Published var selectedDays: Set<Int> = [] // 0:월 ~ 6:일 (View 기준)
+    @Published var selectedDays: Set<Int> = []
     @Published var selectedTime: Date = Date()
-    @Published var isSoundOn: Bool = true // 생성 시 기본은 켜짐
+    @Published var isSoundOn: Bool = true
+    
+    // [연동] 사운드 저장 변수
     @Published var alarmSound: String = "기본음"
     
-    // 알람 생성 로직
     func createNewAlarm() -> Alarm {
-        // 1. 요일 매핑 (View: 0~6 -> Model: 0~6 / 일~토 기준에 맞춰 변환)
         let mappedDays = selectedDays.map { ($0 + 1) % 7 }.sorted()
-
         let mType: String
         switch selectedMission {
         case "수학문제": mType = "계산"
@@ -36,73 +34,44 @@ class AlarmCreateViewModel: ObservableObject {
         default: mType = "계산"
         }
         
-        // 2. 새 알람 객체 생성
+        // [추가됨] soundName 저장
         return Alarm(
             time: selectedTime,
             label: alarmTitle.isEmpty ? "새 알람" : alarmTitle,
             isEnabled: isSoundOn,
             repeatDays: mappedDays,
             missionTitle: selectedMission,
-            missionType: mType
+            missionType: mType,
+            soundName: alarmSound
         )
     }
     
-    // [Server] 알람 생성 API 호출 (Placeholder)
+    // [수정됨] 실제 서버 API 호출 및 DTO 연결
     func requestCreateAlarm(completion: @escaping (Bool) -> Void) {
+        // 1. 로컬 알람 객체 생성
         let newAlarm = createNewAlarm()
-        print("====== [알람 생성 요청] ======")
-        print("라벨: \(newAlarm.label)")
-        print("시간: \(newAlarm.timeString)")
-        print("미션: \(newAlarm.missionType)")
-        print("사운드: \(alarmSound)")
-        print("==========================")
         
-        // TODO: Moya Provider를 사용하여 'createAlarm' API 호출
-        // provider.request(.createAlarm(data: newAlarm)) { ... }
+        // 2. 서버 요청용 파라미터 변환 (AlarmModel의 extension 활용 - DTO 변환)
+        let params = newAlarm.toDictionary()
         
-        // 현재는 성공했다고 가정
-        completion(true)
-    }
-    
-    // 로컬 알림 스케줄링
-    func scheduleLocalNotification() {
-        // 위젯에서 알람이 울리게 하는 방법
-        let content = UNMutableNotificationContent()
-        content.title = alarmTitle.isEmpty ? "알람" : alarmTitle
-        content.body = "\(selectedMission) 미션을 수행할 시간입니다!"
-        content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: "\(alarmSound).m4a")) // 실제 사운드 파일명 매칭 필요
+        print("[Debug] 알람 생성 요청: \(params)")
         
-        let calendar = Calendar.current
-        let timeComponents = calendar.dateComponents([.hour, .minute], from: selectedTime)
-        guard let hour = timeComponents.hour, let minute = timeComponents.minute else { return }
-        
-        if selectedDays.isEmpty {
-            var triggerDate = DateComponents()
-            triggerDate.hour = hour
-            triggerDate.minute = minute
-            
-            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-            UNUserNotificationCenter.current().add(request)
-        } else {
-            for dayIndex in selectedDays {
-                var triggerDate = DateComponents()
-                triggerDate.hour = hour
-                triggerDate.minute = minute
-                
-                let weekday: Int
-                switch dayIndex {
-                case 6: weekday = 1 // 일요일
-                default: weekday = dayIndex + 2 // 월~토
-                }
-                triggerDate.weekday = weekday
-                
-                let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: true)
-                let request = UNNotificationRequest(identifier: "\(UUID().uuidString)_\(dayIndex)", content: content, trigger: trigger)
-                UNUserNotificationCenter.current().add(request)
+        // 3. 서비스 호출 (서버 통신)
+        AlarmService.shared.createAlarm(params: params) { result in
+            switch result {
+            case .success(let dto):
+                print("알람 생성 성공: ID \(dto.alarmId)")
+                // 성공 시 true 반환
+                completion(true)
+            case .failure(let error):
+                print("알람 생성 실패: \(error.localizedDescription)")
+                // 실패 시 false 반환 (필요 시 에러 처리 로직 추가 가능)
+                completion(false)
             }
         }
     }
+    
+    func scheduleLocalNotification() {}
 }
 
 // MARK: - View
@@ -110,10 +79,8 @@ struct AlarmCreate: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = AlarmCreateViewModel()
     
-    // 생성 완료 후 상위 뷰에 알리기 위한 클로저
     var onCreate: ((Alarm) -> Void)?
     
-    // 디자인 리소스
     let missions = [
         ("수학문제", "MathMission"),
         ("OX 퀴즈", "OXMission"),
@@ -125,7 +92,6 @@ struct AlarmCreate: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // 1. 상단 네비게이션 바
             HStack {
                 Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
@@ -148,7 +114,6 @@ struct AlarmCreate: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 30) {
                     
-                    // 2. 알람 이름 입력
                     VStack(alignment: .leading, spacing: 10) {
                         ZStack(alignment: .trailing) {
                             TextField("알람 이름을 입력해주세요", text: $viewModel.alarmTitle)
@@ -163,7 +128,6 @@ struct AlarmCreate: View {
                     }
                     .padding(.horizontal, 20)
                     
-                    // 3. 미션 선택
                     VStack(alignment: .leading, spacing: 15) {
                         Text("미션 선택")
                             .font(.system(size: 14))
@@ -184,7 +148,6 @@ struct AlarmCreate: View {
                         .padding(.horizontal, 20)
                     }
                     
-                    // 4. 요일 선택
                     VStack(alignment: .leading, spacing: 15) {
                         Text("요일 선택")
                             .font(.system(size: 14))
@@ -208,7 +171,6 @@ struct AlarmCreate: View {
                         .padding(.horizontal, 20)
                     }
                     
-                    // 5. 시간 설정
                     VStack(alignment: .leading, spacing: 10) {
                         Text("시간 설정")
                             .font(.system(size: 14))
@@ -229,21 +191,20 @@ struct AlarmCreate: View {
                         .padding(.horizontal, 20)
                     }
                     
-                    // 6. 하단 옵션
                     VStack(spacing: 0) {
                         HStack {
                             Text("레이블")
                                 .font(.system(size: 14))
                                 .foregroundStyle(.black)
                             Spacer()
-                            Text("1교시 있는 날") // 예시 텍스트
+                            Text("1교시 있는 날")
                                 .font(.system(size: 14))
                                 .foregroundStyle(.gray)
                         }
                         .padding(.vertical, 15)
                         Divider()
                         
-                        // [수정] 사운드 설정 버튼 (NavigationLink 적용)
+                        // [연결] SoundSettingView로 이동 (Binding 전달)
                         NavigationLink(destination: SoundSettingView(alarmSound: $viewModel.alarmSound)) {
                             HStack {
                                 Text("사운드")
@@ -251,7 +212,6 @@ struct AlarmCreate: View {
                                     .foregroundStyle(.black)
                                 Spacer()
                                 HStack(spacing: 5) {
-                                    // 현재 선택된 알람 사운드 표시
                                     Text(viewModel.alarmSound)
                                         .font(.system(size: 14))
                                         .foregroundStyle(.gray)
@@ -265,12 +225,19 @@ struct AlarmCreate: View {
                     }
                     .padding(.horizontal, 20)
                     
-                    // 7. 생성하기 버튼
                     Button(action: {
-                        viewModel.scheduleLocalNotification()
+                        let newAlarm = viewModel.createNewAlarm()
+                        
+                        _Concurrency.Task {
+                            do {
+                                try await AlarmKitManager.shared.scheduleAlarm(from: newAlarm)
+                            } catch {
+                                print("알람 등록 실패: \(error)")
+                            }
+                        }
+                        
                         viewModel.requestCreateAlarm { success in
                             if success {
-                                let newAlarm = viewModel.createNewAlarm()
                                 onCreate?(newAlarm)
                                 dismiss()
                             }
@@ -296,14 +263,11 @@ struct AlarmCreate: View {
     }
 }
 
-// MARK: - Private Components
-
 private struct CreateMissionButton: View {
     let title: String
     let imageName: String
     let isSelected: Bool
     let action: () -> Void
-    
     var body: some View {
         Button(action: action) {
             VStack(spacing: 8) {
@@ -311,7 +275,6 @@ private struct CreateMissionButton: View {
                     Circle()
                         .fill(isSelected ? Color(hex: "FF8C68").opacity(0.1) : Color.gray.opacity(0.1))
                         .frame(width: 50, height: 50)
-                    
                     Image(imageName)
                         .resizable()
                         .scaledToFit()
@@ -330,7 +293,6 @@ private struct CreateDayButton: View {
     let text: String
     let isSelected: Bool
     let action: () -> Void
-    
     var body: some View {
         Button(action: action) {
             Text(text)

@@ -9,5 +9,6 @@ import Alamofire
 
 
 struct MainAPIConstants {
-    static let baseURL = "http:~~~~~"
+    // security로 나중에 작성할 예정 
+    static let baseURL = "http://13.124.31.129/"
 }

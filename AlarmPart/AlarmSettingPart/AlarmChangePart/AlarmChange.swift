@@ -13,22 +13,18 @@ import Moya
 
 // MARK: - View
 struct AlarmChange: View {
-    // MARK: - Properties
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: AlarmChangeViewModel
     
-    // 저장을 위한 클로저
     var onSave: ((Alarm) -> Void)?
     
     init(alarm: Alarm? = nil, onSave: ((Alarm) -> Void)? = nil) {
-        // ViewModel 주입
         _viewModel = StateObject(wrappedValue: AlarmChangeViewModel(alarm: alarm))
         self.onSave = onSave
     }
     
     var body: some View {
         VStack(spacing: 0) {
-            // 1. 상단 네비게이션 바
             HStack {
                 Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
@@ -51,7 +47,6 @@ struct AlarmChange: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 30) {
                     
-                    // 2. 알람 이름 입력 (TextField)
                     VStack(alignment: .leading, spacing: 10) {
                         ZStack(alignment: .trailing) {
                             TextField("알람 이름을 입력해주세요", text: $viewModel.alarmTitle)
@@ -66,14 +61,12 @@ struct AlarmChange: View {
                     }
                     .padding(.horizontal, 20)
                     
-                    // 3. 미션 선택
                     VStack(alignment: .leading, spacing: 15) {
                         Text("미션 선택")
                             .font(.system(size: 14))
                             .foregroundStyle(.black)
                             .padding(.horizontal, 20)
                         HStack(spacing: 15) {
-                            // AlarmChangeModel의 정적 데이터 사용
                             ForEach(AlarmChangeModel.missions, id: \.0) { mission in
                                 MissionButton(
                                     title: mission.title,
@@ -88,20 +81,17 @@ struct AlarmChange: View {
                         .padding(.horizontal, 20)
                     }
                     
-                    // 4. 요일 선택
                     VStack(alignment: .leading, spacing: 15) {
                         Text("요일 선택")
                             .font(.system(size: 14))
                             .foregroundStyle(.black)
                             .padding(.horizontal, 20)
                         HStack(spacing: 0) {
-                            // AlarmChangeModel의 요일 데이터 사용
                             ForEach(0..<AlarmChangeModel.days.count, id: \.self) { index in
                                 DayButton(
                                     text: AlarmChangeModel.days[index],
                                     isSelected: viewModel.selectedDays.contains(index)
                                 ) {
-                                    //중복 확인하는 기능
                                     if viewModel.selectedDays.contains(index) {
                                         viewModel.selectedDays.remove(index)
                                     } else {
@@ -114,7 +104,6 @@ struct AlarmChange: View {
                         .padding(.horizontal, 20)
                     }
                     
-                    // 5. 시간 설정
                     VStack(alignment: .leading, spacing: 10) {
                         Text("시간 설정")
                             .font(.system(size: 14))
@@ -135,7 +124,6 @@ struct AlarmChange: View {
                         .padding(.horizontal, 20)
                     }
                     
-                    // 6. 하단 옵션
                     VStack(spacing: 0) {
                         HStack {
                             Text("레이블")
@@ -153,7 +141,6 @@ struct AlarmChange: View {
                                 .font(.system(size: 14))
                                 .foregroundStyle(.black)
                             Spacer()
-                            // SoundSettingView가 있다면 연결
                             HStack(spacing: 5) {
                                 Text(viewModel.alarmSound)
                                     .font(.system(size: 14))
@@ -167,11 +154,18 @@ struct AlarmChange: View {
                     }
                     .padding(.horizontal, 20)
                     
-                    // 7. 설정하기 버튼
+                    // [수정 핵심] Moya.Task 충돌 방지
                     Button(action: {
-                        viewModel.scheduleAlarm()
-                        // 변경된 내용(타이틀 포함)을 부모 뷰로 전달
                         let updatedAlarm = viewModel.getUpdatedAlarm()
+                        
+                        _Concurrency.Task {
+                            do {
+                                try await AlarmKitManager.shared.scheduleAlarm(from: updatedAlarm)
+                            } catch {
+                                print("알람 수정 등록 실패: \(error)")
+                            }
+                        }
+                        
                         onSave?(updatedAlarm)
                         dismiss()
                     }) {
@@ -198,14 +192,11 @@ struct AlarmChange: View {
     }
 }
 
-// MARK: - Subviews (Components)
-
 struct MissionButton: View {
     let title: String
     let imageName: String
     let isSelected: Bool
     let action: () -> Void
-    
     var body: some View {
         Button(action: action) {
             VStack(spacing: 8) {
@@ -213,7 +204,6 @@ struct MissionButton: View {
                     Circle()
                         .fill(isSelected ? Color(hex: "FF8C68").opacity(0.1) : Color.gray.opacity(0.1))
                         .frame(width: 50, height: 50)
-                    
                     Image(imageName)
                         .resizable()
                         .scaledToFit()
@@ -232,7 +222,6 @@ struct DayButton: View {
     let text: String
     let isSelected: Bool
     let action: () -> Void
-    
     var body: some View {
         Button(action: action) {
             Text(text)

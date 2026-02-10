@@ -9,6 +9,7 @@
 
 import SwiftUI
 import Foundation
+import AlarmKit
 
 struct AlarmSettedView: View {
     @Binding var alarm: Alarm
@@ -70,7 +71,7 @@ struct AlarmSettedView: View {
                         // iOS 17 대응: 매개변수 2개(oldValue, newValue)를 받는 클로저 사용
                         .onChange(of: alarm.isEnabled) { oldValue, newValue in
                             // 토글 상태 변경 시 서버 업데이트 로직 호출
-                            updateAlarmOnServer()
+                            firstupdateAlarmOnServer()
                         }
                 }
                 
@@ -80,7 +81,7 @@ struct AlarmSettedView: View {
                     .foregroundStyle(.gray)
                     .onSubmit {
                         // 엔터(완료)를 누르면 서버 동기화 함수 호출
-                        updateAlarmOnServer()
+                        firstupdateAlarmOnServer()
                     }
                 
                 // 3. 요일 반복 버튼들
@@ -131,7 +132,7 @@ struct AlarmSettedView: View {
                         self.alarm = updatedAlarm
                         
                         // 2. 서버나 상위 뷰에도 변경 알림
-                        updateAlarmOnServer()
+                        firstupdateAlarmOnServer()
                     })) {
                         Image(systemName: "ellipsis")
                             .foregroundStyle(.gray)
@@ -198,11 +199,11 @@ struct AlarmSettedView: View {
         }
         
         // 서버 동기화 호출
-        updateAlarmOnServer()
+        firstupdateAlarmOnServer()
     }
     
     /// 서버(DB)에 변경 사항을 저장하는 함수
-    private func updateAlarmOnServer() {
+    private func firstupdateAlarmOnServer() {
         print("====== [데이터 업데이트] ======")
         print("알람 ID: \(alarm.id) 업데이트")
         print("제목: \(alarm.label)")

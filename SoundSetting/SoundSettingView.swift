@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-
-// 카테고리 열거형 정의 (관리를 편하게 하기 위함)
+// 카테고리 열거형 정의
 enum SoundCategory: String, CaseIterable {
     case calm = "차분한"
     case loud = "시끄러운"
@@ -18,23 +17,20 @@ enum SoundCategory: String, CaseIterable {
 
 struct SoundSettingView: View {
     // MARK: - State Properties
-    @Environment(\.dismiss) private var dismiss // 뒤로가기 처리를 위한 변수
+    @Environment(\.dismiss) private var dismiss
     
-    // [핵심] 부모 뷰의 데이터를 수정하기 위한 Binding 변수
+    // 부모 뷰의 데이터를 수정하기 위한 Binding 변수
     @Binding var alarmSound: String
     
     @State private var selectedCategory: SoundCategory = .calm
-    @State private var selectedSound: String = "커피한잔의 여유" // 기본 선택값
+    @State private var selectedSound: String = "커피한잔의 여유"
     @State private var volume: Double = 50.0 // 0 ~ 100
     
-    // [수정] 기본값(.constant)을 제거했습니다.
-    // 이제 부모 뷰에서 호출할 때 반드시 바인딩($)을 전달해야 합니다.
     init(alarmSound: Binding<String>) {
         _alarmSound = alarmSound
     }
     
-    // MARK: - Local Dummy Data (API 대용)
-    // 실제로는 각 사운드 객체에 ID가 있겠지만, 여기선 String으로 처리
+    // MARK: - Local Dummy Data
     let soundData: [SoundCategory: [String]] = [
         .calm: ["커피한잔의 여유", "빗소리", "숲속의 아침", "잔잔한 피아노"],
         .loud: ["사이렌", "헤비메탈 모닝", "천둥번개", "경적 소리"],
@@ -59,7 +55,7 @@ struct SoundSettingView: View {
                             .foregroundStyle(Color.gray500)
                             .frame(width: 24, height: 24)
                     }
-                    Spacer() // 버튼을 왼쪽으로 밀어냄
+                    Spacer()
                 }
             }
             
@@ -67,9 +63,7 @@ struct SoundSettingView: View {
                 
                 // 알람 음악 카테고리 선택 영역
                 VStack(alignment: .leading, spacing: 12) {
-                    
                     Text("알람 음악")
-
                     
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 6) {
@@ -77,14 +71,14 @@ struct SoundSettingView: View {
                                 Button(action: {
                                     withAnimation {
                                         selectedCategory = category
-                                        // 카테고리 변경 시 해당 카테고리의 첫 번째 곡을 기본 선택
                                         if let firstSound = soundData[category]?.first {
                                             selectedSound = firstSound
+                                            // [추가] 카테고리 변경 시 첫 곡 재생
+                                            SoundManager.shared.playPreview(named: selectedSound, volume: volume)
                                         }
                                     }
                                 }) {
                                     Text(category.rawValue)
-                                        //font(.Body1)
                                         .padding(.vertical, 10)
                                         .padding(.horizontal, 14)
                                         .background(selectedCategory == category ? Color.main300 : Color.white)
@@ -102,38 +96,30 @@ struct SoundSettingView: View {
                 
                 // 사운드 목록 박스
                 VStack(spacing: 24) {
-                    // 선택된 카테고리의 데이터 가져오기 (없으면 빈 배열)
                     let sounds = soundData[selectedCategory] ?? []
                     
                     ForEach(sounds, id: \.self) { sound in
                         Button(action: {
-                            // 버튼을 누르면 선택된 사운드 업데이트
                             selectedSound = sound
+                            // [추가] 사운드 선택 시 미리듣기 재생
+                            SoundManager.shared.playPreview(named: sound, volume: volume)
                         }) {
                             HStack(spacing: 8) {
-                                // 선택 여부에 따라 아이콘 변경 (String끼리 비교)
                                 Image(systemName: selectedSound == sound ? "record.circle" : "circle")
                                     .resizable()
                                     .frame(width: 20, height: 20)
                                     .foregroundStyle(selectedSound == sound ? Color.main300 : Color.gray300)
                                 
                                 Text(sound)
-                                    .font(.caption) // .Body2 대신 기본 폰트 사용 (혹은 커스텀 폰트 유지)
+                                    .font(.caption)
                                     .foregroundStyle(Color.primary)
                                 
                                 Spacer()
                             }
-                            .contentShape(Rectangle()) // 터치 영역 확장
+                            .contentShape(Rectangle())
                         }
                     }
                 }
-                .padding(.horizontal, 19)
-                .padding(.vertical, 24)
-                .cornerRadius(20)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .strokeBorder(Color.gray300, lineWidth: 1)
-                )
                 .padding(.horizontal, 19)
                 .padding(.vertical, 24)
                 .cornerRadius(20)
@@ -146,35 +132,33 @@ struct SoundSettingView: View {
                 VStack(alignment: .leading, spacing: 18) {
                     HStack {
                         Text("사운드 크기")
-                            //.font(.Subtitle2)
-                        
                         Spacer()
-                        
                         Text("\(Int(volume))%")
-                            //.font(.pretendardSemiBold14)
                             .foregroundStyle(Color.main300)
                     }
                     
+                    // CustomSlider는 UI만 담당하므로 수정 불필요
+                    // 값(volume)이 변하면 아래 onChange에서 감지함
                     CustomSlider(value: $volume, range: 0...100, thumbColor: .main300)
-                        .frame(height: 20) // 터치 영역 높이 확보
+                        .frame(height: 20)
+                        // [추가] 슬라이더 값 변경 시 실제 볼륨 조절
+                        .onChange(of: volume) { newValue in
+                            SoundManager.shared.setVolume(newValue)
+                        }
                     
                 }
             }
             .padding(.top, 19)
             
-            
             Spacer()
             
             // 하단 설정하기 버튼
-            // 설정하기 누르면 내비게이션로 설정 사운드 반영하면서 옮길 예정
             Button(action: {
-                // [수정] 설정 완료 시 부모 뷰의 데이터(alarmSound)를 업데이트
                 alarmSound = selectedSound
-                print("설정 완료: \(selectedCategory.rawValue) - \(selectedSound), 볼륨: \(Int(volume))")
-                dismiss() // 화면 닫기
+                SoundManager.shared.stop() // [추가] 나가면 소리 끔
+                dismiss()
             }) {
                 Text("설정하기")
-                    //.font(.Subtitle3)
                     .foregroundStyle(Color.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 18)
@@ -184,9 +168,7 @@ struct SoundSettingView: View {
             .padding(.bottom, 25)
         }
         .padding(.horizontal, 24)
-        // [수정] 이 부분을 추가하여 시스템 뒤로가기 버튼을 숨깁니다.
         .navigationBarBackButtonHidden(true)
-        // [추가] 화면이 나타날 때 현재 설정된 알람음이 있다면 해당 카테고리와 사운드를 찾아 선택 상태로 동기화
         .onAppear {
             for (category, sounds) in soundData {
                 if sounds.contains(alarmSound) {
@@ -195,6 +177,10 @@ struct SoundSettingView: View {
                     break
                 }
             }
+        }
+        // [추가] 화면이 사라질 때(뒤로가기 등) 소리 멈춤
+        .onDisappear {
+            SoundManager.shared.stop()
         }
         .padding(.bottom, 50)
     }

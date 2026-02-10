@@ -11,6 +11,7 @@ import SwiftUI
 import Foundation
 import Moya
 import CombineMoya
+import AlarmKit
 
 struct AlarmMenuView: View {
     @StateObject private var viewModel = AlarmViewModel()
@@ -37,12 +38,12 @@ struct AlarmMenuView: View {
                                     onDelete: {
                                         // ViewModel의 삭제 로직을 호출하여 데이터와 UI 동기화
                                         withAnimation {
-                                            viewModel.deleteAlarm(id: alarm.id)
+                                            viewModel.firstdeleteAlarm(id: alarm.id)
                                         }
                                     },
                                     onUpdate: { updatedAlarm in
                                         // 알람 수정 시 ViewModel 업데이트 호출 (데이터 일관성 유지)
-                                        viewModel.updateAlarm(updatedAlarm)
+                                        viewModel.firstupdateAlarm(updatedAlarm)
                                     }
                                 )
                                 .padding(.horizontal, 20)

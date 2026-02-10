@@ -58,6 +58,7 @@
 		415410462F270CCD004829D3 /* LUMO_MainDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LUMO_MainDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		415410472F270CCD004829D3 /* LUMO_MainDevTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LUMO_MainDevTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		415410482F270CCD004829D3 /* LUMO_MainDevUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LUMO_MainDevUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		415412102F39DE2B004829D3 /* LUMO-MainDev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "LUMO-MainDev-Info.plist"; sourceTree = "<group>"; };
 		41853A6D2F11469D00D6CA1C /* LUMO_MainDevApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LUMO_MainDevApp.swift; sourceTree = "<group>"; };
 		41853A762F1147FE00D6CA1C /* OnBoardingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingModel.swift; sourceTree = "<group>"; };
 		41853A772F1147FE00D6CA1C /* OnBoardingPartTodoWrite.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = OnBoardingPartTodoWrite.md; sourceTree = "<group>"; };
@@ -144,6 +145,7 @@
 		41853A252F1145F700D6CA1C = {
 			isa = PBXGroup;
 			children = (
+				415412102F39DE2B004829D3 /* LUMO-MainDev-Info.plist */,
 				415410C32F33AF4A004829D3 /* HANetwork */,
 				415410A02F2F9434004829D3 /* SoundSetting */,
 				4154107A2F2738E0004829D3 /* AlarmPart */,
@@ -495,6 +497,7 @@
 				DEVELOPMENT_TEAM = BF564SQ936;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "LUMO-MainDev-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -527,6 +530,7 @@
 				DEVELOPMENT_TEAM = BF564SQ936;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "LUMO-MainDev-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
