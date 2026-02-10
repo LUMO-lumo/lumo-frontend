@@ -142,7 +142,7 @@ struct SoundSettingView: View {
                     CustomSlider(value: $volume, range: 0...100, thumbColor: .main300)
                         .frame(height: 20)
                         // [추가] 슬라이더 값 변경 시 실제 볼륨 조절
-                        .onChange(of: volume) { newValue in
+                        .onChange(of: volume) { oldValue, newValue in
                             SoundManager.shared.setVolume(newValue)
                         }
                     
