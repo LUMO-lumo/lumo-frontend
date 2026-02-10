@@ -2,23 +2,19 @@ import SwiftUI
 import Foundation
 import SwiftData
 import PhotosUI
+import Combine
+import Moya
 
-// MARK: - 홈 화면 뷰
+
 struct HomeView: View {
+    @StateObject private var viewModel = HomeViewModel()
     @State private var showToDoSheet = false
-    let corallightGray = Color(hex: "F2F4F7")
-    
-    // 더미 데이터 (나중에 ViewModel이나 SwiftData로 교체 가능)
-    // 이미지에 있는 내용과 추가 항목을 포함하여 3개 이상으로 설정
-    let dummyTasks = [
-        "일반쓰레기 버리기",
-        "과제 제출하기",
-        "공복 유산소하기",
-        "일기 쓰기",
-        "영양제 챙겨먹기"
-    ]
+    @State private var navigateToDetail = false
     
     var body: some View {
+
+        NavigationStack {
+
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 
@@ -144,11 +140,87 @@ struct HomeView: View {
     }
 }
 
-// MARK: - 최근 미션 성공 뷰
+// MARK: - 하위 컴포넌트
+private extension HomeView {
+    var quoteCardSection: some View {
+        ZStack {
+            Image("HomePartImage")
+                .resizable()
+                .frame(height: 180)
+            Color.black.opacity(0.3)
+            VStack(spacing: 5) {
+                Text("오늘의 한마디")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.9))
+                
+                // 오늘의 명언은 뷰모델의 데이터를 유지하여 동적으로 작동하게 합니다.
+                Text(viewModel.dailyQuote)
+                    .font(.headline)
+                    .bold()
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.white)
+            }
+        }
+        .frame(height: 180).clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+    
+    var todoPreviewSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("오늘의 할 일")
+                    .font(.title3)
+                    .fontWeight(.bold)
+                Spacer()
+                NavigationLink(destination: TodoSettingView(viewModel: viewModel)) {
+                    Text("자세히 보기 >")
+                        .font(.subheadline)
+                        .foregroundStyle(Color(hex: "BBC0C7"))
+                }
+            }
+            VStack(alignment: .leading, spacing: 16) {
+                if viewModel.tasks.isEmpty {
+                    Text("등록된 할 일이 없습니다.")
+                        .foregroundStyle(.gray)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                } else {
+                    ForEach(Array(viewModel.previewTasks.enumerated()), id: \.element.id) { index, task in
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text(task.title)
+                                .font(.body)
+                                .foregroundStyle(.black.opacity(0.8))
+                                .padding(.horizontal, 4)
+                            if index < viewModel.previewTasks.count - 1 {
+                                Divider()
+                                .background(Color.black.opacity(0.1)) }
+                        }
+                    }
+                }
+            }
+            .padding(20)
+            .background(Color(hex: "F2F4F7"))
+            .cornerRadius(16)
+            .onTapGesture {
+                showToDoSheet = true }
+        }
+    }
+    
+    var missionStatSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("최근 미션 성공")
+                .font(.title3)
+                .fontWeight(.bold)
+            HStack(spacing: 12) {
+                StatCard(number: "\(viewModel.missionStat.consecutiveDays)일", label: "연속성공")
+                StatCard(number: viewModel.missionStat.ratePercentage, label: "이번달 달성률")
+            }
+        }
+    }
+}
+
 struct StatCard: View {
     let number: String
     let label: String
-    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Spacer()
@@ -157,7 +229,7 @@ struct StatCard: View {
                 .fontWeight(.bold)
             Text(label)
                 .font(.caption)
-                .foregroundColor(.black)
+                .foregroundStyle(.black)
             Spacer()
         }
         .padding()
@@ -167,52 +239,80 @@ struct StatCard: View {
     }
 }
 
-// MARK: - 나중에 날짜 연결하는 페이지로 이용하게 만드는 페이지
-struct DetailPageView: View {
+struct ToDoSheetView: View {
+    @ObservedObject var viewModel: HomeViewModel
+    @Binding var showSheet: Bool
+    @Binding var showDetail: Bool
+    @State private var editingTaskId: UUID?
+    let themeColor = Color(hex: "E86457")
+    
     var body: some View {
-        VStack {
-            Text("날짜 정하는 페이지")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-            Text("더 자세한 내용이 여기에 표시됩니다.")
-                .foregroundColor(.gray)
-                .padding()
+        VStack(spacing: 0) {
+            HStack {
+                Text("전체 할 일")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                Spacer()
+                Button("자세히 보기 >") {
+                    showSheet = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { showDetail = true }
+                }
+                .font(.subheadline)
+                .foregroundStyle(Color(hex: "BBC0C7"))
+                .padding(.top, 16)
+                
+            }
+            .padding([.top, .horizontal], 24)
+            .padding(.bottom, 16)
+            
+            ScrollView {
+                LazyVStack(spacing: 12) {
+                    ForEach($viewModel.tasks) { $task in
+                        SheetTaskRow(task: $task, themeColor: themeColor, isEditing: editingTaskId == task.id,
+                                     startEditing: { editingTaskId = task.id },
+                                     finishEditing: { editingTaskId = nil },
+                                     deleteAction: { viewModel.deleteTask(id: task.id) })
+                    }
+                }.padding(.horizontal)
+            }
         }
+        .background(.white)
     }
 }
 
-// MARK: - 시트뷰 (수정된 부분)
-struct ToDoSheetView: View {
-    // HomeView에서 전달받은 전체 데이터
-    let tasks: [String]
+struct SheetTaskRow: View {
+    @Binding var task: Task
+    let themeColor: Color
+    let isEditing: Bool
+    let startEditing: () -> Void
+    let finishEditing: () -> Void
+    let deleteAction: () -> Void
+    @FocusState private var isFocused: Bool
     
     var body: some View {
-        VStack(alignment: .leading) {
-            // 타이틀 '전체 할 일'로 변경 (이미지 우측 하단 참조)
-            Text("전체 할 일")
-                .font(.title2)
-                .fontWeight(.bold)
-                .padding(.top, 20)
-            
-            ScrollView {
-                VStack{
-                    // 전달받은 모든 task 표시
-                    ForEach(tasks, id: \.self) { task in
-                        HStack {
-                            Text(task)
-                                .font(.body)
-                                .foregroundColor(.black)
-                            Spacer()
-                        }
-                        .padding()
-                        .background(Color(UIColor.systemGray6))
-                        .cornerRadius(12)
-                    }
+        VStack(spacing: 0) {
+            HStack {
+                if isEditing {
+                    TextField("수정", text: $task.title)
+                        .focused($isFocused)
+                        .onSubmit { finishEditing() }
+                } else {
+                    Text(task.title)
+                        .foregroundStyle(.black)
                 }
-                .padding(.top, 10)
+                Spacer()
+                Button(action: { isEditing ? finishEditing() : startEditing() }) {
+                    Image(systemName: isEditing ? "checkmark.circle.fill" : "pencil")
+                        .foregroundStyle(themeColor)
+                }
+                Button(action: deleteAction) { Image(systemName: "trash")
+                    .foregroundStyle(themeColor) }
             }
-        }
-        .padding()
+            .padding(.vertical, 16)
+            .padding(.horizontal, 16)
+            Divider()
+                .background(Color.gray.opacity(0.3))
+        }.onChange(of: isEditing) { _, newValue in if newValue { isFocused = true } }
     }
 }
 

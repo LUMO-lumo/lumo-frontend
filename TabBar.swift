@@ -10,6 +10,7 @@ import Foundation
 import SwiftData
 import PhotosUI
 
+
 // MARK: - 앱의 시작점
 struct MainView: View {
     // 현재 선택된 탭 (0: 홈, 1: 알람, 2: 루틴, 3: 설정)
@@ -19,7 +20,6 @@ struct MainView: View {
     
     // 탭바 숨김 여부를 관리하는 변수
     @State private var isTabBarHidden: Bool = false
-    
     var body: some View {
         ZStack(alignment: .bottom) {
             Group {
@@ -27,6 +27,7 @@ struct MainView: View {
                 case 0:
                     HomeView()
                 case 1:
+
                     Text(" 알람 파트")
                 case 2:
                     RoutineView(isTabBarHidden: $isTabBarHidden)
@@ -38,6 +39,7 @@ struct MainView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
+
           if !isTabBarHidden {
               CustomTabBar(selectedTab: $selectedTab)
             }
@@ -131,4 +133,8 @@ struct TabBarButton: View {
     }
 }
 
+
+#Preview{
+    MainView()
+}
 
