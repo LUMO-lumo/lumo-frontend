@@ -5,80 +5,141 @@
 //  Created by 김승겸 on 2/2/26.
 //
 
-import Foundation
 import Combine
+import Foundation
+import SwiftData
+
+import Moya
 
 class LoginViewModel: ObservableObject {
     
-    // MARK: - Input (화면 입력값)
+    // MARK: - Properties
+    
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var isAutoLogin: Bool = false
     @Published var rememberEmail: Bool = false
     
-    // MARK: - Output (화면 상태)
-    @Published var errorMessage: String? = nil // 에러 문구
-    @Published var isLoading: Bool = false     // 로딩 중 여부
-    @Published var isLoggedIn: Bool = false    // 로그인 성공 여부 (화면 이동용)
+    @Published var errorMessage: String? = nil
+    @Published var isLoading: Bool = false
+    @Published var isLoggedIn: Bool = false
     
-    // 버튼 활성화 로직 (이메일, 비번 입력 시 true)
+    private let baseURL: String = AppConfig.baseURL
+    
     var isButtonEnabled: Bool {
         return !email.isEmpty && !password.isEmpty
     }
     
-    // MARK: - Business Logic (로그인 함수)
+    private let provider: MoyaProvider<UserTarget> = MoyaProvider()
+    
+    init() {}
+    
+    // MARK: - Action Functions
+    
+    /// 로그인 요청 (POST)
     @MainActor
-    func login() async {
-        guard isButtonEnabled else { return }
+    func userLogin(modelContext: ModelContext) async {
+        guard isButtonEnabled else {
+            return
+        }
         
         isLoading = true
         errorMessage = nil
         
-        // ⚠️ 실제 서버 주소로 변경 필요 (http 사용 시 Info.plist 설정 필요)
-        let baseURL = "http://YOUR_SERVER_IP:PORT"
-        guard let url = URL(string: "\(baseURL)/api/member/login") else { return }
+        let requestBody = LoginRequest(
+            email: email,
+            password: password
+        )
         
-        // Request 생성
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        // Moya 요청
+        let result = await provider.request(.login(request: requestBody))
         
-        let body: [String: String] = [
-            "email": email,
-            "password": password
-        ]
-        
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: body)
-            
-            // 통신 시작
-            let (data, response) = try await URLSession.shared.data(for: request)
-            
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode) else {
-                errorMessage = "서버 오류가 발생했습니다."
-                isLoading = false
-                return
+        switch result {
+        case .success(let response):
+            do {
+                // 성공(200~299)인지 확인
+                _ = try response.filterSuccessfulStatusCodes()
+                
+                let decoded = try response.map(APIResponse.self)
+                
+                if decoded.success {
+                    print("✅ 로그인 성공")
+                    
+                    if let resultData = decoded.result {
+                        
+                        // 1. 토큰 저장 (원본 로직 유지)
+                        if let token = decoded.result?.accessToken {
+                            let userInfo = UserInfo(
+                                accessToken: token,
+                                refreshToken: nil
+                            )
+                            _ = KeychainManager.standard.saveSession(
+                                userInfo,
+                                for: "userSession"
+                            )
+                        }
+                        
+                        // 🔍 [디버깅] 현재 값 확인하기 (로그로 확인해보세요)
+                        let serverNickname = resultData.username
+                        let tempNickname = UserDefaults.standard.string(forKey: "tempNickname")
+                        
+                        print("🌍 서버 닉네임: \(serverNickname ?? "없음")")
+                        print("📱 임시 닉네임: \(tempNickname ?? "없음")")
+                        
+                        // ⭐️ [수정 핵심] 우선순위 변경
+                        // 1순위: 방금 입력한 임시 닉네임 (tempNickname)
+                        // 2순위: 서버에 저장된 닉네임 (serverNickname)
+                        // 3순위: 기본값 ("LumoUser")
+                        let realNickname = tempNickname ?? serverNickname ?? "LumoUser"
+                        
+                        print("✅ 최종 결정된 닉네임: \(realNickname)")
+                        
+                        // 2. 유저 데이터 생성 또는 업데이트
+                        let descriptor = FetchDescriptor<UserModel>()
+                        let existingUsers = try? modelContext.fetch(descriptor)
+                        
+                        if let existingUser = existingUsers?.first {
+                            existingUser.nickname = realNickname
+                            print("♻️ 기존 유저 닉네임 업데이트 완료")
+                        } else {
+                            let newUser = UserModel(nickname: realNickname)
+                            modelContext.insert(newUser)
+                            print("✨ 새 유저 생성 완료")
+                        }
+                        
+                        // 3. SwiftData 저장
+                        try? modelContext.save()
+                        
+                        // [중요] 사용한 임시 닉네임 삭제
+                        // 이 코드가 실행된 후에는 tempNickname이 사라지므로,
+                        // 다음 로그인부터는 서버 값을 따라가게 됩니다. (의도된 동작)
+                        UserDefaults.standard.removeObject(forKey: "tempNickname")
+                    }
+                    
+                    isLoggedIn = true
+                } else {
+                    errorMessage = decoded.message ?? "로그인 실패"
+                }
+            } catch {
+                // 실패(400~500) 처리
+                if let errorData = try? response.map(APIResponse.self) {
+                    errorMessage = errorData.message
+                } else {
+                    errorMessage = "서버 오류가 발생했습니다."
+                }
             }
             
-            // 데이터 디코딩
-            let decodedResponse = try JSONDecoder().decode(LoginResponse.self, from: data)
-            
-            if decodedResponse.success {
-                // 성공: 토큰 저장 및 화면 전환 트리거
-                print("토큰: \(decodedResponse.result?.accessToken ?? "")")
-                // UserDefaults.standard.set(decodedResponse.result?.accessToken, forKey: "accessToken")
-                self.isLoggedIn = true
-            } else {
-                // 실패: 서버 메시지 표시
-                self.errorMessage = decodedResponse.message
-            }
-            
-        } catch {
-            print("에러: \(error)")
-            self.errorMessage = "네트워크 연결을 확인해주세요."
+        case .failure(let error):
+            print("❌ Moya 에러: \(error)")
+            errorMessage = "네트워크 연결을 확인해주세요."
         }
         
         isLoading = false
     }
+}
+
+/// 로그인 요청 바디
+struct LoginRequest: Encodable {
+    let email: String
+    let password: String
 }

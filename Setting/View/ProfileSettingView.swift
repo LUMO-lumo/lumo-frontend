@@ -5,9 +5,20 @@
 //  Created by 김승겸 on 1/29/26.
 //
 
+import SwiftData
 import SwiftUI
 
 struct ProfileSettingView: View {
+    
+    @Binding var isTabBarHidden: Bool
+    
+    @Query private var users: [UserModel]
+    
+    /// 현재 로그인된 유저 (없으면 nil)
+    private var currentUser: UserModel? {
+        return users.first
+    }
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -15,36 +26,43 @@ struct ProfileSettingView: View {
                     .padding(.horizontal, 16)
                     .font(.system(size: 20, weight: .bold))
                 
-                
                 VStack {
-                    
-                    LoginSectionView()
+                    LoginSectionView(
+                        isTabBarHidden: $isTabBarHidden,
+                        user: currentUser
+                    )
                     
                     ProSectionView()
                     
-                    Spacer() .frame(height: 16)
+                    Spacer()
+                        .frame(height: 16)
                     
                     AdvancedSectionView()
                     
-                    Spacer() .frame(height: 16)
+                    Spacer()
+                        .frame(height: 16)
                     
                     SupportSectionView()
                     
-                    Spacer() .frame(height: 20)
+                    Spacer()
+                        .frame(height: 20)
                     
-                    ETCSectionView()
-                    
+                    ETCSectionView(
+                        isTabBarHidden: $isTabBarHidden,
+                        user: currentUser
+                    )
                 }
+                .padding(.horizontal, 24)
                 .padding(.top, 8)
                 .padding(.bottom, 87)
+                .onAppear {
+                    isTabBarHidden = false
+                }
             }
         }
-        .padding(.horizontal, 24)
     }
 }
 
 #Preview {
-    ProfileSettingView()
+    ProfileSettingView(isTabBarHidden: .constant(false))
 }
-
-

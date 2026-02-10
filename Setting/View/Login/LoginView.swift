@@ -1,20 +1,42 @@
 //
-//  LoginView.swift
-//  Lumo
+//    LoginView.swift
+//    Lumo
 //
-//  Created by 김승겸 on 2/2/26.
+//    Created by 김승겸 on 2/2/26.
 //
 
+import SwiftData
 import SwiftUI
 
 struct LoginView: View {
-    // ViewModel 연결
-    @StateObject private var viewModel = LoginViewModel()
+    
+    // MARK: - Properties
+    
+    @StateObject private var viewModel: LoginViewModel = LoginViewModel()
+    
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    
+    @Binding var isTabBarHidden: Bool
     
     var body: some View {
         NavigationStack {
             VStack {
-                // 1. 로고 영역
+                // 1. 상단 네비게이션 (뒤로가기)
+                HStack {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 20))
+                            .foregroundStyle(.black)
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.bottom, 20)
+                
+                // 2. 로고 영역
                 VStack(spacing: 10) {
                     Image("Logo")
                         .resizable()
@@ -34,18 +56,21 @@ struct LoginView: View {
                     }
                     .padding(.top, 10)
                 }
-                .padding(.top, 79)
+                .padding(.top, 20)
                 
                 Spacer()
                 
-                // 2. 입력 필드
+                // 3. 입력 필드
                 VStack(spacing: 10) {
                     TextField("이메일", text: $viewModel.email)
                         .padding()
                         .frame(height: 52)
                         .background(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder(Color.gray300, lineWidth: 1)
+                                .strokeBorder(
+                                    Color.gray300,
+                                    lineWidth: 1
+                                )
                         )
                         .textInputAutocapitalization(.never)
                         .keyboardType(.emailAddress)
@@ -55,14 +80,24 @@ struct LoginView: View {
                         .frame(height: 52)
                         .background(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder(Color.gray300, lineWidth: 1)
+                                .strokeBorder(
+                                    Color.gray300,
+                                    lineWidth: 1
+                                )
                         )
                 }
                 
-                // 3. 체크박스 & 에러 메시지
+                // 4. 체크박스 & 에러 메시지
                 HStack(alignment: .center, spacing: 12) {
-                    CheckboxButton(title: "자동로그인", isChecked: $viewModel.isAutoLogin)
-                    CheckboxButton(title: "이메일 기억하기", isChecked: $viewModel.rememberEmail)
+                    CheckboxButton(
+                        title: "자동로그인",
+                        isChecked: $viewModel.isAutoLogin
+                    )
+                    
+                    CheckboxButton(
+                        title: "이메일 기억하기",
+                        isChecked: $viewModel.rememberEmail
+                    )
                     
                     Spacer()
                     
@@ -77,9 +112,9 @@ struct LoginView: View {
                 
                 Spacer()
                 
-                // 4. 하단 링크
+                // 5. 하단 링크 (비밀번호 찾기 | 회원가입)
                 HStack(spacing: 12) {
-                    NavigationLink(destination: Text("비밀번호 찾기")) {
+                    NavigationLink(destination: PWResetView(isTabBarHidden: $isTabBarHidden)) {
                         Text("비밀번호 찾기")
                     }
                     
@@ -87,7 +122,9 @@ struct LoginView: View {
                         .frame(width: 1, height: 12)
                         .foregroundStyle(Color(hex: "D9D9D9"))
                     
-                    NavigationLink(destination: Text("회원가입")) {
+                    NavigationLink(
+                        destination: SignUpView(isTabBarHidden: $isTabBarHidden)
+                    ) {
                         Text("회원가입")
                     }
                 }
@@ -95,22 +132,30 @@ struct LoginView: View {
                 .foregroundStyle(.primary)
                 .padding(.bottom, 12)
                 
-                // 5. 로그인 버튼
+                // 6. 로그인 버튼
                 Button(action: {
-                    Task { await viewModel.login() }
+                    Task {
+                        await viewModel.userLogin(modelContext: modelContext)
+                    }
                 }) {
                     HStack {
                         if viewModel.isLoading {
-                            ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            ProgressView()
+                                .progressViewStyle(
+                                    CircularProgressViewStyle(tint: .white)
+                                )
                                 .padding(.trailing, 8)
                         }
+                        
                         Text("로그인")
                             .font(.Subtitle3)
                             .foregroundStyle(Color.gray700)
                     }
                     .frame(maxWidth: .infinity)
                     .frame(height: 55)
-                    .background(viewModel.isButtonEnabled ? Color.main300 : Color.gray300)
+                    .background(
+                        viewModel.isButtonEnabled ? Color.main300 : Color.gray300
+                    )
                     .foregroundStyle(Color.white)
                     .cornerRadius(8)
                 }
@@ -118,33 +163,48 @@ struct LoginView: View {
                 .padding(.bottom, 22)
             }
             .padding(.horizontal, 24)
-            // 로그인 성공 시 화면 전환 로직 (예시)
-            .navigationDestination(isPresented: $viewModel.isLoggedIn) {
-                Text("메인 화면입니다!") // 여기에 MainView()를 넣으면 됩니다.
+            .navigationBarHidden(true)
+            .onAppear {
+                isTabBarHidden = true
+            }
+            .onChange(of: viewModel.isLoggedIn) { oldValue, newValue in
+                if newValue {
+                    dismiss() 
+                }
             }
         }
     }
 }
 
-// 체크박스
+// MARK: - Subviews
+
+/// 체크박스 버튼 컴포넌트
 struct CheckboxButton: View {
+    
     let title: String
     @Binding var isChecked: Bool
     
     var body: some View {
         Button(action: {
-            withAnimation(.easeInOut(duration: 0.1)) { isChecked.toggle() }
+            withAnimation(.easeInOut(duration: 0.1)) {
+                isChecked.toggle()
+            }
         }) {
             HStack(spacing: 6) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 4)
                         .fill(isChecked ? Color.main300 : Color.clear)
+                    
                     RoundedRectangle(cornerRadius: 4)
-                        .strokeBorder(isChecked ? Color.clear : Color.gray300, lineWidth: 1)
+                        .strokeBorder(
+                            isChecked ? Color.clear : Color.gray300,
+                            lineWidth: 1
+                        )
+                    
                     if isChecked {
                         Image("typeCheck")
                             .font(.system(size: 10, weight: .bold))
-                            .foregroundColor(.white)
+                            .foregroundStyle(Color.white)
                     }
                 }
                 .frame(width: 18, height: 18)
@@ -158,5 +218,6 @@ struct CheckboxButton: View {
 }
 
 #Preview {
-    LoginView()
+    LoginView(isTabBarHidden: .constant(false))
+        .modelContainer(for: UserModel.self, inMemory: true)
 }
