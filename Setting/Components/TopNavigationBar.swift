@@ -17,7 +17,7 @@ struct TopNavigationBar: ViewModifier {
             ZStack{
                 Text(title)
                     .font(.system(size: 20, weight: .bold))
-                    .foregroundStyle(.black)
+                    .foregroundStyle(.primary)
                 
                 
                 HStack {
@@ -31,7 +31,7 @@ struct TopNavigationBar: ViewModifier {
             }
             .padding(.horizontal, 20)
             .padding(.top, 15)
-            .background(Color.white)
+            .background(Color(uiColor: .systemBackground))
             
             Spacer().frame(height:32)
             
