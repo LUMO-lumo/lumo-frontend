@@ -28,6 +28,9 @@
 		34A468122F3C150400F0290D /* NoticeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A468112F3C150400F0290D /* NoticeViewModel.swift */; };
 		34A468142F3C156200F0290D /* NoticeTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A468132F3C156200F0290D /* NoticeTarget.swift */; };
 		34A469922F3C1D6E00F0290D /* SettingTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469912F3C1D6E00F0290D /* SettingTarget.swift */; };
+		34A469942F3C2D4C00F0290D /* DistanceMissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469932F3C2D4C00F0290D /* DistanceMissionView.swift */; };
+		34A469982F3C325200F0290D /* BaseMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469972F3C325200F0290D /* BaseMissionViewModel.swift */; };
+		34A4699A2F3C369400F0290D /* DistanceMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469992F3C369400F0290D /* DistanceMissionViewModel.swift */; };
 		34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */; };
 		B400C5D82F3B16FF00DBDC08 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5D42F3B16FF00DBDC08 /* LoginModel.swift */; };
 		B400C5D92F3B16FF00DBDC08 /* PWResetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5D52F3B16FF00DBDC08 /* PWResetModel.swift */; };
@@ -102,6 +105,9 @@
 		34A468112F3C150400F0290D /* NoticeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeViewModel.swift; sourceTree = "<group>"; };
 		34A468132F3C156200F0290D /* NoticeTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeTarget.swift; sourceTree = "<group>"; };
 		34A469912F3C1D6E00F0290D /* SettingTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTarget.swift; sourceTree = "<group>"; };
+		34A469932F3C2D4C00F0290D /* DistanceMissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceMissionView.swift; sourceTree = "<group>"; };
+		34A469972F3C325200F0290D /* BaseMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseMissionViewModel.swift; sourceTree = "<group>"; };
+		34A469992F3C369400F0290D /* DistanceMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceMissionViewModel.swift; sourceTree = "<group>"; };
 		34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBriefingViewModel.swift; sourceTree = "<group>"; };
 		B400C5D42F3B16FF00DBDC08 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		B400C5D52F3B16FF00DBDC08 /* PWResetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWResetModel.swift; sourceTree = "<group>"; };
@@ -199,24 +205,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		348C8B602F345FDD00C384BC /* BriefingVoiceSetting */ = {
-			isa = PBXGroup;
-			children = (
-				348C8B612F345FF000C384BC /* BriefingVoiceViewModel.swift */,
-				348C8B632F345FF700C384BC /* BriefingVoiceView.swift */,
-			);
-			path = BriefingVoiceSetting;
-			sourceTree = "<group>";
-		};
-		348C8B652F3463C100C384BC /* SmartBriefingSetting */ = {
-			isa = PBXGroup;
-			children = (
-				348C8B662F3463CD00C384BC /* SmartBriefingView.swift */,
-				34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */,
-			);
-			path = SmartBriefingSetting;
-			sourceTree = "<group>";
-		};
 		3492C58C2F3B419000958A4D /* TodoSetting */ = {
 			isa = PBXGroup;
 			children = (
@@ -240,24 +228,6 @@
 			path = HomePart;
 			sourceTree = "<group>";
 		};
-		34A2B3C92F317E9700F3B9A8 /* MissionAlarmSetting */ = {
-			isa = PBXGroup;
-			children = (
-				34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */,
-				34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */,
-			);
-			path = MissionAlarmSetting;
-			sourceTree = "<group>";
-		};
-		34A2B4F52F31C29800F3B9A8 /* ScreenThemeSetting */ = {
-			isa = PBXGroup;
-			children = (
-				34A2B4F82F31C38B00F3B9A8 /* ScreenThemeSettingView.swift */,
-				34A2B4FA2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift */,
-			);
-			path = ScreenThemeSetting;
-			sourceTree = "<group>";
-		};
 		34A2B4FC2F31C52200F3B9A8 /* Components */ = {
 			isa = PBXGroup;
 			children = (
@@ -273,6 +243,24 @@
 				34A468112F3C150400F0290D /* NoticeViewModel.swift */,
 			);
 			path = Notice;
+			sourceTree = "<group>";
+		};
+		34A4699B2F3C586D00F0290D /* SmartBriefing */ = {
+			isa = PBXGroup;
+			children = (
+				34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */,
+			);
+			path = SmartBriefing;
+			sourceTree = "<group>";
+		};
+		34A4699C2F3C588C00F0290D /* Advanced */ = {
+			isa = PBXGroup;
+			children = (
+				34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */,
+				348C8B612F345FF000C384BC /* BriefingVoiceViewModel.swift */,
+				34A2B4FA2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift */,
+			);
+			path = Advanced;
 			sourceTree = "<group>";
 		};
 		B400C58F2F3B15BD00DBDC08 /* Recovered References */ = {
@@ -331,6 +319,7 @@
 			isa = PBXGroup;
 			children = (
 				B400C77F2F3BAB4A00DBDC08 /* MathAlarmView.swift */,
+				34A469932F3C2D4C00F0290D /* DistanceMissionView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -338,7 +327,9 @@
 		B400C77B2F3BAAB400DBDC08 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				34A469972F3C325200F0290D /* BaseMissionViewModel.swift */,
 				B400C77E2F3BAB2B00DBDC08 /* MissionViewModel.swift */,
+				34A469992F3C369400F0290D /* DistanceMissionViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -388,6 +379,8 @@
 		B40A01142F2B923E00687C64 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				34A4699C2F3C588C00F0290D /* Advanced */,
+				34A4699B2F3C586D00F0290D /* SmartBriefing */,
 				B400C5DE2F3B173900DBDC08 /* Login */,
 			);
 			path = ViewModel;
@@ -439,8 +432,8 @@
 				B400C7772F3BAA6700DBDC08 /* Mission */,
 				B40A01112F2B921500687C64 /* Setting */,
 				B4B4DAA42F2767C400C29EDC /* Routine */,
-				B42F48062F26FAFD0057284E /* TabBar.swift */,
 				3492C5912F3B419000958A4D /* HomePart */,
+				B42F48062F26FAFD0057284E /* TabBar.swift */,
 				B4FD5F142F17DEE80022CF67 /* LumoApp.swift */,
 				B4FD5FE82F1A3BAF0022CF67 /* Domain */,
 				B4FD5FC22F1A35B30022CF67 /* InitialSetup */,
@@ -479,7 +472,7 @@
 		B4E284822F2C529300D8FD4D /* Pro */ = {
 			isa = PBXGroup;
 			children = (
-				348C8B652F3463C100C384BC /* SmartBriefingSetting */,
+				348C8B662F3463CD00C384BC /* SmartBriefingView.swift */,
 				B4E284832F2C52BD00D8FD4D /* ProSectionView.swift */,
 			);
 			path = Pro;
@@ -488,9 +481,9 @@
 		B4E284852F2C71DC00D8FD4D /* Advanced */ = {
 			isa = PBXGroup;
 			children = (
-				348C8B602F345FDD00C384BC /* BriefingVoiceSetting */,
-				34A2B4F52F31C29800F3B9A8 /* ScreenThemeSetting */,
-				34A2B3C92F317E9700F3B9A8 /* MissionAlarmSetting */,
+				348C8B632F345FF700C384BC /* BriefingVoiceView.swift */,
+				34A2B4F82F31C38B00F3B9A8 /* ScreenThemeSettingView.swift */,
+				34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */,
 				B4E284862F2C71F900D8FD4D /* AdvancedSectionView.swift */,
 			);
 			path = Advanced;
@@ -655,8 +648,10 @@
 				B44CC1462F36F528004D19A6 /* PWResetView.swift in Sources */,
 				B400C5E32F3B1BBD00DBDC08 /* AddTypeSheet.swift in Sources */,
 				B44CC1512F3A21D7004D19A6 /* TokenProviding.swift in Sources */,
+				34A4699A2F3C369400F0290D /* DistanceMissionViewModel.swift in Sources */,
 				34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */,
 				348C8B622F345FF000C384BC /* BriefingVoiceViewModel.swift in Sources */,
+				34A469982F3C325200F0290D /* BaseMissionViewModel.swift in Sources */,
 				B400C7762F3BA9A500DBDC08 /* MissionTarget.swift in Sources */,
 				34A2B4F92F31C38B00F3B9A8 /* ScreenThemeSettingView.swift in Sources */,
 				34A2B4FE2F31C53B00F3B9A8 /* TopNavigationBar.swift in Sources */,
@@ -674,6 +669,7 @@
 				B4B4DAA92F2767C400C29EDC /* RoutineModel.swift in Sources */,
 				348C8B672F3463CD00C384BC /* SmartBriefingView.swift in Sources */,
 				B4B4DAAA2F2767C400C29EDC /* RoutineCardView.swift in Sources */,
+				34A469942F3C2D4C00F0290D /* DistanceMissionView.swift in Sources */,
 				B4B4DAAB2F2767C400C29EDC /* RoutineTabBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -811,10 +807,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 32UGN86SXU;
+				DEVELOPMENT_TEAM = 4HP2RU9G92;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "\"미션 수행을 위해 현재 위치와 이동 거리를 측정합니다.\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -826,7 +823,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo.sy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -845,10 +842,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 32UGN86SXU;
+				DEVELOPMENT_TEAM = 4HP2RU9G92;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "\"미션 수행을 위해 현재 위치와 이동 거리를 측정합니다.\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -860,7 +858,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo.sy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;

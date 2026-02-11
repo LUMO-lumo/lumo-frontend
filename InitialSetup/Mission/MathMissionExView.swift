@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MathMissionView: View {
+struct MathMissionExView: View {
     var body: some View {
         VStack {
             Spacer()
@@ -55,5 +55,5 @@ struct MathMissionView: View {
 }
 
 #Preview {
-    MathMissionView()
+    MathMissionExView()
 }

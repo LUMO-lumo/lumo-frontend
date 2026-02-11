@@ -53,3 +53,9 @@ struct DismissAlarmResult: Codable {
     let dismissType: String
     let snoozeCount: Int
 }
+
+struct DistanceMissionRequest: Codable {
+    let contentId: Int
+    let currentDistance: Double // 요청하신 부분
+    let attemptCount: Int
+}

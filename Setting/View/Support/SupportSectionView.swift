@@ -11,7 +11,7 @@ struct SupportSectionView: View {
     var body: some View {
         HStack {
             
-            NavigationLink(destination: Text("자주 묻는 질문")) {
+            NavigationLink(destination: DistanceMissionView(alarmId: 1)) {
                 Text("자주 묻는 질문")
                     .font(.Body1)
                     .padding(.vertical, 18)

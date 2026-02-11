@@ -12,6 +12,6 @@ import Moya
 protocol MainEndpoint: TargetType { }
 
 extension MainEndpoint {
-    var baseURL: URL { URL(string: MainAPIConstants.baseURL)! }
+    var baseURL: URL { return URL(string: AppConfig.baseURL)! }
     var headers: [String: String]? { ["Content-Type": "application/json"] }
 }
