@@ -130,8 +130,13 @@ class LoginViewModel: ObservableObject {
             }
             
         case .failure(let error):
-            print("❌ Moya 에러: \(error)")
-            errorMessage = "네트워크 연결을 확인해주세요."
+            // 🔍 여기서 서버가 보낸 진짜 에러 메시지를 확인합니다.
+            if let response = error.response {
+                let errorBody = String(data: response.data, encoding: .utf8)
+                print("❌ [HTTP \(response.statusCode)] 서버 에러 메시지: \(errorBody ?? "없음")")
+            } else {
+                print("❌ 네트워크 연결 실패: \(error.localizedDescription)")
+            }
         }
         
         isLoading = false

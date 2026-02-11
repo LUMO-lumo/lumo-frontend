@@ -14,7 +14,7 @@ enum MissionTarget {
     case startMission(alarmId: Int)
     
     /// 2. 미션 답안 제출 (POST / Path + JSON Body)
-    case submitMission(alarmId: Int, request: MissionSubmitRequest)
+    case submitMission(alarmId: Int, request: Encodable)
     
     /// 3. 알람 해제 (POST / Path + JSON Body)
     case dismissAlarm(alarmId: Int, request: DismissAlarmRequest)
@@ -24,7 +24,7 @@ extension MissionTarget: @MainActor APITargetType {
     
     var baseURL: URL {
         // UserTarget과 동일한 Base URL 로직을 사용한다고 가정 (실제 프로젝트 설정에 따름)
-        return URL(string: "YOUR_BASE_URL_HERE")!
+        return URL(string: AppConfig.baseURL)!
     }
     
     // 각 API의 경로 (alarmId가 Path에 포함됨)

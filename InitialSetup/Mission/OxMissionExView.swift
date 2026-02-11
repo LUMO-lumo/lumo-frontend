@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-struct OxMissionView: View {
+struct OxMissionExView: View {
     var body: some View {
         VStack {
             Spacer()
@@ -63,5 +63,5 @@ struct OxMissionView: View {
 }
 
 #Preview {
-    OxMissionView()
+    OxMissionExView()
 }

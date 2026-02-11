@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-struct TypingMissionView: View {
+struct TypingMissionExView: View {
     var body: some View {
         VStack {
             Spacer()
@@ -48,5 +48,5 @@ struct TypingMissionView: View {
 }
 
 #Preview {
-    TypingMissionView()
+    TypingMissionExView()
 }

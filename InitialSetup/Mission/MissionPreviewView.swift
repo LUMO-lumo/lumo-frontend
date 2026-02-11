@@ -16,13 +16,13 @@ struct MissionPreviewView: View {
             
             switch viewModel.selectedMission {
             case .math:
-                MathMissionView()
+                MathMissionExView()
             case .typing:
-                TypingMissionView()
+                TypingMissionExView()
             case .distance:
-                DistanceMissionView()
+                DistanceMissionExView()
             case .ox:
-                OxMissionView()
+                OxMissionExView()
             }
             
             // 이전 및 다음 버튼

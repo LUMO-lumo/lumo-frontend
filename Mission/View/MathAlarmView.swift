@@ -122,5 +122,5 @@ struct MathAlarmView: View {
 }
 
 #Preview {
-    MathMissionView()
+    MathAlarmView(alarmId: 1)
 }
