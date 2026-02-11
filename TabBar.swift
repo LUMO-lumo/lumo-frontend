@@ -53,7 +53,7 @@ struct CustomTabBar: View {
     // 브랜드 컬러 (LUMO Pink/Red)
     let activeColor = Color(hex: "F55641")
     let inactiveColor = Color.gray.opacity(0.8)
-    
+    @Environment(\.colorScheme) var scheme
     var body: some View {
         HStack {
             // 탭 1: 홈
@@ -101,9 +101,14 @@ struct CustomTabBar: View {
         .padding(.horizontal, 30) // 좌우 여백
         .padding(.top, 14) // 아이콘 위 여백
         .padding(.bottom, 10) // 아이콘 아래 여백 (SafeArea 고려 전)
-        .background(Color.white) // 배경색 흰색
+        .background(
+                    scheme == .dark ? Color(hex: "121212") : Color.white
+                )
         // 상단 그림자 효과 (사진처럼 보이게)
-        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: -5)
+        .shadow(
+                    color: scheme == .dark ? Color.clear : Color.black.opacity(0.05),
+                    radius: 5, x: 0, y: -5
+                )
     }
 }
 
