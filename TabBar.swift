@@ -51,14 +51,14 @@ struct MainView: View {
 struct CustomTabBar: View {
     @Binding var selectedTab: Int
     // 브랜드 컬러 (LUMO Pink/Red)
-    let activeColor = Color(hex: "F55641")
+    let activeColor = Color.main300
     let inactiveColor = Color.gray.opacity(0.8)
     @Environment(\.colorScheme) var scheme
     var body: some View {
         HStack {
             // 탭 1: 홈
             TabBarButton(
-                icon: selectedTab == 0 ? "house.fill" : "house",
+                icon: "Home",
                 text: "홈",
                 isSelected: selectedTab == 0,
                 activeColor: activeColor,
@@ -69,7 +69,7 @@ struct CustomTabBar: View {
             
             // 탭 2: 알람
             TabBarButton(
-                icon: selectedTab == 1 ? "bell.fill" : "bell",
+                icon: "Alarm",
                 text: "알람",
                 isSelected: selectedTab == 1,
                 activeColor: activeColor,
@@ -80,7 +80,7 @@ struct CustomTabBar: View {
             
             // 탭 3: 루틴
             TabBarButton(
-                icon: "chart.xyaxis.line", // 루틴 아이콘
+                icon: "Routine",
                 text: "루틴",
                 isSelected: selectedTab == 2,
                 activeColor: activeColor,
@@ -91,7 +91,7 @@ struct CustomTabBar: View {
             
             // 탭 4: 설정
             TabBarButton(
-                icon: selectedTab == 3 ? "gearshape.fill" : "gearshape",
+                icon: "Setting",
                 text: "설정",
                 isSelected: selectedTab == 3,
                 activeColor: activeColor,
@@ -124,8 +124,11 @@ struct TabBarButton: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: 6) {
-                Image(systemName: icon)
-                    .font(.system(size: 24))
+                Image(icon)
+                    .renderingMode(.template)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 24, height: 24)
                 
                 Text(text)
                     .font(.caption)

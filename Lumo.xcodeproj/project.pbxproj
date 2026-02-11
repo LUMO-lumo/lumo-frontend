@@ -19,7 +19,6 @@
 		3492C5982F3B419000958A4D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3492C58F2F3B419000958A4D /* HomeView.swift */; };
 		3492C5992F3B419000958A4D /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3492C5902F3B419000958A4D /* HomeViewModel.swift */; };
 		34A2B45E2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */; };
-		34A2B4602F318E1700F3B9A8 /* SettingTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B45F2F318E1700F3B9A8 /* SettingTarget.swift */; };
 		34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */; };
 		34A2B4F72F31C30D00F3B9A8 /* SettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */; };
 		34A2B4F92F31C38B00F3B9A8 /* ScreenThemeSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4F82F31C38B00F3B9A8 /* ScreenThemeSettingView.swift */; };
@@ -28,6 +27,7 @@
 		34A468102F3C14F000F0290D /* NoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A4680F2F3C14F000F0290D /* NoticeView.swift */; };
 		34A468122F3C150400F0290D /* NoticeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A468112F3C150400F0290D /* NoticeViewModel.swift */; };
 		34A468142F3C156200F0290D /* NoticeTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A468132F3C156200F0290D /* NoticeTarget.swift */; };
+		34A469922F3C1D6E00F0290D /* SettingTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469912F3C1D6E00F0290D /* SettingTarget.swift */; };
 		34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */; };
 		B400C5D82F3B16FF00DBDC08 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5D42F3B16FF00DBDC08 /* LoginModel.swift */; };
 		B400C5D92F3B16FF00DBDC08 /* PWResetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5D52F3B16FF00DBDC08 /* PWResetModel.swift */; };
@@ -93,7 +93,6 @@
 		3492C58F2F3B419000958A4D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		3492C5902F3B419000958A4D /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingView.swift; sourceTree = "<group>"; };
-		34A2B45F2F318E1700F3B9A8 /* SettingTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTarget.swift; sourceTree = "<group>"; };
 		34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingViewModel.swift; sourceTree = "<group>"; };
 		34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModel.swift; sourceTree = "<group>"; };
 		34A2B4F82F31C38B00F3B9A8 /* ScreenThemeSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenThemeSettingView.swift; sourceTree = "<group>"; };
@@ -102,6 +101,7 @@
 		34A4680F2F3C14F000F0290D /* NoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeView.swift; sourceTree = "<group>"; };
 		34A468112F3C150400F0290D /* NoticeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeViewModel.swift; sourceTree = "<group>"; };
 		34A468132F3C156200F0290D /* NoticeTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeTarget.swift; sourceTree = "<group>"; };
+		34A469912F3C1D6E00F0290D /* SettingTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTarget.swift; sourceTree = "<group>"; };
 		34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBriefingViewModel.swift; sourceTree = "<group>"; };
 		B400C5D42F3B16FF00DBDC08 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		B400C5D52F3B16FF00DBDC08 /* PWResetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWResetModel.swift; sourceTree = "<group>"; };
@@ -311,7 +311,8 @@
 			children = (
 				B400C7752F3BA99F00DBDC08 /* MissionTarget.swift */,
 				B44CC1412F363B9B004D19A6 /* UserTarget.swift */,
-				34A2B45F2F318E1700F3B9A8 /* SettingTarget.swift */,
+				34A469912F3C1D6E00F0290D /* SettingTarget.swift */,
+				34A468132F3C156200F0290D /* NoticeTarget.swift */,
 			);
 			path = Target;
 			sourceTree = "<group>";
@@ -395,7 +396,6 @@
 		B40A01262F2BBB7400687C64 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-
 				B44CC14B2F3998C4004D19A6 /* Token */,
 				B400C7742F3BA8DD00DBDC08 /* Target */,
 				B44CC1542F3A2A2D004D19A6 /* APITargetType.swift */,
@@ -403,9 +403,6 @@
 				B44CC1502F3A21D2004D19A6 /* TokenProviding.swift */,
 				B44CC1492F39989C004D19A6 /* APIManger.swift */,
 				B4D642732F338530000B4C08 /* AppConfig.swift */,
-
-				34A2B45F2F318E1700F3B9A8 /* SettingTarget.swift */,
-				34A468132F3C156200F0290D /* NoticeTarget.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -629,6 +626,7 @@
 				B42F48072F26FAFD0057284E /* TabBar.swift in Sources */,
 				B4D641FE2F2FA4AC000B4C08 /* LoginView.swift in Sources */,
 				B4D6420E2F30E384000B4C08 /* KeychainManager.swift in Sources */,
+				34A469922F3C1D6E00F0290D /* SettingTarget.swift in Sources */,
 				B4FD5F2E2F17DEE80022CF67 /* LumoApp.swift in Sources */,
 				34A2B45E2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift in Sources */,
 				B400C7802F3BABDB00DBDC08 /* MissionModel.swift in Sources */,
@@ -653,7 +651,6 @@
 				B4E284842F2C52C200D8FD4D /* ProSectionView.swift in Sources */,
 				B40A012A2F2BD24D00687C64 /* LoginSectionView.swift in Sources */,
 				B40A01162F2BA23D00687C64 /* ProfileSettingView.swift in Sources */,
-				34A2B4602F318E1700F3B9A8 /* SettingTarget.swift in Sources */,
 				B4B4DAA52F2767C400C29EDC /* AddTaskView.swift in Sources */,
 				B44CC1462F36F528004D19A6 /* PWResetView.swift in Sources */,
 				B400C5E32F3B1BBD00DBDC08 /* AddTypeSheet.swift in Sources */,
@@ -666,7 +663,6 @@
 				34A2B4FB2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift in Sources */,
 				B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */,
 				3492C5942F3B419000958A4D /* HomeModel.swift in Sources */,
-
 				34A468142F3C156200F0290D /* NoticeTarget.swift in Sources */,
 				B400C7812F3BABE100DBDC08 /* MissionViewModel.swift in Sources */,
 				3492C5952F3B419000958A4D /* TodoSettingViewModel.swift in Sources */,
