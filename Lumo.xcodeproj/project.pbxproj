@@ -33,6 +33,10 @@
 		B400C5E02F3B173900DBDC08 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5DB2F3B173900DBDC08 /* LoginViewModel.swift */; };
 		B400C5E12F3B173900DBDC08 /* PWResetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5DC2F3B173900DBDC08 /* PWResetViewModel.swift */; };
 		B400C5E32F3B1BBD00DBDC08 /* AddTypeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5E22F3B1BBD00DBDC08 /* AddTypeSheet.swift */; };
+		B400C7762F3BA9A500DBDC08 /* MissionTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C7752F3BA99F00DBDC08 /* MissionTarget.swift */; };
+		B400C7802F3BABDB00DBDC08 /* MissionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C77D2F3BAAE400DBDC08 /* MissionModel.swift */; };
+		B400C7812F3BABE100DBDC08 /* MissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C77E2F3BAB2B00DBDC08 /* MissionViewModel.swift */; };
+		B400C7822F3BABE600DBDC08 /* MathAlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C77F2F3BAB4A00DBDC08 /* MathAlarmView.swift */; };
 		B40A01162F2BA23D00687C64 /* ProfileSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40A01152F2BA14000687C64 /* ProfileSettingView.swift */; };
 		B40A01182F2BB03300687C64 /* SettingAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B40A01172F2BB03300687C64 /* SettingAssets.xcassets */; };
 		B40A012A2F2BD24D00687C64 /* LoginSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40A01292F2BD22D00687C64 /* LoginSectionView.swift */; };
@@ -100,6 +104,10 @@
 		B400C5DC2F3B173900DBDC08 /* PWResetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWResetViewModel.swift; sourceTree = "<group>"; };
 		B400C5DD2F3B173900DBDC08 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		B400C5E22F3B1BBD00DBDC08 /* AddTypeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTypeSheet.swift; sourceTree = "<group>"; };
+		B400C7752F3BA99F00DBDC08 /* MissionTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionTarget.swift; sourceTree = "<group>"; };
+		B400C77D2F3BAAE400DBDC08 /* MissionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionModel.swift; sourceTree = "<group>"; };
+		B400C77E2F3BAB2B00DBDC08 /* MissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionViewModel.swift; sourceTree = "<group>"; };
+		B400C77F2F3BAB4A00DBDC08 /* MathAlarmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathAlarmView.swift; sourceTree = "<group>"; };
 		B40A01152F2BA14000687C64 /* ProfileSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingView.swift; sourceTree = "<group>"; };
 		B40A01172F2BB03300687C64 /* SettingAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SettingAssets.xcassets; sourceTree = "<group>"; };
 		B40A01292F2BD22D00687C64 /* LoginSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSectionView.swift; sourceTree = "<group>"; };
@@ -283,6 +291,50 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
+		B400C7742F3BA8DD00DBDC08 /* Target */ = {
+			isa = PBXGroup;
+			children = (
+				B400C7752F3BA99F00DBDC08 /* MissionTarget.swift */,
+				B44CC1412F363B9B004D19A6 /* UserTarget.swift */,
+				34A2B45F2F318E1700F3B9A8 /* SettingTarget.swift */,
+			);
+			path = Target;
+			sourceTree = "<group>";
+		};
+		B400C7772F3BAA6700DBDC08 /* Mission */ = {
+			isa = PBXGroup;
+			children = (
+				B400C77C2F3BAABE00DBDC08 /* Model */,
+				B400C77B2F3BAAB400DBDC08 /* ViewModel */,
+				B400C7782F3BAA7000DBDC08 /* View */,
+			);
+			path = Mission;
+			sourceTree = "<group>";
+		};
+		B400C7782F3BAA7000DBDC08 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B400C77F2F3BAB4A00DBDC08 /* MathAlarmView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		B400C77B2F3BAAB400DBDC08 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				B400C77E2F3BAB2B00DBDC08 /* MissionViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		B400C77C2F3BAABE00DBDC08 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B400C77D2F3BAAE400DBDC08 /* MissionModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		B40A01112F2B921500687C64 /* Setting */ = {
 			isa = PBXGroup;
 			children = (
@@ -328,14 +380,13 @@
 		B40A01262F2BBB7400687C64 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				B400C7742F3BA8DD00DBDC08 /* Target */,
 				B44CC1542F3A2A2D004D19A6 /* APITargetType.swift */,
 				B44CC1522F3A26AA004D19A6 /* AuthRouter.swift */,
 				B44CC1502F3A21D2004D19A6 /* TokenProviding.swift */,
 				B44CC14B2F3998C4004D19A6 /* Token */,
 				B44CC1492F39989C004D19A6 /* APIManger.swift */,
-				B44CC1412F363B9B004D19A6 /* UserTarget.swift */,
 				B4D642732F338530000B4C08 /* AppConfig.swift */,
-				34A2B45F2F318E1700F3B9A8 /* SettingTarget.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -369,6 +420,7 @@
 				3492C57B2F3B417600958A4D /* AlarmPart */,
 				3492C5572F3B416500958A4D /* HANetwork */,
 				B40A01262F2BBB7400687C64 /* Network */,
+				B400C7772F3BAA6700DBDC08 /* Mission */,
 				B40A01112F2B921500687C64 /* Setting */,
 				B4B4DAA42F2767C400C29EDC /* Routine */,
 				B42F48062F26FAFD0057284E /* TabBar.swift */,
@@ -552,11 +604,13 @@
 				B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */,
 				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
 				34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */,
+				B400C7822F3BABE600DBDC08 /* MathAlarmView.swift in Sources */,
 				B42F48072F26FAFD0057284E /* TabBar.swift in Sources */,
 				B4D641FE2F2FA4AC000B4C08 /* LoginView.swift in Sources */,
 				B4D6420E2F30E384000B4C08 /* KeychainManager.swift in Sources */,
 				B4FD5F2E2F17DEE80022CF67 /* LumoApp.swift in Sources */,
 				34A2B45E2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift in Sources */,
+				B400C7802F3BABDB00DBDC08 /* MissionModel.swift in Sources */,
 				B4E2848D2F2CA3FC00D8FD4D /* ETCSectionView.swift in Sources */,
 				B4D642742F338534000B4C08 /* AppConfig.swift in Sources */,
 				B4E284872F2C720000D8FD4D /* AdvancedSectionView.swift in Sources */,
@@ -584,11 +638,13 @@
 				B44CC1512F3A21D7004D19A6 /* TokenProviding.swift in Sources */,
 				34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */,
 				348C8B622F345FF000C384BC /* BriefingVoiceViewModel.swift in Sources */,
+				B400C7762F3BA9A500DBDC08 /* MissionTarget.swift in Sources */,
 				34A2B4F92F31C38B00F3B9A8 /* ScreenThemeSettingView.swift in Sources */,
 				34A2B4FE2F31C53B00F3B9A8 /* TopNavigationBar.swift in Sources */,
 				34A2B4FB2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift in Sources */,
 				B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */,
 				3492C5942F3B419000958A4D /* HomeModel.swift in Sources */,
+				B400C7812F3BABE100DBDC08 /* MissionViewModel.swift in Sources */,
 				3492C5952F3B419000958A4D /* TodoSettingViewModel.swift in Sources */,
 				3492C5962F3B419000958A4D /* TodoSettingView.swift in Sources */,
 				3492C5972F3B419000958A4D /* TodoSettingModel.swift in Sources */,
