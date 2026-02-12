@@ -23,7 +23,7 @@ struct SupportSectionView: View {
             
             Spacer()
             
-            NavigationLink(destination: Text("BM")) {
+            NavigationLink(destination: OXMissionView(alarmId: 1)) {
                 Text("BM")
                     .font(.Body1)
                     .padding(.vertical, 18)

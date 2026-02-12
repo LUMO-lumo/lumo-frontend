@@ -7,12 +7,12 @@
 import SwiftUI
 
 struct DistanceMissionView: View {
-    let alarmId: Int
+    @EnvironmentObject var appState: AppState
     @StateObject private var viewModel: DistanceMissionViewModel
+    
     init(alarmId: Int) {
-            self.alarmId = alarmId
-            _viewModel = StateObject(wrappedValue: DistanceMissionViewModel(alarmId: alarmId))
-        }
+        _viewModel = StateObject(wrappedValue: DistanceMissionViewModel(alarmId: alarmId))
+    }
     var body: some View {
         ZStack{
             VStack {
@@ -20,19 +20,16 @@ struct DistanceMissionView: View {
                 
                 Text("알람 정보")
                     .font(.Subtitle2)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.primary)
                 
                 Spacer()
                 
-                ZStack {
-                    Text("거리 미션을 수행해 주세요!")
-                        .font(.Body1)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .foregroundStyle(Color.white)
-                        .background(Color.main300, in: RoundedRectangle(cornerRadius: 6)
-                        )
-                }
+                Text("거리 미션을 수행해 주세요!")
+                    .font(.Body1)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .foregroundStyle(Color.white)
+                    .background(Color.main300, in: RoundedRectangle(cornerRadius: 6))
                 
                 Spacer().frame(height:14)
                 
@@ -73,7 +70,16 @@ struct DistanceMissionView: View {
                 
                 Spacer().frame(height:74)
                 
-                Button(action:{}) {Text("SNOOZE")}
+                Button(action:{
+                    withAnimation {
+                        viewModel.showFeedback = true
+                        
+                        AsyncTask {
+                            try? await AsyncTask.sleep(nanoseconds: 1_000_000_000)
+                            viewModel.isMissionCompleted = true
+                            }
+                    }
+                }) {Text("SNOOZE")}
                     .font(.Subtitle2)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 20)
@@ -83,10 +89,10 @@ struct DistanceMissionView: View {
                 
                 Spacer().frame(height:85)
                 
-            } .padding(.horizontal)
-                .blur(radius: viewModel.isMissionCompleted ? 5 : 0)
+            } .padding(.horizontal, 24)
+                .blur(radius: viewModel.showFeedback ? 5 : 0)
             
-            if viewModel.isMissionCompleted {
+            if viewModel.showFeedback {
                 ZStack{
                     // 배경 (회색/검은색 반투명)
                     Color.black.opacity(0.8)
@@ -95,7 +101,7 @@ struct DistanceMissionView: View {
                     
                     // 내용 (이모티콘 + 멘트)
                     VStack(spacing: 20) {
-                        Image(.wellDone)
+                        Image("correct")
                             .resizable()
                             .frame(width: 180,height: 180)
                         
@@ -110,18 +116,33 @@ struct DistanceMissionView: View {
         }
         .animation(.easeInOut, value: viewModel.isMissionCompleted)
         .onAppear {
-                    viewModel.start()
+            _Concurrency.Task {
+                await viewModel.start()
+            }
+
+        }
+        .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
+                    if completed {
+                        print("🏁 거리 미션 완료! 메인 화면으로 이동합니다.")
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                    withAnimation(.easeInOut(duration: 0.5)) {
+                                        // 전역 루트 뷰를 메인으로 교체
+                                        appState.currentRoot = .main
+                                    }
+                                }
+                    }
                 }
-        .onChange(of: viewModel.isMissionCompleted) { oldValue, newValue in
-            // newValue가 true(미션 완료)가 되었을 때 실행
-            if newValue {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    viewModel.dismissAlarm() // 또는 dismiss()
+                // 에러 알림 처리
+                .alert("알림", isPresented: Binding(
+                    get: { viewModel.errorMessage != nil },
+                    set: { _ in viewModel.errorMessage = nil }
+                )) {
+                    Button("확인") { viewModel.errorMessage = nil }
+                } message: {
+                    Text(viewModel.errorMessage ?? "")
                 }
             }
         }
-    }
-}
 
 #Preview {
     DistanceMissionView(alarmId: 1)

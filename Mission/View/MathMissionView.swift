@@ -8,10 +8,8 @@
 import Combine
 import SwiftUI
 
-struct MathAlarmView: View {
-    // 화면 닫기 기능을 위해 환경 변수 추가
-    @Environment(\.dismiss) private var dismiss
-    
+struct MathMissionView: View {
+    @EnvironmentObject var appState: AppState
     @StateObject var viewModel: MathMissionViewModel
     
     @State private var currentTime = Date()
@@ -47,7 +45,7 @@ struct MathAlarmView: View {
                         .foregroundStyle(Color.primary)
                     
                     Text(timeFormatter.string(from: currentTime))
-                        .font(.pretendardSemiBold60)
+                        .font(.largeTitle)
                         .foregroundStyle(Color.primary)
                         .onReceive(timer) { input in
                             currentTime = input
@@ -135,7 +133,7 @@ struct MathAlarmView: View {
                 Color.black.opacity(0.6).ignoresSafeArea()
                 
                 VStack(spacing: 28) {
-                    Image(viewModel.isCorrect ? "correct" : "incorrect")
+                    Image(viewModel.isCorrect ? "Correct" : "Incorrect")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 180, height: 180)
@@ -155,8 +153,9 @@ struct MathAlarmView: View {
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
             if completed {
                 print("🏁 미션 완료! 뷰를 닫습니다.")
-                // ✅ 화면 닫기 (실제 앱 동작)
-                dismiss()
+                withAnimation {
+                    appState.currentRoot = .main
+                }
             }
         }
         // ✅ 에러 발생 시 알림 표시
@@ -174,5 +173,5 @@ struct MathAlarmView: View {
 }
 
 #Preview {
-    MathAlarmView(alarmId: 1, alarmLabel: "1교시 있는 날")
+    MathMissionView(alarmId: 1, alarmLabel: "1교시 있는 날")
 }
