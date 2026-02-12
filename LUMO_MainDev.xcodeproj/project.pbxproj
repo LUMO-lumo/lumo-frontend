@@ -72,11 +72,6 @@
 			path = AlarmPart;
 			sourceTree = "<group>";
 		};
-		415410A02F2F9434004829D3 /* SoundSetting */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SoundSetting;
-			sourceTree = "<group>";
-		};
 		415410C32F33AF4A004829D3 /* HANetwork */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = HANetwork;
@@ -146,7 +141,6 @@
 			children = (
 				415412102F39DE2B004829D3 /* LUMO-MainDev-Info.plist */,
 				415410C32F33AF4A004829D3 /* HANetwork */,
-				415410A02F2F9434004829D3 /* SoundSetting */,
 				4154107A2F2738E0004829D3 /* AlarmPart */,
 				41853A812F11486B00D6CA1C /* Resource */,
 				41853A6D2F11469D00D6CA1C /* LUMO_MainDevApp.swift */,

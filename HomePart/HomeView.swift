@@ -15,16 +15,15 @@ struct HomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    // 1. 헤더 (요청하신 대로 직접 텍스트로 수정)
                     VStack(alignment: .leading, spacing: 8) {
                         Text("LUMO")
                             .font(.system(size: 24, weight: .heavy))
                             .foregroundStyle(Color(hex: "F55641"))
                         
-                        // [수정] 뷰모델 참조 대신 직접 텍스트 입력
                         Text("단순한 알람이 아닌,\n당신을 행동으로 이끄는 AI 미션 알람 서비스")
                             .font(.headline)
-                            .foregroundStyle(.black)
+                            // [수정] 다크 모드 대응: .black 대신 .primary
+                            .foregroundStyle(.primary)
                             .lineSpacing(4)
                     }
                     .padding(.top, 10)
@@ -62,7 +61,6 @@ private extension HomeView {
                     .font(.caption)
                     .foregroundStyle(.white.opacity(0.9))
                 
-                // 오늘의 명언은 뷰모델의 데이터를 유지하여 동적으로 작동하게 합니다.
                 Text(viewModel.dailyQuote)
                     .font(.headline)
                     .bold()
@@ -97,17 +95,20 @@ private extension HomeView {
                         VStack(alignment: .leading, spacing: 12) {
                             Text(task.title)
                                 .font(.body)
-                                .foregroundStyle(.black.opacity(0.8))
+                                // [수정] 다크 모드 대응: .black.opacity 대신 .primary
+                                .foregroundStyle(.primary)
                                 .padding(.horizontal, 4)
                             if index < viewModel.previewTasks.count - 1 {
                                 Divider()
-                                .background(Color.black.opacity(0.1)) }
+                                    // [수정] 구분선 색상도 자연스럽게
+                                    .background(Color.secondary.opacity(0.3)) }
                         }
                     }
                 }
             }
             .padding(20)
-            .background(Color(hex: "F2F4F7"))
+            // [수정] 다크 모드 대응: 고정 컬러 대신 시스템 회색 배경
+            .background(Color(UIColor.secondarySystemBackground))
             .cornerRadius(16)
             .onTapGesture {
                 showToDoSheet = true }
@@ -138,12 +139,14 @@ struct StatCard: View {
                 .fontWeight(.bold)
             Text(label)
                 .font(.caption)
-                .foregroundStyle(.black)
+                // [수정] 다크 모드 대응: .black 대신 .secondary
+                .foregroundStyle(.secondary)
             Spacer()
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(Color(hex: "F2F4F7"))
+        // [수정] 다크 모드 대응: 고정 컬러 대신 시스템 회색 배경
+        .background(Color(UIColor.secondarySystemBackground))
         .cornerRadius(16)
     }
 }
@@ -185,7 +188,8 @@ struct ToDoSheetView: View {
                 }.padding(.horizontal)
             }
         }
-        .background(.white)
+        // [수정] 다크 모드 대응: 시트 배경색도 하얀색 고정이 아닌 시스템 배경색으로
+        .background(Color(UIColor.systemBackground))
     }
 }
 
@@ -207,7 +211,8 @@ struct SheetTaskRow: View {
                         .onSubmit { finishEditing() }
                 } else {
                     Text(task.title)
-                        .foregroundStyle(.black)
+                        // [수정] 다크 모드 대응: .black 대신 .primary
+                        .foregroundStyle(.primary)
                 }
                 Spacer()
                 Button(action: { isEditing ? finishEditing() : startEditing() }) {

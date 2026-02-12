@@ -36,6 +36,9 @@
 		34A469A02F3C7A9200F0290D /* OXMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A4699F2F3C7A9200F0290D /* OXMissionViewModel.swift */; };
 		34A469A22F3DB05600F0290D /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469A12F3DB05600F0290D /* AppState.swift */; };
 		34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */; };
+		4161A5612F3CDB620060D0B1 /* Security.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4161A5602F3CDB620060D0B1 /* Security.xcconfig */; };
+		4161A5632F3CEB1A0060D0B1 /* AlarmTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4161A5622F3CEB1A0060D0B1 /* AlarmTarget.swift */; };
+		4161A5842F3D231B0060D0B1 /* TodoLocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4161A5832F3D231B0060D0B1 /* TodoLocalService.swift */; };
 		B400C5D82F3B16FF00DBDC08 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5D42F3B16FF00DBDC08 /* LoginModel.swift */; };
 		B400C5D92F3B16FF00DBDC08 /* PWResetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5D52F3B16FF00DBDC08 /* PWResetModel.swift */; };
 		B400C5DA2F3B16FF00DBDC08 /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5D62F3B16FF00DBDC08 /* SignUpModel.swift */; };
@@ -72,7 +75,6 @@
 		B4B4DAAB2F2767C400C29EDC /* RoutineTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B4DAA12F2767C400C29EDC /* RoutineTabBar.swift */; };
 		B4B4DAAC2F2767C400C29EDC /* RoutineAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4B4DA9E2F2767C400C29EDC /* RoutineAssets.xcassets */; };
 		B4D641FE2F2FA4AC000B4C08 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D641FD2F2FA4A7000B4C08 /* LoginView.swift */; };
-		B4D6420A2F30D71A000B4C08 /* Security.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = B4D642092F30D71A000B4C08 /* Security.xcconfig */; };
 		B4D6420C2F30DB2C000B4C08 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D6420B2F30DB29000B4C08 /* SignUpView.swift */; };
 		B4D6420E2F30E384000B4C08 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D6420D2F30E37D000B4C08 /* KeychainManager.swift */; };
 		B4D642742F338534000B4C08 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D642732F338530000B4C08 /* AppConfig.swift */; };
@@ -117,6 +119,9 @@
 		34A4699F2F3C7A9200F0290D /* OXMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OXMissionViewModel.swift; sourceTree = "<group>"; };
 		34A469A12F3DB05600F0290D /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBriefingViewModel.swift; sourceTree = "<group>"; };
+		4161A5602F3CDB620060D0B1 /* Security.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Security.xcconfig; sourceTree = "<group>"; };
+		4161A5622F3CEB1A0060D0B1 /* AlarmTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmTarget.swift; sourceTree = "<group>"; };
+		4161A5832F3D231B0060D0B1 /* TodoLocalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoLocalService.swift; sourceTree = "<group>"; };
 		B400C5D42F3B16FF00DBDC08 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		B400C5D52F3B16FF00DBDC08 /* PWResetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWResetModel.swift; sourceTree = "<group>"; };
 		B400C5D62F3B16FF00DBDC08 /* SignUpModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
@@ -154,7 +159,6 @@
 		B4D641FD2F2FA4A7000B4C08 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		B4D642052F30CE8B000B4C08 /* SignUpModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
 		B4D642072F30CF2E000B4C08 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
-		B4D642092F30D71A000B4C08 /* Security.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Security.xcconfig; sourceTree = "<group>"; };
 		B4D6420B2F30DB29000B4C08 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		B4D6420D2F30E37D000B4C08 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		B4D642732F338530000B4C08 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
@@ -226,6 +230,7 @@
 		3492C5912F3B419000958A4D /* HomePart */ = {
 			isa = PBXGroup;
 			children = (
+				4161A5832F3D231B0060D0B1 /* TodoLocalService.swift */,
 				3492C5882F3B419000958A4D /* HomeViewAsset.xcassets */,
 				3492C58C2F3B419000958A4D /* TodoSetting */,
 				3492C58D2F3B419000958A4D /* HomeModel.swift */,
@@ -403,6 +408,7 @@
 				B400C7742F3BA8DD00DBDC08 /* Target */,
 				B44CC1542F3A2A2D004D19A6 /* APITargetType.swift */,
 				B44CC1522F3A26AA004D19A6 /* AuthRouter.swift */,
+				4161A5622F3CEB1A0060D0B1 /* AlarmTarget.swift */,
 				B44CC1502F3A21D2004D19A6 /* TokenProviding.swift */,
 				B44CC1492F39989C004D19A6 /* APIManger.swift */,
 				B4D642732F338530000B4C08 /* AppConfig.swift */,
@@ -434,7 +440,7 @@
 		B4B2BD362F07C3010036E720 = {
 			isa = PBXGroup;
 			children = (
-				B4D642092F30D71A000B4C08 /* Security.xcconfig */,
+				4161A5602F3CDB620060D0B1 /* Security.xcconfig */,
 				B4D6420D2F30E37D000B4C08 /* KeychainManager.swift */,
 				3492C57B2F3B417600958A4D /* AlarmPart */,
 				3492C5572F3B416500958A4D /* HANetwork */,
@@ -604,8 +610,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B4FD5F372F17E61C0022CF67 /* OnBoardingPartTodoWrite.md in Resources */,
-				B4D6420A2F30D71A000B4C08 /* Security.xcconfig in Resources */,
 				B4B4DAAC2F2767C400C29EDC /* RoutineAssets.xcassets in Resources */,
+				4161A5612F3CDB620060D0B1 /* Security.xcconfig in Resources */,
 				3492C5922F3B419000958A4D /* HomeViewAsset.xcassets in Resources */,
 				3492C5932F3B419000958A4D /* HomePartTodoWrite.md in Resources */,
 				B4FD5F382F17E61C0022CF67 /* Assets.xcassets in Resources */,
@@ -634,6 +640,8 @@
 				B4D6420E2F30E384000B4C08 /* KeychainManager.swift in Sources */,
 				34A469922F3C1D6E00F0290D /* SettingTarget.swift in Sources */,
 				B4FD5F2E2F17DEE80022CF67 /* LumoApp.swift in Sources */,
+				4161A5842F3D231B0060D0B1 /* TodoLocalService.swift in Sources */,
+				4161A5632F3CEB1A0060D0B1 /* AlarmTarget.swift in Sources */,
 				34A2B45E2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift in Sources */,
 				B400C7802F3BABDB00DBDC08 /* MissionModel.swift in Sources */,
 				B4E2848D2F2CA3FC00D8FD4D /* ETCSectionView.swift in Sources */,
@@ -695,7 +703,7 @@
 /* Begin XCBuildConfiguration section */
 		B4B2BD482F07C3020036E720 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B4D642092F30D71A000B4C08 /* Security.xcconfig */;
+			baseConfigurationReference = 4161A5602F3CDB620060D0B1 /* Security.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -760,7 +768,7 @@
 		};
 		B4B2BD492F07C3020036E720 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B4D642092F30D71A000B4C08 /* Security.xcconfig */;
+			baseConfigurationReference = 4161A5602F3CDB620060D0B1 /* Security.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -823,6 +831,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+
 				DEVELOPMENT_TEAM = 32UGN86SXU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -858,6 +867,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+
 				DEVELOPMENT_TEAM = 32UGN86SXU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

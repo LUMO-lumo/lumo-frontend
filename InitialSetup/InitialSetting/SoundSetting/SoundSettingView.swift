@@ -12,7 +12,7 @@ enum SoundCategory: String, CaseIterable {
     case calm = "차분한"
     case loud = "시끄러운"
     case motivation = "동기부여"
-    case notification = "알림음"
+//    case notification = "알림음" // 요청하신 목록에 없어서 제외 (필요시 주석 해제)
 }
 
 struct SoundSettingView: View {
@@ -22,20 +22,20 @@ struct SoundSettingView: View {
     // 부모 뷰의 데이터를 수정하기 위한 Binding 변수
     @Binding var alarmSound: String
     
-    @State private var selectedCategory: SoundCategory = .calm
-    @State private var selectedSound: String = "커피한잔의 여유"
+    @State private var selectedCategory: SoundCategory = .loud // 기본값을 시끄러운으로 변경
+    @State private var selectedSound: String = "비명 소리"
     @State private var volume: Double = 50.0 // 0 ~ 100
     
     init(alarmSound: Binding<String>) {
         _alarmSound = alarmSound
     }
     
-    // MARK: - Local Dummy Data
+    // MARK: - Local Dummy Data (Updated)
     let soundData: [SoundCategory: [String]] = [
-        .calm: ["커피한잔의 여유", "빗소리", "숲속의 아침", "잔잔한 피아노"],
-        .loud: ["사이렌", "헤비메탈 모닝", "천둥번개", "경적 소리"],
-        .motivation: ["록키 주제곡", "박수 갈채", "명언 모음", "승리의 팡파레"],
-        .notification: ["딩동댕", "까톡", "기본 알림", "휘파람"]
+        .loud: ["비명 소리", "천둥 번개", "개 짖는 소리", "절규", "뱃고동"],
+        .calm: ["평온한 멜로디", "섬의 아침", "플루트 연주", "종소리", "소원"],
+        .motivation: ["환희의 록", "황제", "비트 앤 베이스", "침묵 속 노력", "런어웨이"]
+        // .notification: ["딩동댕", "까톡", "기본 알림", "휘파람"]
     ]
     
     var body: some View {
@@ -187,5 +187,5 @@ struct SoundSettingView: View {
 }
 
 #Preview {
-    SoundSettingView(alarmSound: .constant("커피한잔의 여유"))
+    SoundSettingView(alarmSound: .constant("비명 소리"))
 }
