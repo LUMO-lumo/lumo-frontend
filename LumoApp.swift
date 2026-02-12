@@ -60,6 +60,9 @@ struct LumoApp: App {
                 case .distanceMission(let alarmId):
                     // 거리 미션 화면
                     DistanceMissionView(alarmId: alarmId)
+                    
+                case .oxMission(let alarmID):
+                    OXMissionView(alarmId: alarmID)
                 }
             }
             // ✅ 모든 하위 뷰에서 appState에 접근할 수 있도록 주입

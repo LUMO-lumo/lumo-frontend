@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct OXMissionView: View {
+    @EnvironmentObject var appState: AppState
     @StateObject var viewModel: OXMissionViewModel
     init(alarmId: Int = 1) {
         _viewModel = StateObject(wrappedValue: OXMissionViewModel(alarmId: alarmId))
@@ -35,7 +36,7 @@ struct OXMissionView: View {
                 Spacer().frame(height:14)
                 
                 HStack {
-                    Text("Q. 코브라끼리는 서로 물면 죽는다")
+                 Text("Q. \(viewModel.questionText)")
                         .font(.Subtitle2)
                         .foregroundStyle(Color.primary)
                 }
@@ -49,9 +50,7 @@ struct OXMissionView: View {
                 HStack(spacing: 10) {
                     
                     Button(action:{
-                        _Concurrency.Task {
-                            await viewModel.submitAnswer("X")
-                        }
+                            viewModel.submitAnswer("O")
                     }){
                         Text("O")
                             .font(.Subtitle1)
@@ -66,9 +65,8 @@ struct OXMissionView: View {
                     }
                     
                     Button(action:{
-                        _Concurrency.Task {
-                            await viewModel.submitAnswer("X")
-                        }
+                            viewModel.submitAnswer("X")
+
                     }){
                         Text("X")
                             .font(.Subtitle1)
@@ -87,43 +85,46 @@ struct OXMissionView: View {
             }
             .padding(.horizontal, 24)
             .blur(radius: viewModel.isMissionCompleted ? 2 : 0)
-            if viewModel.isMissionCompleted {
-                ZStack{
-                    // 배경 (회색/검은색 반투명)
-                    Color.black.opacity(0.8)
-                        .ignoresSafeArea()
-                        .transition(.opacity) // 부드럽게 등장
+            
+            if viewModel.showFeedback {
+                Color.black.opacity(0.6).ignoresSafeArea()
+                
+                VStack(spacing: 28) {
+                    Image(viewModel.isCorrect ? "correct" : "incorrect")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 180, height: 180)
                     
-                    // 내용 (이모티콘 + 멘트)
-                    VStack(spacing: 20) {
-                        Image(.correct)
-                            .resizable()
-                            .frame(width: 180,height: 180)
-                        
-                        Text("정답이에요!")
-                            .font(.Headline1)
-                            .foregroundStyle(Color.main200)
-                    }
+                    Text(viewModel.feedbackMessage)
+                        .font(.Headline1)
+                        .foregroundStyle(viewModel.isCorrect ? Color.main100 : Color.main300)
                 }
-                .transition(.opacity.combined(with: .scale))
-                .zIndex(1)
+                .transition(.scale)
+                .zIndex(1) // 맨 앞으로 가져오기
             }
         }
-        .animation(.easeInOut, value: viewModel.isMissionCompleted)
         .onAppear {
-            _Concurrency.Task {
-                            await viewModel.start()
-                        }
+            // ✅ ViewModel 내부에서 비동기 처리하므로 await 불필요
+            viewModel.startOXMission()
         }
-        .onChange(of: viewModel.isMissionCompleted) { oldValue, newValue in
-            // newValue가 true(미션 완료)가 되었을 때 실행
-            if newValue {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    _Concurrency.Task {
-                        await viewModel.dismissAlarm()
-                    }
+        .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
+            if completed {
+                print("🏁 미션 완료! 뷰를 닫습니다.")
+                withAnimation {
+                    appState.currentRoot = .main
                 }
             }
+        }
+        // ✅ 에러 발생 시 알림 표시
+        .alert("알림", isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { _ in viewModel.errorMessage = nil }
+        )) {
+            Button("확인") {
+                viewModel.errorMessage = nil
+            }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
         }
     }
 }

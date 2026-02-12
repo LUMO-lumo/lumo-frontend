@@ -9,8 +9,8 @@ import SwiftUI
 struct ScreenThemeSettingView: View {
     @State private var viewModel = ScreenThemeSettingViewModel()
     @Environment(\.dismiss) private var dismiss
-    @AppStorage("userTheme") private var userTheme: String = "system"
-    let options = ["Light", "Dark", "System"]
+    @AppStorage("userTheme") private var userTheme: String = "SYSTEM"
+    let options = ["LIGHT", "DARK", "SYSTEM"]
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -21,12 +21,12 @@ struct ScreenThemeSettingView: View {
                     viewModel.updateTheme(theme: theme)
                 }) {
                     HStack(spacing: 10) {
-                        Image(theme == "Light" ? "ThemeLight" : (theme == "Dark" ? "ThemeDark" : "ThemeSystem"))
+                        Image(theme == "LIGHT" ? "ThemeLight" : (theme == "DARK" ? "ThemeDark" : "ThemeSystem"))
                             .resizable()
                             .scaledToFill()
                             .frame(width:60, height:60)
                               
-                        Text(theme == "Light" ? "라이트 모드" : (theme == "Dark" ? "다크 모드" : "시스템 모드"))
+                        Text(theme == "LIGHT" ? "라이트 모드" : (theme == "DARK" ? "다크 모드" : "시스템 모드"))
                             .foregroundColor(.primary)
                             .font(.system(size: 18, weight: .bold))
                         

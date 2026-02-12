@@ -63,15 +63,11 @@ struct DistanceMissionView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 
                 Spacer().frame(height:74)
-                
                 Button(action:{
                     withAnimation {
                         viewModel.showFeedback = true
-                        
-                        AsyncTask {
-                            try? await AsyncTask.sleep(nanoseconds: 1_000_000_000)
-                            viewModel.isMissionCompleted = true
-                            }
+                        viewModel.isMissionCompleted = true
+
                     }
                 }) {Text("SNOOZE")}
                     .font(.Subtitle2)
@@ -95,11 +91,15 @@ struct DistanceMissionView: View {
                     
                     // 내용 (이모티콘 + 멘트)
                     VStack(spacing: 20) {
+<<<<<<< HEAD
                         Image("Correct")
+=======
+                        Image(.correct)
+>>>>>>> test/merge-check
                             .resizable()
                             .frame(width: 180,height: 180)
                         
-                        Text("잘했어요!")
+                        Text(viewModel.feedbackMessage)
                             .font(.Headline1)
                             .foregroundStyle(Color.main200)
                     }
@@ -110,29 +110,22 @@ struct DistanceMissionView: View {
         }
         .animation(.easeInOut, value: viewModel.isMissionCompleted)
         .onAppear {
+<<<<<<< HEAD
             _Concurrency.Task {
                 await viewModel.start()
             }
+=======
+            viewModel.startDistanceMission()
+>>>>>>> test/merge-check
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
                     if completed {
                         print("🏁 거리 미션 완료! 메인 화면으로 이동합니다.")
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                                    withAnimation(.easeInOut(duration: 0.5)) {
-                                        // 전역 루트 뷰를 메인으로 교체
-                                        appState.currentRoot = .main
-                                    }
-                                }
+                        withAnimation(.easeInOut(duration: 0.5)) {
+                            appState.currentRoot = .main
+                        }
                     }
-                }
-                // 에러 알림 처리
-                .alert("알림", isPresented: Binding(
-                    get: { viewModel.errorMessage != nil },
-                    set: { _ in viewModel.errorMessage = nil }
-                )) {
-                    Button("확인") { viewModel.errorMessage = nil }
-                } message: {
-                    Text(viewModel.errorMessage ?? "")
+
                 }
             }
         }
