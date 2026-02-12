@@ -67,6 +67,7 @@
 		B44CC1532F3A26AF004D19A6 /* AuthRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1522F3A26AA004D19A6 /* AuthRouter.swift */; };
 		B44CC1552F3A2A33004D19A6 /* APITargetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1542F3A2A2D004D19A6 /* APITargetType.swift */; };
 		B44CC1572F3A39E9004D19A6 /* TokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1562F3A39E2004D19A6 /* TokenResponse.swift */; };
+		B450728A2F3E31DA00A9762E /* LumoIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = B45072892F3E31DA00A9762E /* LumoIcon.icon */; };
 		B4B4DAA52F2767C400C29EDC /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B4DA9C2F2767C400C29EDC /* AddTaskView.swift */; };
 		B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B4DAA22F2767C400C29EDC /* RoutineView.swift */; };
 		B4B4DAA82F2767C400C29EDC /* RoutineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B4DAA32F2767C400C29EDC /* RoutineViewModel.swift */; };
@@ -148,6 +149,7 @@
 		B44CC1522F3A26AA004D19A6 /* AuthRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRouter.swift; sourceTree = "<group>"; };
 		B44CC1542F3A2A2D004D19A6 /* APITargetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITargetType.swift; sourceTree = "<group>"; };
 		B44CC1562F3A39E2004D19A6 /* TokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenResponse.swift; sourceTree = "<group>"; };
+		B45072892F3E31DA00A9762E /* LumoIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = LumoIcon.icon; sourceTree = "<group>"; };
 		B4B2BD3F2F07C3010036E720 /* Lumo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4B4DA9C2F2767C400C29EDC /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
 		B4B4DA9E2F2767C400C29EDC /* RoutineAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = RoutineAssets.xcassets; sourceTree = "<group>"; };
@@ -440,6 +442,7 @@
 		B4B2BD362F07C3010036E720 = {
 			isa = PBXGroup;
 			children = (
+				B45072892F3E31DA00A9762E /* LumoIcon.icon */,
 				415910052F3DD5EE003C8FC1 /* Security.xcconfig */,
 				B4D6420D2F30E37D000B4C08 /* KeychainManager.swift */,
 				3492C57B2F3B417600958A4D /* AlarmPart */,
@@ -609,6 +612,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B450728A2F3E31DA00A9762E /* LumoIcon.icon in Resources */,
 				415910062F3DD5EE003C8FC1 /* Security.xcconfig in Resources */,
 				B4FD5F372F17E61C0022CF67 /* OnBoardingPartTodoWrite.md in Resources */,
 				B4B4DAAC2F2767C400C29EDC /* RoutineAssets.xcassets in Resources */,
@@ -827,11 +831,11 @@
 		B4B2BD4B2F07C3020036E720 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = LumoIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BF564SQ936;
+				DEVELOPMENT_TEAM = 32UGN86SXU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
@@ -862,11 +866,11 @@
 		B4B2BD4C2F07C3020036E720 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = LumoIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BF564SQ936;
+				DEVELOPMENT_TEAM = 32UGN86SXU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
