@@ -5,7 +5,6 @@ import PhotosUI
 import Combine
 import Moya
 
-
 struct HomeView: View {
     @EnvironmentObject var appState: AppState
     @StateObject private var viewModel = HomeViewModel()
@@ -16,16 +15,14 @@ struct HomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    // 1. 헤더 (요청하신 대로 직접 텍스트로 수정)
                     VStack(alignment: .leading, spacing: 8) {
                         Text("LUMO")
                             .font(.system(size: 24, weight: .heavy))
                             .foregroundStyle(Color(hex: "F55641"))
                         
-                        // [수정] 뷰모델 참조 대신 직접 텍스트 입력
                         Text("단순한 알람이 아닌,\n당신을 행동으로 이끄는 AI 미션 알람 서비스")
                             .font(.headline)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.primary)
                             .lineSpacing(4)
                     }
                     .padding(.top, 10)
@@ -88,6 +85,10 @@ struct HomeView: View {
                 .padding(.horizontal, 24)
             }
             .toolbar(.hidden)
+            .onAppear {
+                // 홈으로 돌아올 때 오늘 데이터를 다시 동기화
+                viewModel.loadTasksForSpecificDate(date: Date())
+            }
             .navigationDestination(isPresented: $navigateToDetail) {
                 TodoSettingView(viewModel: viewModel)
             }
@@ -112,7 +113,6 @@ private extension HomeView {
                     .font(.caption)
                     .foregroundStyle(.white.opacity(0.9))
                 
-                // 오늘의 명언은 뷰모델의 데이터를 유지하여 동적으로 작동하게 합니다.
                 Text(viewModel.dailyQuote)
                     .font(.headline)
                     .bold()
@@ -130,37 +130,45 @@ private extension HomeView {
                     .font(.title3)
                     .fontWeight(.bold)
                 Spacer()
-                NavigationLink(destination: TodoSettingView(viewModel: viewModel)) {
+                Button(action: { navigateToDetail = true }) {
                     Text("자세히 보기 >")
                         .font(.subheadline)
                         .foregroundStyle(Color(hex: "BBC0C7"))
                 }
             }
             VStack(alignment: .leading, spacing: 16) {
-                if viewModel.tasks.isEmpty {
-                    Text("등록된 할 일이 없습니다.")
+                if viewModel.todayTasksList.isEmpty {
+                    Text("오늘 등록된 할 일이 없습니다.")
                         .foregroundStyle(.gray)
                         .frame(maxWidth: .infinity)
                         .padding()
                 } else {
                     ForEach(Array(viewModel.previewTasks.enumerated()), id: \.element.id) { index, task in
                         VStack(alignment: .leading, spacing: 12) {
-                            Text(task.title)
-                                .font(.body)
-                                .foregroundStyle(.black.opacity(0.8))
-                                .padding(.horizontal, 4)
+                            HStack {
+                                Circle()
+                                    .fill(task.isCompleted ? Color(hex: "F55641") : Color.gray.opacity(0.3))
+                                    .frame(width: 8, height: 8)
+                                Text(task.title)
+                                    .font(.body)
+                                    .foregroundStyle(task.isCompleted ? .secondary : .primary)
+                                    .strikethrough(task.isCompleted)
+                            }
+                            .padding(.horizontal, 4)
                             if index < viewModel.previewTasks.count - 1 {
                                 Divider()
-                                .background(Color.black.opacity(0.1)) }
+                                    .background(Color.secondary.opacity(0.3))
+                            }
                         }
                     }
                 }
             }
             .padding(20)
-            .background(Color(hex: "F2F4F7"))
+            .background(Color(UIColor.secondarySystemBackground))
             .cornerRadius(16)
             .onTapGesture {
-                showToDoSheet = true }
+                showToDoSheet = true
+            }
         }
     }
     
@@ -188,12 +196,12 @@ struct StatCard: View {
                 .fontWeight(.bold)
             Text(label)
                 .font(.caption)
-                .foregroundStyle(.black)
+                .foregroundStyle(.secondary)
             Spacer()
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(Color(hex: "F2F4F7"))
+        .background(Color(UIColor.secondarySystemBackground))
         .cornerRadius(16)
     }
 }
@@ -219,14 +227,13 @@ struct ToDoSheetView: View {
                 .font(.subheadline)
                 .foregroundStyle(Color(hex: "BBC0C7"))
                 .padding(.top, 16)
-                
             }
             .padding([.top, .horizontal], 24)
             .padding(.bottom, 16)
             
             ScrollView {
                 LazyVStack(spacing: 12) {
-                    ForEach($viewModel.tasks) { $task in
+                    ForEach($viewModel.todayTasksList) { $task in
                         SheetTaskRow(task: $task, themeColor: themeColor, isEditing: editingTaskId == task.id,
                                      startEditing: { editingTaskId = task.id },
                                      finishEditing: { editingTaskId = nil },
@@ -235,7 +242,7 @@ struct ToDoSheetView: View {
                 }.padding(.horizontal)
             }
         }
-        .background(.white)
+        .background(Color(UIColor.systemBackground))
     }
 }
 
@@ -257,7 +264,7 @@ struct SheetTaskRow: View {
                         .onSubmit { finishEditing() }
                 } else {
                     Text(task.title)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.primary)
                 }
                 Spacer()
                 Button(action: { isEditing ? finishEditing() : startEditing() }) {

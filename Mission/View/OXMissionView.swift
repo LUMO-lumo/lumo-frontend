@@ -98,7 +98,7 @@ struct OXMissionView: View {
 <<<<<<< HEAD
                     // 내용 (이모티콘 + 멘트)
                     VStack(spacing: 20) {
-                        Image(.wellDone)
+                        Image(.correct)
                             .resizable()
                             .frame(width: 180,height: 180)
                         

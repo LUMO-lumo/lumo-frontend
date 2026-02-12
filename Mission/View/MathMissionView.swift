@@ -8,7 +8,7 @@
 import Combine
 import SwiftUI
 
-struct MathAlarmView: View {
+struct MathMissionView: View {
     @EnvironmentObject var appState: AppState
     @StateObject var viewModel: MathMissionViewModel
     
@@ -173,5 +173,5 @@ struct MathAlarmView: View {
 }
 
 #Preview {
-    MathAlarmView(alarmId: 1, alarmLabel: "1교시 있는 날")
+    MathMissionView(alarmId: 1, alarmLabel: "1교시 있는 날")
 }

@@ -17,6 +17,7 @@ struct DistanceMissionSubmitRequest: Codable {
     let attemptCount: Int
 }
 
+
 // CoreLocation은 Main Thread에서 UI와 상호작용하므로 MainActor 권장
 @MainActor
 class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate {
@@ -31,6 +32,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     // MARK: - Internal Properties (Location)
     private let locationManager = CLLocationManager()
     private var previousLocation: CLLocation? // 이전 위치 저장용
+
     
     // MARK: - Mock Mode (테스트용)
     private let isMockMode: Bool = false
@@ -40,7 +42,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         super.init(alarmId: alarmId)
         setupLocationManager()
     }
-    
+
     // 위치 권한 및 설정
     private func setupLocationManager() {
         locationManager.delegate = self
@@ -165,6 +167,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     }
     
     // MARK: - CLLocationManagerDelegate
+
     
     // 위치 업데이트 감지
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -198,6 +201,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
                     self.locationManager.stopUpdatingLocation()
                     
                     self.submit()
+
                 }
             }
         }

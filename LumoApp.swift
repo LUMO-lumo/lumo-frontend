@@ -15,7 +15,7 @@ struct LumoApp: App {
     @AppStorage("isOnboardingFinished") var isOnboardingFinished: Bool = false
     
     // ✅ 전역 상태 관리 객체 생성
-    @State private var appState = AppState()
+    @StateObject private var appState = AppState()
     @State private var onboardingViewModel = OnboardingViewModel()
     
     var body: some Scene {
@@ -56,7 +56,7 @@ struct LumoApp: App {
                     
                 case .mathMission(let alarmId, let label):
                     // 수학 미션 화면 (네비게이션 없이 풀스크린 교체)
-                    MathAlarmView(alarmId: alarmId, alarmLabel: label)
+                    MathMissionView(alarmId: alarmId, alarmLabel: label)
                     
                 case .distanceMission(let alarmId):
                     // 거리 미션 화면

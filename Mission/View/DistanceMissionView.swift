@@ -7,10 +7,10 @@
 import SwiftUI
 
 struct DistanceMissionView: View {
-    let alarmId: Int
+    @EnvironmentObject var appState: AppState
     @StateObject private var viewModel: DistanceMissionViewModel
+    
     init(alarmId: Int) {
-        self.alarmId = alarmId
         _viewModel = StateObject(wrappedValue: DistanceMissionViewModel(alarmId: alarmId))
     }
     var body: some View {
@@ -73,6 +73,7 @@ struct DistanceMissionView: View {
                     withAnimation {
                         viewModel.showFeedback = true
                         viewModel.isMissionCompleted = true
+
                     }
                 }) {Text("SNOOZE")}
                     .font(.Subtitle2)
@@ -85,9 +86,9 @@ struct DistanceMissionView: View {
                 Spacer().frame(height:85)
                 
             } .padding(.horizontal, 24)
-                .blur(radius: viewModel.isMissionCompleted ? 5 : 0)
+                .blur(radius: viewModel.showFeedback ? 5 : 0)
             
-            if viewModel.isMissionCompleted {
+            if viewModel.showFeedback {
                 ZStack{
                     // 배경 (회색/검은색 반투명)
                     Color.black.opacity(0.8)
@@ -111,8 +112,8 @@ struct DistanceMissionView: View {
         }
         .animation(.easeInOut, value: viewModel.isMissionCompleted)
         .onAppear {
-
             viewModel.start()
+
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
                     if completed {
@@ -121,11 +122,10 @@ struct DistanceMissionView: View {
                             appState.currentRoot = .main
                         }
                     }
+
                 }
             }
         }
-    }
-}
 
 #Preview {
     DistanceMissionView(alarmId: 1)

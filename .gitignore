@@ -7,4 +7,4 @@ project.xcworkspace/
 xcuserdata/
 
 # 보안 파일 (IP 주소)
-Security.xcconfig
+Security.xcconfig.DS_Store
