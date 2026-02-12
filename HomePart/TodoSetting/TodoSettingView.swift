@@ -1,5 +1,4 @@
 //
-//
 //  TodoSettingView.swift
 //  LUMO_PersonalDev
 //
@@ -7,7 +6,6 @@
 //
 import SwiftUI
 import Foundation
-
 
 struct TodoSettingView: View {
     @Environment(\.dismiss) var dismiss
@@ -36,7 +34,6 @@ struct TodoSettingView: View {
             .padding(.top, 10)
             .padding(.bottom, 15)
             
-            
             VStack(alignment: .leading, spacing: 0) {
                 Text(vm.monthTitle)
                     .font(.title3)
@@ -50,7 +47,7 @@ struct TodoSettingView: View {
                 Button(action: { withAnimation { vm.startCreatingTask() } }) {
                     Text("작성하기")
                         .font(.headline)
-                        .bold().foregroundStyle(.white) // 버튼 안의 텍스트는 배경이 빨간색이므로 흰색 고정
+                        .bold().foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
                         .background(Color(hex: "F55641"))
@@ -62,6 +59,14 @@ struct TodoSettingView: View {
         }
         .navigationBarBackButtonHidden(true)
         .onTapGesture { vm.cancelNewTask(); vm.editingTaskId = nil }
+        .onAppear {
+            // 진입 시점에 현재 선택된 날짜의 데이터 로드
+            viewModel.loadTasksForSpecificDate(date: vm.resolvedSelectedDate)
+        }
+        .onChange(of: vm.resolvedSelectedDate) { _, newDate in
+            // 달력 날짜가 바뀌면 즉시 해당 날짜 할 일만 로드
+            viewModel.loadTasksForSpecificDate(date: newDate)
+        }
     }
     
     private var calendarView: some View {
@@ -77,19 +82,19 @@ struct TodoSettingView: View {
             
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 20) {
                 ForEach(Array(vm.calendarDays.enumerated()), id: \.offset) { _, day in
-                    if day.isEmpty { Spacer()
-                        .frame(width: 32, height: 32) }
+                    if day.isEmpty { Spacer().frame(width: 32, height: 32) }
                     else {
                         let isSelected = (day == vm.selectedDay)
                         Text(day)
                             .font(.system(size: 16))
                             .fontWeight(isSelected ? .bold : .regular)
-                            // [수정] 다크 모드 대응: 선택되지 않았을 때 .black 대신 .primary 사용
                             .foregroundStyle(isSelected ? .white : .primary)
                             .frame(width: 32, height: 32)
-                            .background(isSelected ? Circle()
-                                .fill(themeColor) : nil)
-                            .onTapGesture { vm.cancelNewTask(); withAnimation { vm.selectDay(day) } }
+                            .background(isSelected ? Circle().fill(themeColor) : nil)
+                            .onTapGesture {
+                                vm.cancelNewTask()
+                                withAnimation { vm.selectDay(day) }
+                            }
                     }
                 }
             }
@@ -100,29 +105,45 @@ struct TodoSettingView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(spacing: 12) {
-                    ForEach($viewModel.tasks) { $task in
-                        TaskRow(task: $task, themeColor: themeColor,
-                                isEditing: vm.editingTaskId == task.id,
-                                startEditing: { vm.cancelNewTask(); vm.editingTaskId = task.id },
-                                finishEditing: { vm.editingTaskId = nil },
-                                deleteAction: { viewModel.deleteTask(id: task.id) })
+                    if viewModel.tasks.isEmpty && !vm.isCreatingNewTask {
+                        Text("이 날은 할 일이 없습니다.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .padding(.top, 20)
+                    } else {
+                        ForEach($viewModel.tasks) { $task in
+                            TaskRow(task: $task, themeColor: themeColor,
+                                    isEditing: vm.editingTaskId == task.id,
+                                    startEditing: { vm.cancelNewTask(); vm.editingTaskId = task.id },
+                                    finishEditing: { vm.editingTaskId = nil },
+                                    deleteAction: { viewModel.deleteTask(id: task.id) })
+                        }
                     }
+                    
                     if vm.isCreatingNewTask {
                         NewTaskRow(taskTitle: $vm.newTaskTitle, themeColor: themeColor,
-                                   onConfirm: { if let title = vm.handleTaskSubmission() { viewModel.addTask(title: title) } },
+                                   onConfirm: {
+                                       if let title = vm.handleTaskSubmission() {
+                                           // 선택된 날짜 정보를 넘겨서 저장
+                                           viewModel.addTask(title: title, date: vm.resolvedSelectedDate)
+                                       }
+                                   },
                                    onCancel: { vm.cancelNewTask() }).id("newTaskRow")
                     }
                 }.padding(.horizontal, 24)
             }
             .frame(height: 220)
             .onChange(of: vm.isCreatingNewTask) { _, newValue in
-                if newValue { DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { withAnimation { proxy.scrollTo("newTaskRow", anchor: .bottom) } } }
+                if newValue {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        withAnimation { proxy.scrollTo("newTaskRow", anchor: .bottom) }
+                    }
+                }
             }
         }
     }
 }
 
-// MARK: -
 struct TaskRow: View {
     @Binding var task: Task
     let themeColor: Color
@@ -133,7 +154,6 @@ struct TaskRow: View {
     var body: some View {
         HStack {
             if isEditing { TextField("수정", text: $task.title).font(.subheadline).onSubmit { finishEditing() } }
-            // [수정] 다크 모드 대응: .black.opacity(0.8) 대신 .primary 적용
             else { Text(task.title).font(.subheadline).foregroundStyle(.primary) }
             Spacer()
             Button(action: {
@@ -145,7 +165,6 @@ struct TaskRow: View {
             Button(action: deleteAction) { Image(systemName: "trash").foregroundStyle(themeColor) }
         }
         .padding(16)
-        // [수정] 다크/라이트 모드 자동 적응 배경색
         .background(Color(UIColor.secondarySystemBackground))
         .cornerRadius(12)
     }
@@ -169,11 +188,11 @@ struct NewTaskRow: View {
             Button(action: onCancel) { Image(systemName: "trash").foregroundStyle(themeColor) }
         }
         .padding(16)
-        // [수정] 다크/라이트 모드 자동 적응 배경색
         .background(Color(UIColor.secondarySystemBackground))
         .cornerRadius(12).onAppear { isFocused = true }
     }
 }
+
 
 #Preview {
     TodoSettingView(viewModel: HomeViewModel())

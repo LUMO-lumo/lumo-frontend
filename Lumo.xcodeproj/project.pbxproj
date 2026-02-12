@@ -36,7 +36,7 @@
 		34A469A02F3C7A9200F0290D /* OXMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A4699F2F3C7A9200F0290D /* OXMissionViewModel.swift */; };
 		34A469A22F3DB05600F0290D /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469A12F3DB05600F0290D /* AppState.swift */; };
 		34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */; };
-		4161A5612F3CDB620060D0B1 /* Security.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4161A5602F3CDB620060D0B1 /* Security.xcconfig */; };
+		415910062F3DD5EE003C8FC1 /* Security.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 415910052F3DD5EE003C8FC1 /* Security.xcconfig */; };
 		4161A5632F3CEB1A0060D0B1 /* AlarmTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4161A5622F3CEB1A0060D0B1 /* AlarmTarget.swift */; };
 		4161A5842F3D231B0060D0B1 /* TodoLocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4161A5832F3D231B0060D0B1 /* TodoLocalService.swift */; };
 		B400C5D82F3B16FF00DBDC08 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5D42F3B16FF00DBDC08 /* LoginModel.swift */; };
@@ -121,7 +121,7 @@
 		34A4699F2F3C7A9200F0290D /* OXMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OXMissionViewModel.swift; sourceTree = "<group>"; };
 		34A469A12F3DB05600F0290D /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBriefingViewModel.swift; sourceTree = "<group>"; };
-		4161A5602F3CDB620060D0B1 /* Security.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Security.xcconfig; sourceTree = "<group>"; };
+		415910052F3DD5EE003C8FC1 /* Security.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Security.xcconfig; sourceTree = "<group>"; };
 		4161A5622F3CEB1A0060D0B1 /* AlarmTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmTarget.swift; sourceTree = "<group>"; };
 		4161A5832F3D231B0060D0B1 /* TodoLocalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoLocalService.swift; sourceTree = "<group>"; };
 		B400C5D42F3B16FF00DBDC08 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
@@ -445,7 +445,7 @@
 			isa = PBXGroup;
 			children = (
 				B4F28C432F3DA6B5005EB80A /* AppState.swift */,
-				4161A5602F3CDB620060D0B1 /* Security.xcconfig */,
+				415910052F3DD5EE003C8FC1 /* Security.xcconfig */,
 				B4D6420D2F30E37D000B4C08 /* KeychainManager.swift */,
 				3492C57B2F3B417600958A4D /* AlarmPart */,
 				3492C5572F3B416500958A4D /* HANetwork */,
@@ -616,9 +616,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B4F292702F3DECA8005EB80A /* LumoIcon.icon in Resources */,
+				415910062F3DD5EE003C8FC1 /* Security.xcconfig in Resources */,
 				B4FD5F372F17E61C0022CF67 /* OnBoardingPartTodoWrite.md in Resources */,
 				B4B4DAAC2F2767C400C29EDC /* RoutineAssets.xcassets in Resources */,
-				4161A5612F3CDB620060D0B1 /* Security.xcconfig in Resources */,
 				3492C5922F3B419000958A4D /* HomeViewAsset.xcassets in Resources */,
 				3492C5932F3B419000958A4D /* HomePartTodoWrite.md in Resources */,
 				B4FD5F382F17E61C0022CF67 /* Assets.xcassets in Resources */,
@@ -711,7 +711,7 @@
 /* Begin XCBuildConfiguration section */
 		B4B2BD482F07C3020036E720 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4161A5602F3CDB620060D0B1 /* Security.xcconfig */;
+			baseConfigurationReference = 415910052F3DD5EE003C8FC1 /* Security.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -776,7 +776,7 @@
 		};
 		B4B2BD492F07C3020036E720 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4161A5602F3CDB620060D0B1 /* Security.xcconfig */;
+			baseConfigurationReference = 415910052F3DD5EE003C8FC1 /* Security.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
