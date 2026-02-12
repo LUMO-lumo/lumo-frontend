@@ -61,6 +61,9 @@ struct LumoApp: App {
                 case .distanceMission(let alarmId):
                     // 거리 미션 화면
                     DistanceMissionView(alarmId: alarmId)
+                    
+                case .oxMission(let alarmID):
+                    OXMissionView(alarmId: alarmID)
                 }
             }
             .environment(onboardingViewModel)

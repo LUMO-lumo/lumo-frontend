@@ -15,6 +15,7 @@ class AppState: ObservableObject {
         case main           // 메인 화면
         case mathMission(alarmId: Int, label: String) // 수학 미션 화면
         case distanceMission(alarmId: Int) // 거리 미션 화면 (필요 시 사용)
+        case oxMission(alarmId: Int)
     }
     
     @Published var currentRoot: RootView
