@@ -114,15 +114,15 @@ struct AlarmDTO: Codable {
     let vibration: Bool
     let volume: Int
     let repeatDays: [String]
-    let snoozeSetting: SnoozeSettingDTO
+    let snoozeSetting: SnoozeSettingDTO?
 }
 
 /// 스누즈 설정 DTO
 struct SnoozeSettingDTO: Codable {
     let snoozeId: Int?
-    let isEnabled: Bool
-    let intervalSec: Int
-    let maxCount: Int
+    let isEnabled: Bool?
+    let intervalSec: Int?
+    let maxCount: Int?
 }
 
 /// 미션 설정 DTO

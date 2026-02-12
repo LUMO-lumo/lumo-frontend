@@ -7,10 +7,10 @@
 import SwiftUI
 
 struct DistanceMissionView: View {
-    let alarmId: Int
+    @EnvironmentObject var appState: AppState
     @StateObject private var viewModel: DistanceMissionViewModel
+    
     init(alarmId: Int) {
-        self.alarmId = alarmId
         _viewModel = StateObject(wrappedValue: DistanceMissionViewModel(alarmId: alarmId))
     }
     var body: some View {
@@ -70,7 +70,16 @@ struct DistanceMissionView: View {
                 
                 Spacer().frame(height:74)
                 
-                Button(action:{}) {Text("SNOOZE")}
+                Button(action:{
+                    withAnimation {
+                        viewModel.showFeedback = true
+                        
+                        AsyncTask {
+                            try? await AsyncTask.sleep(nanoseconds: 1_000_000_000)
+                            viewModel.isMissionCompleted = true
+                            }
+                    }
+                }) {Text("SNOOZE")}
                     .font(.Subtitle2)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 20)
@@ -81,9 +90,9 @@ struct DistanceMissionView: View {
                 Spacer().frame(height:85)
                 
             } .padding(.horizontal, 24)
-                .blur(radius: viewModel.isMissionCompleted ? 5 : 0)
+                .blur(radius: viewModel.showFeedback ? 5 : 0)
             
-            if viewModel.isMissionCompleted {
+            if viewModel.showFeedback {
                 ZStack{
                     // 배경 (회색/검은색 반투명)
                     Color.black.opacity(0.8)
@@ -112,20 +121,28 @@ struct DistanceMissionView: View {
             }
 
         }
-        .onChange(of: viewModel.isMissionCompleted) { oldValue, newValue in
-            // newValue가 true(미션 완료)가 되었을 때 실행
-            if newValue {
-
-                AsyncTask {
-                    // 1초 대기
-                    try? await AsyncTask.sleep(nanoseconds: 1_000_000_000)
-                    // async 함수 호출
-                    await viewModel.dismissAlarm()
+        .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
+                    if completed {
+                        print("🏁 거리 미션 완료! 메인 화면으로 이동합니다.")
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                    withAnimation(.easeInOut(duration: 0.5)) {
+                                        // 전역 루트 뷰를 메인으로 교체
+                                        appState.currentRoot = .main
+                                    }
+                                }
+                    }
+                }
+                // 에러 알림 처리
+                .alert("알림", isPresented: Binding(
+                    get: { viewModel.errorMessage != nil },
+                    set: { _ in viewModel.errorMessage = nil }
+                )) {
+                    Button("확인") { viewModel.errorMessage = nil }
+                } message: {
+                    Text(viewModel.errorMessage ?? "")
                 }
             }
         }
-    }
-}
 
 #Preview {
     DistanceMissionView(alarmId: 1)
