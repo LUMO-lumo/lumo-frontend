@@ -63,6 +63,9 @@ struct LumoApp: App {
                     
                 case .oxMission(let alarmID):
                     OXMissionView(alarmId: alarmID)
+                    
+                case .typingMission(let alarmId, let label):
+                    TypingMissionView(alarmId: alarmId, alarmLabel: label)
                 }
             }
             // ✅ 모든 하위 뷰에서 appState에 접근할 수 있도록 주입
