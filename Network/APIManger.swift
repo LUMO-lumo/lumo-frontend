@@ -21,7 +21,6 @@ class APIManager: @unchecked Sendable {
         tokenProvider = TokenProvider()
         accessTokenRefresher = AccessTokenRefresher(tokenProviding: tokenProvider)
         session = Session(interceptor: accessTokenRefresher)
-        
         loggerPlugin = NetworkLoggerPlugin(configuration: .init(logOptions: .verbose))
     }
     
