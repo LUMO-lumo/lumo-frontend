@@ -1,17 +1,16 @@
 //
-//  MissionView.swift
+//  TypingMission.swift
 //  Lumo
 //
-//  Created by 김승겸 on 2/11/26.
+//  Created by 김승겸 on 2/13/26.
 //
 
 import Combine
 import SwiftUI
 
-struct MathAlarmView: View {
+struct TypingMissionView: View {
     @EnvironmentObject var appState: AppState
-    
-    @StateObject var viewModel: MathMissionViewModel
+    @StateObject var viewModel: TypingMissionViewModel
     
     @State private var currentTime = Date()
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -21,7 +20,7 @@ struct MathAlarmView: View {
     
     init(alarmId: Int, alarmLabel: String) {
         _viewModel = StateObject(
-            wrappedValue: MathMissionViewModel(
+            wrappedValue: TypingMissionViewModel(
                 alarmId: alarmId,
                 alarmLabel: alarmLabel
             )
@@ -54,10 +53,12 @@ struct MathAlarmView: View {
                 }
                 .padding(.top, 72)
                 
-                // 수학 미션 컨테이너
-                VStack {
+                Spacer()
+                
+                // 따라쓰기 미션 컨테이너
+                VStack(spacing: 10){
                     // 미션 타이틀 배지
-                    Text("수학 미션을 수행해주세요!")
+                    Text("따라쓰기 미션을 수행해주세요!")
                         .font(.Body1)
                         .foregroundStyle(Color.white)
                         .padding(.vertical, 9)
@@ -67,7 +68,7 @@ struct MathAlarmView: View {
                     
                     // 문제 영역
                     HStack {
-                        Text("Q. \(viewModel.questionText)")
+                        Text("\(viewModel.questionText)")
                             .font(.Subtitle2)
                             .foregroundStyle(Color.primary)
                         Spacer()
@@ -77,25 +78,19 @@ struct MathAlarmView: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(Color.gray300, lineWidth: 2)
                     }
-                    .padding(.horizontal, 20)
                     
                     // 정답 입력 영역 (A.)
                     HStack {
-                        Text("A.")
-                            .font(.Subtitle2)
-                            .foregroundStyle(Color.black)
-                        
-                        TextField("답변을 입력해주세요.", text: $viewModel.userAnswer)
+                        TextField("여기에 문장을 작성해주세요", text: $viewModel.userAnswer)
                             .font(.Subtitle3)
-                            .keyboardType(.numberPad)
-                            .padding(.leading, 4)
+                            .keyboardType(.default)
+                            .multilineTextAlignment(.center)
+
                     }
                     .padding(.horizontal, 24)
-                    .padding(.top, 24)
-                    .padding(.bottom, 223)
+                    .padding(.vertical, 80)
                     .background(Color.gray200)
                     .cornerRadius(16)
-                    .padding(.horizontal, 20)
                     .padding(.top, 10)
                     .padding(.bottom, 34)
                 }
@@ -105,7 +100,7 @@ struct MathAlarmView: View {
                 // 확인 버튼
                 Button(action: {
                     // ✅ ViewModel 내부에서 비동기 처리하므로 await 불필요
-                    viewModel.submitAnswer()
+                    viewModel.submitAnswer(viewModel.userAnswer)
                 }) {
                     Text("확인")
                         .font(.Subtitle2)
@@ -116,8 +111,10 @@ struct MathAlarmView: View {
                 }
                 .disabled(viewModel.isLoading) // 로딩 중 버튼 비활성화
                 .padding(.bottom, 50)
+                
+                Spacer()
             }
-            .blur(radius: viewModel.showFeedback || viewModel.isLoading ? 3 : 0)
+            .padding(.horizontal, 24)
             
             // ✅ 로딩 인디케이터 추가
             if viewModel.isLoading {
@@ -134,7 +131,7 @@ struct MathAlarmView: View {
                 Color.black.opacity(0.6).ignoresSafeArea()
                 
                 VStack(spacing: 28) {
-                    Image(viewModel.isCorrect ? "Correct" : "Incorrect")
+                    Image(viewModel.isCorrect ? "correct" : "incorrect")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 180, height: 180)
@@ -148,8 +145,7 @@ struct MathAlarmView: View {
             }
         }
         .onAppear {
-            // ✅ ViewModel 내부에서 비동기 처리하므로 await 불필요
-            viewModel.startMathMission()
+            viewModel.startTypingMission()
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
             if completed {
@@ -159,7 +155,6 @@ struct MathAlarmView: View {
                 }
             }
         }
-        // ✅ 에러 발생 시 알림 표시
         .alert("알림", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { _ in viewModel.errorMessage = nil }
@@ -174,5 +169,5 @@ struct MathAlarmView: View {
 }
 
 #Preview {
-    MathAlarmView(alarmId: 1, alarmLabel: "1교시 있는 날")
+    TypingMissionView(alarmId: 1, alarmLabel: "1교시 있는 날")
 }

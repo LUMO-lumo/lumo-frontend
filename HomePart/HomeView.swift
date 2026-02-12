@@ -34,34 +34,34 @@ struct HomeView: View {
                     Spacer().frame(height: 40)
                     // MARK: - 미션 테스트 섹션 (차후 삭제)
                     HStack(spacing: 10) {
-                                            Button {
-                                                // 🚀 버튼을 누르면 탭뷰가 사라지고 수학 미션이 꽉 찬 화면으로 뜹니다.
-                                                withAnimation {
-                                                    appState.currentRoot = .mathMission(alarmId: 999, label: "테스트 알람")
-                                                }
-                                            } label: {
-                                                Text("수학 미션 테스트")
-                                                    .font(.headline)
-                                                    .foregroundColor(.white)
-                                                    .frame(maxWidth: .infinity)
-                                                    .padding()
-                                                    .background(Color.orange)
-                                                    .cornerRadius(12)
-                                            }
-                                            
-                                            Button {
-                                                 withAnimation {
-                                                     appState.currentRoot = .distanceMission(alarmId: 999)
-                                                 }
-                                            } label: {
-                                                Text("거리 미션 테스트")
-                                                    .font(.headline)
-                                                    .foregroundColor(.white)
-                                                    .frame(maxWidth: .infinity)
-                                                    .padding()
-                                                    .background(Color.green)
-                                                    .cornerRadius(12)
-                                            }
+                        Button {
+                            // 🚀 버튼을 누르면 탭뷰가 사라지고 수학 미션이 꽉 찬 화면으로 뜹니다.
+                            withAnimation {
+                                appState.currentRoot = .mathMission(alarmId: 999, label: "테스트 알람")
+                            }
+                        } label: {
+                            Text("수학 미션 테스트")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.orange)
+                                .cornerRadius(12)
+                        }
+                        
+                        Button {
+                            withAnimation {
+                                appState.currentRoot = .distanceMission(alarmId: 999)
+                            }
+                        } label: {
+                            Text("거리 미션 테스트")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.green)
+                                .cornerRadius(12)
+                        }
                         Button {
                             withAnimation {
                                 appState.currentRoot = .oxMission(alarmId: 999)
@@ -75,11 +75,24 @@ struct HomeView: View {
                                 .background(Color.blue)
                                 .cornerRadius(12)
                         }
-                                        }
-                                        .padding(.top, 20)
-                                        // ------------------------------------------
-                                        
-                                        Spacer().frame(height: 40)
+                        Button {
+                            withAnimation {
+                                appState.currentRoot = .typingMission(alarmId: 999, label: "테스트 알람")
+                            }
+                        } label: {
+                            Text("따라쓰기 미션 테스트")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.orange)
+                                .cornerRadius(12)
+                        }
+                    }
+                    .padding(.top, 20)
+                    // ------------------------------------------
+                    
+                    Spacer().frame(height: 40)
                     // MARK: - 미션 테스트 섹션
                 }
                 .padding(.horizontal, 24)

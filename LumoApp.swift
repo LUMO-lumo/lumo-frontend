@@ -15,6 +15,7 @@ struct LumoApp: App {
     @AppStorage("isOnboardingFinished") var isOnboardingFinished: Bool = false
     
     // ✅ 전역 상태 관리 객체 생성
+
     @StateObject private var appState = AppState()
     @State private var onboardingViewModel = OnboardingViewModel()
     
@@ -49,8 +50,6 @@ struct LumoApp: App {
                                 }
                             }
                     }
-                    
-                    
                 case .main:
                     MainView()
                     
@@ -64,8 +63,12 @@ struct LumoApp: App {
                     
                 case .oxMission(let alarmID):
                     OXMissionView(alarmId: alarmID)
+                    
+                case .typingMission(let alarmId, let label):
+                    TypingMissionView(alarmId: alarmId, alarmLabel: label)
                 }
             }
+            // ✅ 모든 하위 뷰에서 appState에 접근할 수 있도록 주입
             .environment(onboardingViewModel)
             .environmentObject(appState)
             .preferredColorScheme(selectedScheme)

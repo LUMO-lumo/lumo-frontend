@@ -116,7 +116,6 @@ struct MathMissionView: View {
                 .disabled(viewModel.isLoading) // 로딩 중 버튼 비활성화
                 .padding(.bottom, 50)
             }
-            .blur(radius: viewModel.showFeedback || viewModel.isLoading ? 3 : 0)
             
             // ✅ 로딩 인디케이터 추가
             if viewModel.isLoading {

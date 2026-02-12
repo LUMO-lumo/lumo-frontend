@@ -23,7 +23,9 @@ class TodoLocalService {
             // 만약 RoutineModel, AlarmModel 등 다른 모델도 있다면 콤마(,)로 계속 추가해주세요.
             let schema = Schema([
                 TodoEntity.self,
-                UserModel.self
+                UserModel.self,
+                RoutineTask.self,
+                RoutineType.self
                 //, RoutineModel.self, AlarmModel.self // 다른 모델이 있다면 주석 해제 후 추가
             ])
             
