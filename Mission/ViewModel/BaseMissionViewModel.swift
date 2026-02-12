@@ -8,91 +8,100 @@
 import Foundation
 import Combine
 import Moya
+import _Concurrency
 
-// 1. 공통 기능을 담은 부모 클래스
+// Moya Task 충돌 방지
+typealias AsyncTask = _Concurrency.Task
+
+@MainActor
 class BaseMissionViewModel: NSObject, ObservableObject {
+    
     // MARK: - 공통 프로퍼티
+    // 자식 클래스에서 사용할 Provider (Base에서 관리)
     let provider = MoyaProvider<MissionTarget>()
+    
     var alarmId: Int
     var contentId: Int?
     var attemptCount: Int = 0
     
     // UI 상태 (공통)
     @Published var isMissionCompleted: Bool = false
-    @Published var feedbackMessage: String = ""
-    @Published var showFeedback: Bool = false
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String? = nil
     
     init(alarmId: Int) {
         self.alarmId = alarmId
     }
     
-    // MARK: - 공통 API 1: 미션 시작 (문제 받아오기)
-    // 자식 클래스에서 결과 처리를 다르게 할 수 있도록 completion handler 제공
-    func startMission(completion: @escaping (MissionStartResult?) -> Void) {
-        provider.request(.startMission(alarmId: alarmId)) { result in
-            switch result {
-            case .success(let response):
-                do {
-                    let decoded = try response.map(BaseResponse<MissionStartResult>.self)
-                    if let data = decoded.result {
-                        self.contentId = data.contentId
-                        completion(data) // 데이터 처리는 자식에게 위임
-                    }
-                } catch {
-                    print("Decoding Error")
-                }
-            case .failure(let error):
-                
-                print("Network Error: \(error)")
-                
-                // ⭐️ MoyaError에서 response를 꺼내고, 그 안의 data를 읽어야 합니다.
-                if let response = error.response {
-                    if let str = String(data: response.data, encoding: .utf8) {
-                        print("📝 [403 상세 내용]: \(str)")
-                    }
-                    print("📊 상태 코드: \(response.statusCode)")
-                } else {
-                    print("❌ 응답 데이터 자체가 없습니다 (네트워크 연결 끊김 등)")
-                }
-            }
-        }
+    // MARK: - 공통 API 1: 미션 시작
+    // T: 서버에서 받아올 데이터 타입 (예: [MissionStartResult])
+    // 함수명 startMission 유지, 비동기 반환으로 변경
+    func startMission<T: Codable>() async throws -> T {
+        isLoading = true
+        defer { isLoading = false } // 함수 종료 시 로딩 끄기
+        
+        let result = await provider.request(.startMission(alarmId: alarmId))
+        return try handleResponse(result)
     }
     
-    // MARK: - 공통 API 2: 답안 제출 (요청 바디만 다름)
-    // T는 Encodable을 따르는 어떤 데이터든 가능 (String, Struct 등)
-    func submitMission<T: Encodable>(body: T, completion: @escaping (Bool) -> Void) {
-        guard let _ = contentId else { return }
+    // MARK: - 공통 API 2: 답안 제출
+    // Body: 보낼 데이터 타입, R: 받을 데이터 타입
+    // 함수명 submitMission 유지
+    func submitMission<Body: Encodable, R: Codable>(request: Body) async throws -> R {
         attemptCount += 1
+        isLoading = true
+        defer { isLoading = false }
         
-        provider.request(.submitMission(alarmId: alarmId, request: body)) { result in
-            switch result {
-            case .success(let response):
-                do {
-                    let decoded = try response.map(BaseResponse<MissionSubmitResult>.self)
-                    if let data = decoded.result {
-                        completion(data.isCorrect) // 성공 여부만 자식에게 전달
-                    }
-                } catch {
-                    print("Decoding Error")
-                }
-            case .failure(let error):
-                print("Network Error: \(error)")
+        let result = await provider.request(.submitMission(alarmId: alarmId, request: request))
+        return try handleResponse(result)
+    }
+    
+    // MARK: - 공통 API 3: 알람 해제
+    // 함수명 dismissAlarm 유지
+    func dismissAlarm() async {
+        let requestBody = DismissAlarmRequest(
+            alarmId: alarmId,
+            dismissType: "MISSION",
+            snoozeCount: 0
+        )
+        
+        let result = await provider.request(.dismissAlarm(alarmId: alarmId, request: requestBody))
+        
+        switch result {
+        case .success(let response):
+            // 성공 여부만 확인하면 되므로 간단하게 처리
+            if let decoded = try? response.map(BaseResponse<DismissAlarmResult>.self), decoded.success {
+                print("✅ [Base] 알람 해제 성공")
+                self.isMissionCompleted = true
+            } else {
+                self.errorMessage = "알람 해제 실패"
             }
+        case .failure(let error):
+            print("❌ [Base] 해제 실패: \(error)")
+            self.errorMessage = "네트워크 오류가 발생했습니다."
         }
     }
     
-    // MARK: - 공통 API 3: 알람 해제 (완벽히 동일)
-    func dismissAlarm() {
-        let request = DismissAlarmRequest(alarmId: alarmId, dismissType: "MISSION", snoozeCount: 0)
-        
-        provider.request(.dismissAlarm(alarmId: alarmId, request: request)) { [weak self] result in
-            switch result {
-            case .success:
-                print("알람 해제 성공")
-                self?.isMissionCompleted = true
-            case .failure(let error):
-                print("해제 실패: \(error)")
+    // MARK: - 내부 헬퍼: 응답 처리
+    private func handleResponse<T: Codable>(_ result: Result<Response, MoyaError>) throws -> T {
+        switch result {
+        case .success(let response):
+            _ = try response.filterSuccessfulStatusCodes()
+            let decoded = try response.map(BaseResponse<T>.self)
+            
+            if decoded.success, let data = decoded.result {
+                return data
+            } else {
+                throw MissionError.serverError(message: decoded.message)
             }
+            
+        case .failure(let error):
+            throw error
         }
     }
+}
+
+// 에러 타입 정의
+enum MissionError: Error {
+    case serverError(message: String)
 }

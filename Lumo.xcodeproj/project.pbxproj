@@ -41,7 +41,7 @@
 		B400C5E32F3B1BBD00DBDC08 /* AddTypeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5E22F3B1BBD00DBDC08 /* AddTypeSheet.swift */; };
 		B400C7762F3BA9A500DBDC08 /* MissionTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C7752F3BA99F00DBDC08 /* MissionTarget.swift */; };
 		B400C7802F3BABDB00DBDC08 /* MissionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C77D2F3BAAE400DBDC08 /* MissionModel.swift */; };
-		B400C7812F3BABE100DBDC08 /* MissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C77E2F3BAB2B00DBDC08 /* MissionViewModel.swift */; };
+		B400C7812F3BABE100DBDC08 /* MathMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C77E2F3BAB2B00DBDC08 /* MathMissionViewModel.swift */; };
 		B400C7822F3BABE600DBDC08 /* MathAlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C77F2F3BAB4A00DBDC08 /* MathAlarmView.swift */; };
 		B40A01162F2BA23D00687C64 /* ProfileSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40A01152F2BA14000687C64 /* ProfileSettingView.swift */; };
 		B40A01182F2BB03300687C64 /* SettingAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B40A01172F2BB03300687C64 /* SettingAssets.xcassets */; };
@@ -118,7 +118,7 @@
 		B400C5E22F3B1BBD00DBDC08 /* AddTypeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTypeSheet.swift; sourceTree = "<group>"; };
 		B400C7752F3BA99F00DBDC08 /* MissionTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionTarget.swift; sourceTree = "<group>"; };
 		B400C77D2F3BAAE400DBDC08 /* MissionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionModel.swift; sourceTree = "<group>"; };
-		B400C77E2F3BAB2B00DBDC08 /* MissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionViewModel.swift; sourceTree = "<group>"; };
+		B400C77E2F3BAB2B00DBDC08 /* MathMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathMissionViewModel.swift; sourceTree = "<group>"; };
 		B400C77F2F3BAB4A00DBDC08 /* MathAlarmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathAlarmView.swift; sourceTree = "<group>"; };
 		B40A01152F2BA14000687C64 /* ProfileSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingView.swift; sourceTree = "<group>"; };
 		B40A01172F2BB03300687C64 /* SettingAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SettingAssets.xcassets; sourceTree = "<group>"; };
@@ -328,7 +328,7 @@
 			isa = PBXGroup;
 			children = (
 				34A469972F3C325200F0290D /* BaseMissionViewModel.swift */,
-				B400C77E2F3BAB2B00DBDC08 /* MissionViewModel.swift */,
+				B400C77E2F3BAB2B00DBDC08 /* MathMissionViewModel.swift */,
 				34A469992F3C369400F0290D /* DistanceMissionViewModel.swift */,
 			);
 			path = ViewModel;
@@ -659,7 +659,7 @@
 				B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */,
 				3492C5942F3B419000958A4D /* HomeModel.swift in Sources */,
 				34A468142F3C156200F0290D /* NoticeTarget.swift in Sources */,
-				B400C7812F3BABE100DBDC08 /* MissionViewModel.swift in Sources */,
+				B400C7812F3BABE100DBDC08 /* MathMissionViewModel.swift in Sources */,
 				3492C5952F3B419000958A4D /* TodoSettingViewModel.swift in Sources */,
 				3492C5962F3B419000958A4D /* TodoSettingView.swift in Sources */,
 				3492C5972F3B419000958A4D /* TodoSettingModel.swift in Sources */,
@@ -807,7 +807,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4HP2RU9G92;
+				DEVELOPMENT_TEAM = 32UGN86SXU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
@@ -823,7 +823,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo.sy;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -842,7 +842,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4HP2RU9G92;
+				DEVELOPMENT_TEAM = 32UGN86SXU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
@@ -858,7 +858,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo.sy;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
