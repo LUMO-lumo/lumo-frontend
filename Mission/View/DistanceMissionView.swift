@@ -10,9 +10,9 @@ struct DistanceMissionView: View {
     let alarmId: Int
     @StateObject private var viewModel: DistanceMissionViewModel
     init(alarmId: Int) {
-            self.alarmId = alarmId
-            _viewModel = StateObject(wrappedValue: DistanceMissionViewModel(alarmId: alarmId))
-        }
+        self.alarmId = alarmId
+        _viewModel = StateObject(wrappedValue: DistanceMissionViewModel(alarmId: alarmId))
+    }
     var body: some View {
         ZStack{
             VStack {
@@ -95,7 +95,7 @@ struct DistanceMissionView: View {
                     
                     // 내용 (이모티콘 + 멘트)
                     VStack(spacing: 20) {
-                        Image(.wellDone)
+                        Image("correct")
                             .resizable()
                             .frame(width: 180,height: 180)
                         
@@ -110,13 +110,16 @@ struct DistanceMissionView: View {
         }
         .animation(.easeInOut, value: viewModel.isMissionCompleted)
         .onAppear {
-                    viewModel.start()
-                }
+            viewModel.start()
+        }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, newValue in
             // newValue가 true(미션 완료)가 되었을 때 실행
             if newValue {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    viewModel.dismissAlarm() // 또는 dismiss()
+                AsyncTask {
+                    // 1초 대기
+                    try? await AsyncTask.sleep(nanoseconds: 1_000_000_000)
+                    // async 함수 호출
+                    await viewModel.dismissAlarm()
                 }
             }
         }
