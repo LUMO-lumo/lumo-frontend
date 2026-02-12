@@ -38,8 +38,6 @@ class MathMissionViewModel: BaseMissionViewModel {
             setupMockData()
             return
         }
-        
-<<<<<<< HEAD
         // [Real]
         AsyncTask {
             do {
@@ -50,18 +48,7 @@ class MathMissionViewModel: BaseMissionViewModel {
                     print("✅ 문제 로드 완료: \(result.question)")
                 } else {
                     self.errorMessage = "문제를 불러오지 못했습니다."
-=======
-        // [Real] - 부모 메서드 호출 (재사용)
-        AsyncTask {
-            do {
-                // "부모님(super), 미션 시작 요청해주세요. 결과는 배열([MissionStartResult])로 주세요."
-                let result: [MissionStartResult] = try await super.startMission()
-                
-                if let firstProblem = result.first {
-                    self.contentId = firstProblem.contentId
-                    self.questionText = firstProblem.question
-                    print("✅ 문제 로드 완료: \(firstProblem.question)")
->>>>>>> 27da3b1cde125437bac73aa2f7f23063ff9ce779
+
                 }
             } catch {
                 self.handleError(error)
@@ -91,22 +78,11 @@ class MathMissionViewModel: BaseMissionViewModel {
         
         AsyncTask {
             do {
-<<<<<<< HEAD
                 // 🚨 수정 2: Base가 이제 객체가 아니라 성공 여부(Bool)만 반환합니다.
                 // (Base 내부에서 정답이면 이미 dismissAlarm을 호출함)
                 let isSuccess = try await super.submitMission(request: body)
                 
                 self.handleSubmissionResult(isCorrect: isSuccess)
-                
-=======
-                // "부모님(super), 제출해주세요. 결과는 MissionSubmitResult로 주세요."
-                let result: MissionSubmitResult = try await super.submitMission(request: body)
-                
-                self.handleSubmissionResult(
-                    isCorrect: result.isCorrect,
-                    isCompleted: result.isCompleted
-                )
->>>>>>> 27da3b1cde125437bac73aa2f7f23063ff9ce779
             } catch {
                 self.handleError(error)
             }
@@ -114,29 +90,13 @@ class MathMissionViewModel: BaseMissionViewModel {
     }
     
     // MARK: - Helper (UI Logic)
-<<<<<<< HEAD
     // 🚨 수정 3: Base 로직 변경에 따라 isCompleted 파라미터 제거 (성공이면 무조건 완료로 간주)
     private func handleSubmissionResult(isCorrect: Bool) {
-=======
-    private func handleSubmissionResult(isCorrect: Bool, isCompleted: Bool) {
->>>>>>> 27da3b1cde125437bac73aa2f7f23063ff9ce779
+
         self.isCorrect = isCorrect
         self.showFeedback = true
-        
         if isCorrect {
             self.feedbackMessage = "정답이에요!"
-<<<<<<< HEAD
-            
-            // Base에서 이미 dismissAlarm()을 호출했으므로,
-            // 여기서는 UI 피드백(동그라미 애니메이션 등)을 보여줄 시간만 벌어줍니다.
-            // View는 Base의 @Published isMissionCompleted를 보고 화면을 닫습니다.
-=======
-            AsyncTask {
-                try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
-                // 부모 메서드 호출
-                await super.dismissAlarm()
-            }
->>>>>>> 27da3b1cde125437bac73aa2f7f23063ff9ce779
         } else {
             self.feedbackMessage = "틀렸어요!"
             AsyncTask {
@@ -175,8 +135,6 @@ class MathMissionViewModel: BaseMissionViewModel {
     
     private func checkMockAnswer() {
         let isCorrect = (userAnswer == mockAnswer)
-<<<<<<< HEAD
-        
         // Mock 모드일 때는 수동으로 dismiss 처리 필요
         if isCorrect {
             self.handleSubmissionResult(isCorrect: true)
@@ -187,8 +145,6 @@ class MathMissionViewModel: BaseMissionViewModel {
         } else {
             self.handleSubmissionResult(isCorrect: false)
         }
-=======
-        self.handleSubmissionResult(isCorrect: isCorrect, isCompleted: true)
->>>>>>> 27da3b1cde125437bac73aa2f7f23063ff9ce779
+
     }
 }
