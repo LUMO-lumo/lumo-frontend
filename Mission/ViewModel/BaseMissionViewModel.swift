@@ -8,91 +8,130 @@
 import Foundation
 import Combine
 import Moya
+import _Concurrency
 
-// 1. 공통 기능을 담은 부모 클래스
+// Moya Task 충돌 방지
+typealias AsyncTask = _Concurrency.Task
+
+@MainActor
 class BaseMissionViewModel: NSObject, ObservableObject {
+    
     // MARK: - 공통 프로퍼티
-    let provider = MoyaProvider<MissionTarget>()
+    let provider: MoyaProvider<MissionTarget>
+    
     var alarmId: Int
     var contentId: Int?
     var attemptCount: Int = 0
     
-    // UI 상태 (공통)
+    // UI 상태
     @Published var isMissionCompleted: Bool = false
-    @Published var feedbackMessage: String = ""
-    @Published var showFeedback: Bool = false
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String? = nil
     
     init(alarmId: Int) {
         self.alarmId = alarmId
+        
+        // ⭐️ 토큰 설정 (403 에러 방지)
+        let token = UserDefaults.standard.string(forKey: "accessToken") ?? ""
+        // 키체인 사용 시: let token = KeychainManager.standard.loadSession(for: "userSession")?.accessToken ?? ""
+        
+        let authPlugin = AccessTokenPlugin { _ in token }
+        self.provider = MoyaProvider<MissionTarget>(plugins: [authPlugin])
     }
     
-    // MARK: - 공통 API 1: 미션 시작 (문제 받아오기)
-    // 자식 클래스에서 결과 처리를 다르게 할 수 있도록 completion handler 제공
-    func startMission(completion: @escaping (MissionStartResult?) -> Void) {
-        provider.request(.startMission(alarmId: alarmId)) { result in
-            switch result {
-            case .success(let response):
-                do {
-                    let decoded = try response.map(BaseResponse<MissionStartResult>.self)
-                    if let data = decoded.result {
-                        self.contentId = data.contentId
-                        completion(data) // 데이터 처리는 자식에게 위임
-                    }
-                } catch {
-                    print("Decoding Error")
-                }
-            case .failure(let error):
-                
-                print("Network Error: \(error)")
-                
-                // ⭐️ MoyaError에서 response를 꺼내고, 그 안의 data를 읽어야 합니다.
-                if let response = error.response {
-                    if let str = String(data: response.data, encoding: .utf8) {
-                        print("📝 [403 상세 내용]: \(str)")
-                    }
-                    print("📊 상태 코드: \(response.statusCode)")
-                } else {
-                    print("❌ 응답 데이터 자체가 없습니다 (네트워크 연결 끊김 등)")
-                }
+    // MARK: - 공통 API 1: 미션 시작
+    func startMission() async throws -> MissionStartResult? {
+        isLoading = true
+        defer { isLoading = false }
+        
+        let result = await provider.asyncRequest(.startMission(alarmId: alarmId))
+        
+        switch result {
+        case .success(let response):
+            let decoded = try response.map(BaseResponse<MissionStartResult>.self)
+            
+            if let data = decoded.result {
+                // 🚨 [수정] 모델 정의에 맞춰 'missionContentId' -> 'contentId'로 변경
+                self.contentId = data.contentId
+                return data
+            } else {
+                throw MissionError.serverError(message: decoded.message)
             }
+        case .failure(let error):
+            throw error
         }
     }
     
-    // MARK: - 공통 API 2: 답안 제출 (요청 바디만 다름)
-    // T는 Encodable을 따르는 어떤 데이터든 가능 (String, Struct 등)
-    func submitMission<T: Encodable>(body: T, completion: @escaping (Bool) -> Void) {
-        guard let _ = contentId else { return }
+    // MARK: - 공통 API 2: 답안 제출
+    // 구체적인 타입(MissionSubmitRequest)을 사용하여 복잡한 제네릭 에러 방지
+    func submitMission(request: MissionSubmitRequest) async throws -> Bool {
         attemptCount += 1
+        isLoading = true
+        defer { isLoading = false }
         
-        provider.request(.submitMission(alarmId: alarmId, request: body)) { result in
-            switch result {
-            case .success(let response):
-                do {
-                    let decoded = try response.map(BaseResponse<MissionSubmitResult>.self)
-                    if let data = decoded.result {
-                        completion(data.isCorrect) // 성공 여부만 자식에게 전달
-                    }
-                } catch {
-                    print("Decoding Error")
+        let result = await provider.asyncRequest(.submitMission(alarmId: alarmId, request: request))
+        
+        switch result {
+        case .success(let response):
+            let decoded = try response.map(BaseResponse<MissionSubmitResult>.self, using: JSONDecoder())
+            
+            if let data = decoded.result {
+                if data.isCorrect {
+                    // 정답이면 알람 해제 자동 호출
+                    print("🎉 [Base] 정답입니다! 알람 해제를 요청합니다.")
+                    await dismissAlarm()
+                    return true
+                } else {
+                    return false
                 }
-            case .failure(let error):
-                print("Network Error: \(error)")
             }
+            return false
+            
+        case .failure(let error):
+            throw error
         }
     }
     
-    // MARK: - 공통 API 3: 알람 해제 (완벽히 동일)
-    func dismissAlarm() {
-        let request = DismissAlarmRequest(alarmId: alarmId, dismissType: "MISSION", snoozeCount: 0)
+    // MARK: - 공통 API 3: 알람 해제
+    func dismissAlarm() async {
+        let requestBody = DismissAlarmRequest(
+            alarmId: alarmId,
+            dismissType: "MISSION",
+            snoozeCount: 0
+        )
         
-        provider.request(.dismissAlarm(alarmId: alarmId, request: request)) { [weak self] result in
-            switch result {
-            case .success:
-                print("알람 해제 성공")
-                self?.isMissionCompleted = true
-            case .failure(let error):
-                print("해제 실패: \(error)")
+        let result = await provider.asyncRequest(.dismissAlarm(alarmId: alarmId, request: requestBody))
+        
+        if case .success(let response) = result {
+            // 성공 여부만 간단히 체크 (200번대 상태코드)
+            if response.statusCode >= 200 && response.statusCode < 300 {
+                print("✅ [Base] 알람 해제 성공")
+                self.isMissionCompleted = true
+            } else {
+                print("⚠️ [Base] 알람 해제 실패 코드: \(response.statusCode)")
+                self.errorMessage = "알람 해제 실패 (상태코드: \(response.statusCode))"
             }
         }
     }
+}
+
+extension Moya.Response: @unchecked @retroactive Sendable {}
+
+// MARK: - Moya Async 확장 (필수)
+extension MoyaProvider {
+    func asyncRequest(_ target: Target) async -> Result<Response, MoyaError> {
+        return await withCheckedContinuation { continuation in
+            self.request(target) { result in
+                // 이제 Response와 MoyaError가 Sendable이 되었으므로,
+                // Result<Response, MoyaError>도 자동으로 Sendable이 됩니다.
+                // 따라서 그냥 넘겨도 에러가 나지 않습니다.
+                continuation.resume(returning: result)
+            }
+        }
+    }
+}
+
+// 에러 타입
+enum MissionError: Error {
+    case serverError(message: String)
 }

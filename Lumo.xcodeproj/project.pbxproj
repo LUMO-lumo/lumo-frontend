@@ -31,6 +31,8 @@
 		34A469942F3C2D4C00F0290D /* DistanceMissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469932F3C2D4C00F0290D /* DistanceMissionView.swift */; };
 		34A469982F3C325200F0290D /* BaseMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469972F3C325200F0290D /* BaseMissionViewModel.swift */; };
 		34A4699A2F3C369400F0290D /* DistanceMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469992F3C369400F0290D /* DistanceMissionViewModel.swift */; };
+		34A4699E2F3C7A8700F0290D /* OXMissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A4699D2F3C7A8700F0290D /* OXMissionView.swift */; };
+		34A469A02F3C7A9200F0290D /* OXMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A4699F2F3C7A9200F0290D /* OXMissionViewModel.swift */; };
 		34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */; };
 		B400C5D82F3B16FF00DBDC08 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5D42F3B16FF00DBDC08 /* LoginModel.swift */; };
 		B400C5D92F3B16FF00DBDC08 /* PWResetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5D52F3B16FF00DBDC08 /* PWResetModel.swift */; };
@@ -108,6 +110,8 @@
 		34A469932F3C2D4C00F0290D /* DistanceMissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceMissionView.swift; sourceTree = "<group>"; };
 		34A469972F3C325200F0290D /* BaseMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseMissionViewModel.swift; sourceTree = "<group>"; };
 		34A469992F3C369400F0290D /* DistanceMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceMissionViewModel.swift; sourceTree = "<group>"; };
+		34A4699D2F3C7A8700F0290D /* OXMissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OXMissionView.swift; sourceTree = "<group>"; };
+		34A4699F2F3C7A9200F0290D /* OXMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OXMissionViewModel.swift; sourceTree = "<group>"; };
 		34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBriefingViewModel.swift; sourceTree = "<group>"; };
 		B400C5D42F3B16FF00DBDC08 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		B400C5D52F3B16FF00DBDC08 /* PWResetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWResetModel.swift; sourceTree = "<group>"; };
@@ -320,6 +324,7 @@
 			children = (
 				B400C77F2F3BAB4A00DBDC08 /* MathAlarmView.swift */,
 				34A469932F3C2D4C00F0290D /* DistanceMissionView.swift */,
+				34A4699D2F3C7A8700F0290D /* OXMissionView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -330,6 +335,7 @@
 				34A469972F3C325200F0290D /* BaseMissionViewModel.swift */,
 				B400C77E2F3BAB2B00DBDC08 /* MissionViewModel.swift */,
 				34A469992F3C369400F0290D /* DistanceMissionViewModel.swift */,
+				34A4699F2F3C7A9200F0290D /* OXMissionViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -608,6 +614,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34A469A02F3C7A9200F0290D /* OXMissionViewModel.swift in Sources */,
 				34A468102F3C14F000F0290D /* NoticeView.swift in Sources */,
 				B4E2848A2F2C864300D8FD4D /* SupportSectionView.swift in Sources */,
 				B44CC1552F3A2A33004D19A6 /* APITargetType.swift in Sources */,
@@ -630,6 +637,7 @@
 				B44CC1532F3A26AF004D19A6 /* AuthRouter.swift in Sources */,
 				B44CC14F2F3998EC004D19A6 /* TokenProvider.swift in Sources */,
 				34A468122F3C150400F0290D /* NoticeViewModel.swift in Sources */,
+				34A4699E2F3C7A8700F0290D /* OXMissionView.swift in Sources */,
 				B44CC1422F363B9F004D19A6 /* UserTarget.swift in Sources */,
 				B44CC14A2F3998A0004D19A6 /* APIManger.swift in Sources */,
 				B44CC14D2F3998D9004D19A6 /* AccessTokenRefresher.swift in Sources */,

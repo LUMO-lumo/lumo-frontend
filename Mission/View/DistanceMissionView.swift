@@ -10,9 +10,9 @@ struct DistanceMissionView: View {
     let alarmId: Int
     @StateObject private var viewModel: DistanceMissionViewModel
     init(alarmId: Int) {
-            self.alarmId = alarmId
-            _viewModel = StateObject(wrappedValue: DistanceMissionViewModel(alarmId: alarmId))
-        }
+        self.alarmId = alarmId
+        _viewModel = StateObject(wrappedValue: DistanceMissionViewModel(alarmId: alarmId))
+    }
     var body: some View {
         ZStack{
             VStack {
@@ -20,19 +20,16 @@ struct DistanceMissionView: View {
                 
                 Text("알람 정보")
                     .font(.Subtitle2)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.primary)
                 
                 Spacer()
                 
-                ZStack {
-                    Text("거리 미션을 수행해 주세요!")
-                        .font(.Body1)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .foregroundStyle(Color.white)
-                        .background(Color.main300, in: RoundedRectangle(cornerRadius: 6)
-                        )
-                }
+                Text("거리 미션을 수행해 주세요!")
+                    .font(.Body1)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .foregroundStyle(Color.white)
+                    .background(Color.main300, in: RoundedRectangle(cornerRadius: 6))
                 
                 Spacer().frame(height:14)
                 
@@ -83,7 +80,7 @@ struct DistanceMissionView: View {
                 
                 Spacer().frame(height:85)
                 
-            } .padding(.horizontal)
+            } .padding(.horizontal, 24)
                 .blur(radius: viewModel.isMissionCompleted ? 5 : 0)
             
             if viewModel.isMissionCompleted {
@@ -110,13 +107,18 @@ struct DistanceMissionView: View {
         }
         .animation(.easeInOut, value: viewModel.isMissionCompleted)
         .onAppear {
-                    viewModel.start()
-                }
+            _Concurrency.Task {
+                await viewModel.start()
+            }
+        }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, newValue in
             // newValue가 true(미션 완료)가 되었을 때 실행
             if newValue {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    viewModel.dismissAlarm() // 또는 dismiss()
+                    _Concurrency.Task {
+                        await viewModel.dismissAlarm() // 또는 dismiss()
+                        
+                    }
                 }
             }
         }
