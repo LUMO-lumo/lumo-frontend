@@ -1,0 +1,178 @@
+//
+//  MissionView.swift
+//  Lumo
+//
+//  Created by 김승겸 on 2/11/26.
+//
+
+import Combine
+import SwiftUI
+
+struct MathAlarmView: View {
+    // 화면 닫기 기능을 위해 환경 변수 추가
+    @Environment(\.dismiss) private var dismiss
+    
+    @StateObject var viewModel: MathMissionViewModel
+    
+    @State private var currentTime = Date()
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    // UI 디자인을 위한 임의의 폰트 및 컬러 설정
+    let primaryColor = Color.pink.opacity(0.8)
+    
+    init(alarmId: Int, alarmLabel: String) {
+        _viewModel = StateObject(
+            wrappedValue: MathMissionViewModel(
+                alarmId: alarmId,
+                alarmLabel: alarmLabel
+            )
+        )
+    }
+    
+    private var timeFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH : mm"
+        return formatter
+    }
+    
+    var body: some View {
+        ZStack {
+            
+            // 메인 컨텐츠
+            VStack {
+                // 상단 시간 정보
+                VStack(spacing: 8) {
+                    Text(viewModel.alarmLabel)
+                        .font(.pretendardMedium16)
+                        .foregroundStyle(Color.primary)
+                    
+                    Text(timeFormatter.string(from: currentTime))
+                        .font(.pretendardSemiBold60)
+                        .foregroundStyle(Color.primary)
+                        .onReceive(timer) { input in
+                            currentTime = input
+                        }
+                }
+                .padding(.top, 72)
+                
+                // 수학 미션 컨테이너
+                VStack {
+                    // 미션 타이틀 배지
+                    Text("수학 미션을 수행해주세요!")
+                        .font(.Body1)
+                        .foregroundStyle(Color.white)
+                        .padding(.vertical, 9)
+                        .padding(.horizontal, 17)
+                        .background(Color.main300, in: RoundedRectangle(cornerRadius: 6))
+                        .padding(.bottom, 14)
+                    
+                    // 문제 영역
+                    HStack {
+                        Text("Q. \(viewModel.questionText)")
+                            .font(.Subtitle2)
+                            .foregroundStyle(Color.primary)
+                        Spacer()
+                    }
+                    .padding(24)
+                    .overlay(alignment: .center) {
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.gray300, lineWidth: 2)
+                    }
+                    .padding(.horizontal, 20)
+                    
+                    // 정답 입력 영역 (A.)
+                    HStack {
+                        Text("A.")
+                            .font(.Subtitle2)
+                            .foregroundStyle(Color.black)
+                        
+                        TextField("답변을 입력해주세요.", text: $viewModel.userAnswer)
+                            .font(.Subtitle3)
+                            .keyboardType(.numberPad)
+                            .padding(.leading, 4)
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.top, 24)
+                    .padding(.bottom, 223)
+                    .background(Color.gray200)
+                    .cornerRadius(16)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 10)
+                    .padding(.bottom, 34)
+                }
+                
+                Spacer()
+                
+                // 확인 버튼
+                Button(action: {
+                    // ✅ ViewModel 내부에서 비동기 처리하므로 await 불필요
+                    viewModel.submitAnswer()
+                }) {
+                    Text("확인")
+                        .font(.Subtitle2)
+                        .foregroundStyle(Color.gray700)
+                        .padding(.horizontal, 27)
+                        .padding(.vertical, 19)
+                        .background(Color.gray300, in: RoundedRectangle(cornerRadius: 999))
+                }
+                .disabled(viewModel.isLoading) // 로딩 중 버튼 비활성화
+                .padding(.bottom, 50)
+            }
+            .blur(radius: viewModel.showFeedback || viewModel.isLoading ? 3 : 0)
+            
+            // ✅ 로딩 인디케이터 추가
+            if viewModel.isLoading {
+                ZStack {
+                    Color.black.opacity(0.2).ignoresSafeArea()
+                    ProgressView()
+                        .scaleEffect(1.5)
+                        .tint(.white)
+                }
+            }
+            
+            // 피드백 오버레이 (정답/오답 화면)
+            if viewModel.showFeedback {
+                Color.black.opacity(0.6).ignoresSafeArea()
+                
+                VStack(spacing: 28) {
+                    Image(viewModel.isCorrect ? "correct" : "incorrect")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 180, height: 180)
+                    
+                    Text(viewModel.feedbackMessage)
+                        .font(.Headline1)
+                        .foregroundStyle(viewModel.isCorrect ? Color.main100 : Color.main300)
+                }
+                .transition(.scale)
+                .zIndex(1) // 맨 앞으로 가져오기
+            }
+        }
+        .onAppear {
+            // ✅ ViewModel 내부에서 비동기 처리하므로 await 불필요
+            viewModel.startMathMission()
+        }
+        .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
+            if completed {
+                print("🏁 미션 완료! 뷰를 닫습니다.")
+                // ✅ 화면 닫기 (실제 앱 동작)
+                dismiss()
+            }
+        }
+        // ✅ 에러 발생 시 알림 표시
+        .alert("알림", isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { _ in viewModel.errorMessage = nil }
+        )) {
+            Button("확인") {
+                viewModel.errorMessage = nil
+            }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
+    }
+}
+
+#Preview {
+    MathAlarmView(alarmId: 1, alarmLabel: "1교시 있는 날")
+}

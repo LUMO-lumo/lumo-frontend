@@ -92,7 +92,7 @@ struct DistanceMissionView: View {
                     
                     // 내용 (이모티콘 + 멘트)
                     VStack(spacing: 20) {
-                        Image(.wellDone)
+                        Image("correct")
                             .resizable()
                             .frame(width: 180,height: 180)
                         
@@ -107,18 +107,30 @@ struct DistanceMissionView: View {
         }
         .animation(.easeInOut, value: viewModel.isMissionCompleted)
         .onAppear {
+<<<<<<< HEAD
             _Concurrency.Task {
                 await viewModel.start()
             }
+=======
+            viewModel.start()
+>>>>>>> 27da3b1cde125437bac73aa2f7f23063ff9ce779
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, newValue in
             // newValue가 true(미션 완료)가 되었을 때 실행
             if newValue {
+<<<<<<< HEAD
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                     _Concurrency.Task {
                         await viewModel.dismissAlarm() // 또는 dismiss()
                         
                     }
+=======
+                AsyncTask {
+                    // 1초 대기
+                    try? await AsyncTask.sleep(nanoseconds: 1_000_000_000)
+                    // async 함수 호출
+                    await viewModel.dismissAlarm()
+>>>>>>> 27da3b1cde125437bac73aa2f7f23063ff9ce779
                 }
             }
         }
