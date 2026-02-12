@@ -15,8 +15,12 @@ struct LumoApp: App {
     @AppStorage("isOnboardingFinished") var isOnboardingFinished: Bool = false
     
     // ✅ 전역 상태 관리 객체 생성
+<<<<<<< HEAD
     @StateObject private var appState = AppState()
     
+=======
+    @State private var appState = AppState()
+>>>>>>> test/merge-check
     @State private var onboardingViewModel = OnboardingViewModel()
     
     var body: some Scene {
@@ -50,7 +54,11 @@ struct LumoApp: App {
                                 }
                             }
                     }
+<<<<<<< HEAD
                     .environment(onboardingViewModel)
+=======
+                    
+>>>>>>> test/merge-check
                     
                 case .main:
                     MainView()
@@ -65,6 +73,7 @@ struct LumoApp: App {
                 }
             }
             // ✅ 모든 하위 뷰에서 appState에 접근할 수 있도록 주입
+            .environment(onboardingViewModel)
             .environmentObject(appState)
             .preferredColorScheme(selectedScheme)
             // isOnboardingFinished 값이 외부(설정 등)에서 바뀌었을 때 싱크 맞추기

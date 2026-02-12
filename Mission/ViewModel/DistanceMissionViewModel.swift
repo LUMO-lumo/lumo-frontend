@@ -1,21 +1,34 @@
+//
+//  DistanceMissionViewModel.swift
+//  Lumo
+//
+//  Created by 정승윤 on 2/11/26.
+//
+
 import Foundation
 import CoreLocation
 import Combine
+import _Concurrency
+
 
 // CoreLocation은 Main Thread에서 UI와 상호작용하므로 MainActor 권장
 @MainActor
 class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate {
     
-    // MARK: - 고유 프로퍼티
+    
     private let locationManager = CLLocationManager()
     private var previousLocation: CLLocation? // 이전 위치 저장용
     
     @Published var currentDistance: Double = 0.0
-    @Published var targetDistance: Double = 50.0 // 기본값 50m
+    @Published var targetDistance: Double = 50.0 // 기본 목표값
+    @Published var feedbackMessage: String = ""
+    @Published var showFeedback: Bool = false
+    @Published var isCorrect: Bool = false
     
-    // UI 표시용 메시지
-    @Published var feedbackMessage: String = "목표를 향해 걸어보세요!"
+    // MARK: - Mock Mode
+    private let isMockMode: Bool = true // 테스트 시 true, 배포 시 false
     
+    // MARK: - Initialization
     override init(alarmId: Int) {
         super.init(alarmId: alarmId)
         setupLocationManager()
@@ -87,56 +100,99 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     }
     
     // MARK: - CLLocationManagerDelegate
-    // (Delegate 메서드는 MainActor인 클래스 안이라도 비동기적으로 호출될 수 있어 nonisolated 처리하거나 MainActor 보장 필요)
-    // 여기서는 클래스 전체가 @MainActor이므로 안전합니다.
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last else { return }
-        
-        // 정확도가 너무 떨어지는 데이터 무시 (예: 오차 20m 이상이면 무시)
-        // 실내 테스트면 이 조건을 좀 완화하거나 주석 처리하세요.
-        // guard location.horizontalAccuracy >= 0 && location.horizontalAccuracy <= 20 else { return }
-        
-        // 1. 이전 위치가 있다면 거리 누적
-        if let previous = previousLocation {
-            let distanceInMeters = location.distance(from: previous)
+    
+    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        AsyncTask { @MainActor in
+            guard let location = locations.last else { return }
             
-            // ⭐️ 0.5m 이상 움직였을 때만 누적 (GPS 튐 방지)
-            if distanceInMeters > 0.5 {
-                currentDistance += distanceInMeters
-                print("🚶 이동: +\(String(format: "%.1f", distanceInMeters))m | 누적: \(String(format: "%.1f", currentDistance))m / \(targetDistance)m")
+            // 1. 이전 위치가 있으면 거리 계산
+            if let previous = previousLocation {
+                let delta = location.distance(from: previous)
+                
+                // 0.5m 이상 이동했을 때만 누적 (튀는 값 방지)
+                if delta > 0.5 {
+                    currentDistance += delta
+                    print("🏃‍♂️ 이동: +\(String(format: "%.1f", delta))m | 현재: \(String(format: "%.1f", currentDistance))m")
+                }
             }
-        } else {
-            print("📍 첫 위치 고정 완료")
-        }
-        
-        // 2. 현재 위치 갱신
-        previousLocation = location
-        
-        // 3. 목표 달성 체크 (중복 제출 방지)
-        if currentDistance >= targetDistance && !isMissionCompleted {
-            print("🏁 목표 달성! 자동 제출을 시도합니다.")
             
-            // Delegate는 동기 함수이므로, async 함수인 submit()을 부르려면 Task가 필요함
-            _Concurrency.Task { [weak self] in
-                await self?.submit()
+            // 2. 현재 위치 갱신
+            previousLocation = location
+            
+            // 3. 목표 달성 체크
+            if currentDistance >= targetDistance {
+                // 중복 제출 방지 체크
+                if !isMissionCompleted && !isLoading {
+                    print("🏁 목표 달성! 자동 제출")
+                    self.locationManager.stopUpdatingLocation() // 위치 추적 중지
+                    await submit()
+                }
             }
         }
     }
     
-    // 권한 변경 감지
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
-        case .authorizedWhenInUse, .authorizedAlways:
-            print("✅ 위치 권한 허용됨")
-            manager.startUpdatingLocation()
-        case .denied, .restricted:
-            print("🚫 위치 권한 거부됨")
-            self.errorMessage = "위치 권한이 필요합니다. 설정에서 켜주세요."
-        case .notDetermined:
-            manager.requestWhenInUseAuthorization()
-        @unknown default:
-            break
+    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        AsyncTask { @MainActor in
+            switch self.locationManager.authorizationStatus {
+            case .authorizedWhenInUse, .authorizedAlways:
+                print("✅ 위치 권한 허용됨")
+                self.locationManager.startUpdatingLocation()
+            case .denied, .restricted:
+                self.errorMessage = "위치 권한을 허용해주세요."
+            case .notDetermined:
+                self.locationManager.requestWhenInUseAuthorization()
+            @unknown default:
+                break
+            }
+        }
+    }
+    
+    private func handleSubmissionResult(isCorrect: Bool) {
+        self.isCorrect = isCorrect
+        self.showFeedback = true
+        
+        if isCorrect {
+            self.feedbackMessage = "미션 성공! 🎉"
+            self.locationManager.stopUpdatingLocation()
+            // 💡 BaseMissionViewModel이 isMissionCompleted를 true로 만들고
+            // API를 통해 알람을 해제할 때까지 UI 피드백을 유지합니다.
+        } else {
+            self.feedbackMessage = "아직 목표에 도달하지 못했습니다."
+            AsyncTask {
+                try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
+                self.showFeedback = false
+            }
+        }
+    }
+    
+    // MARK: - Mock Helpers
+    private func setupMockData() {
+        self.isLoading = true
+        AsyncTask {
+            try? await AsyncTask.sleep(nanoseconds: 500_000_000)
+            self.contentId = 888
+            self.targetDistance = 30.0
+            self.isLoading = false
+            self.simulateMockWalking()
+        }
+    }
+    
+    private func simulateMockWalking() {
+        AsyncTask {
+            while currentDistance < targetDistance {
+                try? await AsyncTask.sleep(nanoseconds: 500_000_000)
+                self.currentDistance += 5.0
+            }
+            await self.submit()
+        }
+    }
+    
+    private func checkMockSuccess() {
+        self.handleSubmissionResult(isCorrect: true)
+        AsyncTask {
+            try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
+            self.isMissionCompleted = true
         }
     }
 }

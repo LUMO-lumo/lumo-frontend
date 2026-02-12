@@ -10,6 +10,7 @@ import Observation
 import PhotosUI
 import SwiftData
 import SwiftUI
+import Combine
 
 // 미션 종류
 enum MissionType: String, CaseIterable {

@@ -58,10 +58,6 @@ class BaseMissionViewModel: NSObject, ObservableObject {
     // MARK: - 공통 API 2: 답안 제출
     // 구체적인 타입(MissionSubmitRequest)을 사용하여 복잡한 제네릭 에러 방지
     func submitMission(request: MissionSubmitRequest) async throws -> Bool {
-        attemptCount += 1
-        isLoading = true
-        defer { isLoading = false }
-        
         let result = await provider.asyncRequest(.submitMission(alarmId: alarmId, request: request))
         
         switch result {
@@ -123,7 +119,6 @@ extension MoyaProvider {
         }
     }
 }
-
 // 에러 타입
 enum MissionError: Error {
     case serverError(message: String)

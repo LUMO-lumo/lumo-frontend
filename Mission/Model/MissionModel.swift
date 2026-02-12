@@ -59,3 +59,4 @@ struct DistanceMissionRequest: Codable {
     let currentDistance: Double // 요청하신 부분
     let attemptCount: Int
 }
+

@@ -84,6 +84,7 @@ class MathMissionViewModel: BaseMissionViewModel {
                 
                 self.handleSubmissionResult(isCorrect: isSuccess)
                 
+                self.handleSubmissionResult(isCorrect: isSuccess)
             } catch {
                 self.handleError(error)
             }
@@ -93,15 +94,16 @@ class MathMissionViewModel: BaseMissionViewModel {
     // MARK: - Helper (UI Logic)
     // 🚨 수정 3: Base 로직 변경에 따라 isCompleted 파라미터 제거 (성공이면 무조건 완료로 간주)
     private func handleSubmissionResult(isCorrect: Bool) {
+
         self.isCorrect = isCorrect
         self.showFeedback = true
-        
         if isCorrect {
             self.feedbackMessage = "정답이에요!"
             
             // Base에서 이미 dismissAlarm()을 호출했으므로,
             // 여기서는 UI 피드백(동그라미 애니메이션 등)을 보여줄 시간만 벌어줍니다.
             // View는 Base의 @Published isMissionCompleted를 보고 화면을 닫습니다.
+
         } else {
             self.feedbackMessage = "틀렸어요!"
             AsyncTask {
@@ -140,7 +142,7 @@ class MathMissionViewModel: BaseMissionViewModel {
     
     private func checkMockAnswer() {
         let isCorrect = (userAnswer == mockAnswer)
-        
+
         // Mock 모드일 때는 수동으로 dismiss 처리 필요
         if isCorrect {
             self.handleSubmissionResult(isCorrect: true)

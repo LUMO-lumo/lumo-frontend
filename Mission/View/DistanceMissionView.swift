@@ -113,6 +113,13 @@ struct DistanceMissionView: View {
                         await viewModel.dismissAlarm() // 또는 dismiss()
                         
                     }
+                    
+                    AsyncTask {
+                        // 1초 대기
+                        try? await AsyncTask.sleep(nanoseconds: 1_000_000_000)
+                        // async 함수 호출
+                        await viewModel.dismissAlarm()
+                    }
                 }
             }
         }
