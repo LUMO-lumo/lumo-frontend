@@ -37,21 +37,49 @@ class SmartBriefingViewModel {
         provider.request(.smartVoice(smartvoice: isEnabled)) { [weak self] result in
             switch result {
             case .success(let response):
-                // 성공 시 UI는 이미 바뀌어 있으므로 로그만 출력
-                print("스마트 브리핑 동기화 완료: \(response.statusCode)")
+                // 200~299 사이 성공 범위
+                print("✅ 스마트 브리핑 동기화 성공: \(response.statusCode)")
                 
-                // (디버깅용) 서버 메시지 확인
-                if let jsonString = String(data: response.data, encoding: .utf8) {
-                    print("서버 메시지: \(jsonString)")
-                }
+                // (필요 시) 성공 응답 확인
+                // if let jsonString = String(data: response.data, encoding: .utf8) {
+                //    print("서버 응답: \(jsonString)")
+                // }
                 
             case .failure(let error):
-                print("설정 동기화 실패: \(error.localizedDescription)")
+                print("\n================ [❌ 동기화 실패 로그] ================")
                 
-                // [선택 사항]
-                // 서버 저장이 매우 중요한 경우, 여기서 실패 시 UI를 다시 되돌릴 수도 있습니다.
+                // 1. HTTP 상태 코드 확인 (예: 400, 401, 500)
+                if let response = error.response {
+                    print("🔢 상태 코드: \(response.statusCode)")
+                    
+                    // 2. ★ 핵심: 서버가 보낸 에러 메시지 본문(Body) 확인
+                    // 보통 여기에 "잘못된 파라미터입니다" 같은 진짜 이유가 들어있습니다.
+                    if let errorBody = String(data: response.data, encoding: .utf8) {
+                        print("📄 서버 에러 메시지: \(errorBody)")
+                    }
+                } else {
+                    print("🌍 네트워크 연결 문제 혹은 타임아웃 (서버 응답 없음)")
+                }
+                
+                // 3. 에러의 구체적인 타입 확인 (MoyaError)
+                switch error {
+                case .underlying(let nsError as NSError, _):
+                    print("⚡️ 시스템/네트워크 에러: \(nsError.localizedDescription)")
+                    print("   (Code: \(nsError.code), Domain: \(nsError.domain))")
+                case .statusCode:
+                    print("⚡️ 상태 코드 에러 (200~299 범위 벗어남)")
+                case .jsonMapping:
+                    print("⚡️ 응답 데이터 JSON 파싱(디코딩) 실패")
+                case .stringMapping:
+                    print("⚡️ 문자열 변환 실패")
+                default:
+                    print("⚡️ 기타 Moya 에러: \(error.localizedDescription)")
+                }
+                
+                print("====================================================\n")
+                
+                // [선택 사항] UI 롤백 로직
                 // self?.SmartBriefingEnabled = !isEnabled
-                // UserDefaults.standard.set(!isEnabled, forKey: "isSmartBriefing")
             }
         }
     }
