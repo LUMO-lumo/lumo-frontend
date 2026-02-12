@@ -18,7 +18,15 @@ class TodoLocalService {
     
     private init() {
         do {
-            let schema = Schema([TodoEntity.self])
+            // [핵심 수정] 여기에 프로젝트의 모든 @Model 클래스를 등록해야 합니다!
+            // 에러가 났던 UserModel을 여기에 추가하면 'no such table' 에러가 사라집니다.
+            // 만약 RoutineModel, AlarmModel 등 다른 모델도 있다면 콤마(,)로 계속 추가해주세요.
+            let schema = Schema([
+                TodoEntity.self,
+                UserModel.self
+                //, RoutineModel.self, AlarmModel.self // 다른 모델이 있다면 주석 해제 후 추가
+            ])
+            
             let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
             self.container = try ModelContainer(for: schema, configurations: [modelConfiguration])
             if let container = self.container {

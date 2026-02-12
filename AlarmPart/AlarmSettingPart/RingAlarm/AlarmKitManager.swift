@@ -29,15 +29,21 @@ final class AlarmKitManager {
     @MainActor
     func scheduleAlarm(from alarm: Alarm) async throws {
         
-        // 기존 알람 제거 (ID 기반)
+        // 1. 기존 알람 무조건 제거 (ID 기반)
         await removeAlarm(id: alarm.id)
         
-        // 1. 시/분 추출
+        // ✅ [수정 포인트] 알람이 OFF 상태이면 삭제만 하고 여기서 종료 (스케줄링 안 함)
+        guard alarm.isEnabled else {
+            print("⏸️ [AlarmKit] 알람이 OFF 상태입니다. 스케줄링을 취소합니다.")
+            return
+        }
+        
+        // 2. 시/분 추출
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: alarm.time)
         let minute = calendar.component(.minute, from: alarm.time)
         
-        // 2. 날짜 계산 (반복 요일 고려)
+        // 3. 날짜 계산 (반복 요일 고려)
         let nextAlarmDate = calculateNextDate(hour: hour, minute: minute, repeatDays: alarm.repeatDays)
         
         // --- [A] AlarmKit 등록 (시스템 UI용) ---
@@ -78,7 +84,7 @@ final class AlarmKitManager {
             identifiersToRemove.append("\(id.uuidString)_\(i)")
         }
         center.removePendingNotificationRequests(withIdentifiers: identifiersToRemove)
-        print("🗑️ [Manager] 알람 삭제 완료: \(id)")
+        print("🗑️ [Manager] 로컬 알람/알림 삭제 완료: \(id)")
     }
     
     /// 다음 알람 날짜 계산 로직
@@ -123,9 +129,7 @@ final class AlarmKitManager {
         // 방해금지 모드 무시하고 소리 재생
         content.interruptionLevel = .timeSensitive
         
-        // [수정됨] SoundManager를 통해 실제 파일명을 가져오도록 연결
         if let fileName = SoundManager.shared.getSoundFileName(named: alarm.soundName) {
-            // 파일명에 확장자(.mp3)를 붙여서 Notification Sound 생성
             content.sound = UNNotificationSound(named: UNNotificationSoundName("\(fileName).mp3"))
         } else if alarm.soundName == "안 함" {
             content.sound = nil
@@ -147,11 +151,9 @@ final class AlarmKitManager {
                 var components = DateComponents()
                 components.hour = hour
                 components.minute = minute
-                // 모델 0~6 -> Calendar 1~7
                 components.weekday = modelDay + 1
                 
                 let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
-                // 식별자를 요일별로 구분 (UUID_요일인덱스)
                 let request = UNNotificationRequest(identifier: "\(alarm.id.uuidString)_\(modelDay)", content: content, trigger: trigger)
                 try? await center.add(request)
             }
