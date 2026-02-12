@@ -86,7 +86,7 @@ struct MathMissionView: View {
                         
                         TextField("답변을 입력해주세요.", text: $viewModel.userAnswer)
                             .font(.Subtitle3)
-                            .keyboardType(.numberPad)
+                            .keyboardType(.numbersAndPunctuation)
                             .padding(.leading, 4)
                     }
                     .padding(.horizontal, 24)
@@ -133,7 +133,7 @@ struct MathMissionView: View {
                 Color.black.opacity(0.6).ignoresSafeArea()
                 
                 VStack(spacing: 28) {
-                    Image(viewModel.isCorrect ? "Correct" : "Incorrect")
+                    Image(viewModel.isCorrect ? "correct" : "incorrect")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 180, height: 180)
