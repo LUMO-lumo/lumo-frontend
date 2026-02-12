@@ -36,7 +36,7 @@ struct BriefingVoiceView: View {
                                 .frame(width:60, height:60)
                         }
                         Text(voice == "WOMAN" ? "여자" : (voice == "MAN" ? "남자" : "Pro"))
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                             .font(.system(size: 18, weight: .bold))
                         
                         Spacer()
