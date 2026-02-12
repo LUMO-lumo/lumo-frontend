@@ -27,12 +27,14 @@
 		34A468102F3C14F000F0290D /* NoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A4680F2F3C14F000F0290D /* NoticeView.swift */; };
 		34A468122F3C150400F0290D /* NoticeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A468112F3C150400F0290D /* NoticeViewModel.swift */; };
 		34A468142F3C156200F0290D /* NoticeTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A468132F3C156200F0290D /* NoticeTarget.swift */; };
+		34A469802F3C1CD100F0290D /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469682F3C1CD100F0290D /* OnboardingViewModel.swift */; };
 		34A469922F3C1D6E00F0290D /* SettingTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469912F3C1D6E00F0290D /* SettingTarget.swift */; };
 		34A469942F3C2D4C00F0290D /* DistanceMissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469932F3C2D4C00F0290D /* DistanceMissionView.swift */; };
 		34A469982F3C325200F0290D /* BaseMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469972F3C325200F0290D /* BaseMissionViewModel.swift */; };
 		34A4699A2F3C369400F0290D /* DistanceMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469992F3C369400F0290D /* DistanceMissionViewModel.swift */; };
 		34A4699E2F3C7A8700F0290D /* OXMissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A4699D2F3C7A8700F0290D /* OXMissionView.swift */; };
 		34A469A02F3C7A9200F0290D /* OXMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A4699F2F3C7A9200F0290D /* OXMissionViewModel.swift */; };
+		34A469A22F3DB05600F0290D /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469A12F3DB05600F0290D /* AppState.swift */; };
 		34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */; };
 		B400C5D82F3B16FF00DBDC08 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5D42F3B16FF00DBDC08 /* LoginModel.swift */; };
 		B400C5D92F3B16FF00DBDC08 /* PWResetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5D52F3B16FF00DBDC08 /* PWResetModel.swift */; };
@@ -43,8 +45,8 @@
 		B400C5E32F3B1BBD00DBDC08 /* AddTypeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C5E22F3B1BBD00DBDC08 /* AddTypeSheet.swift */; };
 		B400C7762F3BA9A500DBDC08 /* MissionTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C7752F3BA99F00DBDC08 /* MissionTarget.swift */; };
 		B400C7802F3BABDB00DBDC08 /* MissionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C77D2F3BAAE400DBDC08 /* MissionModel.swift */; };
-		B400C7812F3BABE100DBDC08 /* MissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C77E2F3BAB2B00DBDC08 /* MissionViewModel.swift */; };
-		B400C7822F3BABE600DBDC08 /* MathAlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C77F2F3BAB4A00DBDC08 /* MathAlarmView.swift */; };
+		B400C7812F3BABE100DBDC08 /* MathMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C77E2F3BAB2B00DBDC08 /* MathMissionViewModel.swift */; };
+		B400C7822F3BABE600DBDC08 /* MathMissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B400C77F2F3BAB4A00DBDC08 /* MathMissionView.swift */; };
 		B40A01162F2BA23D00687C64 /* ProfileSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40A01152F2BA14000687C64 /* ProfileSettingView.swift */; };
 		B40A01182F2BB03300687C64 /* SettingAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B40A01172F2BB03300687C64 /* SettingAssets.xcassets */; };
 		B40A012A2F2BD24D00687C64 /* LoginSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40A01292F2BD22D00687C64 /* LoginSectionView.swift */; };
@@ -106,12 +108,14 @@
 		34A4680F2F3C14F000F0290D /* NoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeView.swift; sourceTree = "<group>"; };
 		34A468112F3C150400F0290D /* NoticeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeViewModel.swift; sourceTree = "<group>"; };
 		34A468132F3C156200F0290D /* NoticeTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeTarget.swift; sourceTree = "<group>"; };
+		34A469682F3C1CD100F0290D /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		34A469912F3C1D6E00F0290D /* SettingTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTarget.swift; sourceTree = "<group>"; };
 		34A469932F3C2D4C00F0290D /* DistanceMissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceMissionView.swift; sourceTree = "<group>"; };
 		34A469972F3C325200F0290D /* BaseMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseMissionViewModel.swift; sourceTree = "<group>"; };
 		34A469992F3C369400F0290D /* DistanceMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceMissionViewModel.swift; sourceTree = "<group>"; };
 		34A4699D2F3C7A8700F0290D /* OXMissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OXMissionView.swift; sourceTree = "<group>"; };
 		34A4699F2F3C7A9200F0290D /* OXMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OXMissionViewModel.swift; sourceTree = "<group>"; };
+		34A469A12F3DB05600F0290D /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBriefingViewModel.swift; sourceTree = "<group>"; };
 		B400C5D42F3B16FF00DBDC08 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		B400C5D52F3B16FF00DBDC08 /* PWResetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWResetModel.swift; sourceTree = "<group>"; };
@@ -122,8 +126,8 @@
 		B400C5E22F3B1BBD00DBDC08 /* AddTypeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTypeSheet.swift; sourceTree = "<group>"; };
 		B400C7752F3BA99F00DBDC08 /* MissionTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionTarget.swift; sourceTree = "<group>"; };
 		B400C77D2F3BAAE400DBDC08 /* MissionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionModel.swift; sourceTree = "<group>"; };
-		B400C77E2F3BAB2B00DBDC08 /* MissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionViewModel.swift; sourceTree = "<group>"; };
-		B400C77F2F3BAB4A00DBDC08 /* MathAlarmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathAlarmView.swift; sourceTree = "<group>"; };
+		B400C77E2F3BAB2B00DBDC08 /* MathMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathMissionViewModel.swift; sourceTree = "<group>"; };
+		B400C77F2F3BAB4A00DBDC08 /* MathMissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathMissionView.swift; sourceTree = "<group>"; };
 		B40A01152F2BA14000687C64 /* ProfileSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingView.swift; sourceTree = "<group>"; };
 		B40A01172F2BB03300687C64 /* SettingAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SettingAssets.xcassets; sourceTree = "<group>"; };
 		B40A01292F2BD22D00687C64 /* LoginSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSectionView.swift; sourceTree = "<group>"; };
@@ -322,7 +326,7 @@
 		B400C7782F3BAA7000DBDC08 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				B400C77F2F3BAB4A00DBDC08 /* MathAlarmView.swift */,
+				B400C77F2F3BAB4A00DBDC08 /* MathMissionView.swift */,
 				34A469932F3C2D4C00F0290D /* DistanceMissionView.swift */,
 				34A4699D2F3C7A8700F0290D /* OXMissionView.swift */,
 			);
@@ -333,7 +337,7 @@
 			isa = PBXGroup;
 			children = (
 				34A469972F3C325200F0290D /* BaseMissionViewModel.swift */,
-				B400C77E2F3BAB2B00DBDC08 /* MissionViewModel.swift */,
+				B400C77E2F3BAB2B00DBDC08 /* MathMissionViewModel.swift */,
 				34A469992F3C369400F0290D /* DistanceMissionViewModel.swift */,
 				34A4699F2F3C7A9200F0290D /* OXMissionViewModel.swift */,
 			);
@@ -441,6 +445,7 @@
 				3492C5912F3B419000958A4D /* HomePart */,
 				B42F48062F26FAFD0057284E /* TabBar.swift */,
 				B4FD5F142F17DEE80022CF67 /* LumoApp.swift */,
+				34A469A12F3DB05600F0290D /* AppState.swift */,
 				B4FD5FE82F1A3BAF0022CF67 /* Domain */,
 				B4FD5FC22F1A35B30022CF67 /* InitialSetup */,
 				B4FD5F352F17E61C0022CF67 /* OnBoardingPart */,
@@ -515,6 +520,7 @@
 		B4FD5F352F17E61C0022CF67 /* OnBoardingPart */ = {
 			isa = PBXGroup;
 			children = (
+				34A469682F3C1CD100F0290D /* OnboardingViewModel.swift */,
 				B4FD5F312F17E61C0022CF67 /* OnBoardingModel.swift */,
 				B4FD5F322F17E61C0022CF67 /* OnBoardingPartTodoWrite.md */,
 				B4FD5F332F17E61C0022CF67 /* OnBoardingView.swift */,
@@ -622,7 +628,7 @@
 				B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */,
 				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
 				34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */,
-				B400C7822F3BABE600DBDC08 /* MathAlarmView.swift in Sources */,
+				B400C7822F3BABE600DBDC08 /* MathMissionView.swift in Sources */,
 				B42F48072F26FAFD0057284E /* TabBar.swift in Sources */,
 				B4D641FE2F2FA4AC000B4C08 /* LoginView.swift in Sources */,
 				B4D6420E2F30E384000B4C08 /* KeychainManager.swift in Sources */,
@@ -660,6 +666,8 @@
 				34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */,
 				348C8B622F345FF000C384BC /* BriefingVoiceViewModel.swift in Sources */,
 				34A469982F3C325200F0290D /* BaseMissionViewModel.swift in Sources */,
+				34A469A22F3DB05600F0290D /* AppState.swift in Sources */,
+				34A469802F3C1CD100F0290D /* OnboardingViewModel.swift in Sources */,
 				B400C7762F3BA9A500DBDC08 /* MissionTarget.swift in Sources */,
 				34A2B4F92F31C38B00F3B9A8 /* ScreenThemeSettingView.swift in Sources */,
 				34A2B4FE2F31C53B00F3B9A8 /* TopNavigationBar.swift in Sources */,
@@ -667,7 +675,7 @@
 				B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */,
 				3492C5942F3B419000958A4D /* HomeModel.swift in Sources */,
 				34A468142F3C156200F0290D /* NoticeTarget.swift in Sources */,
-				B400C7812F3BABE100DBDC08 /* MissionViewModel.swift in Sources */,
+				B400C7812F3BABE100DBDC08 /* MathMissionViewModel.swift in Sources */,
 				3492C5952F3B419000958A4D /* TodoSettingViewModel.swift in Sources */,
 				3492C5962F3B419000958A4D /* TodoSettingView.swift in Sources */,
 				3492C5972F3B419000958A4D /* TodoSettingModel.swift in Sources */,
