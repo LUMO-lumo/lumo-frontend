@@ -16,13 +16,15 @@ enum SettingTarget {
     case smartVoice(smartvoice: Bool)
 }
 
-extension SettingTarget: TargetType {
-    var baseURL: URL { return URL(string: AppConfig.baseURL)! } // Swagger 베이스 URL
+// ✅ [수정 1] @MainActor 추가: 메인 스레드 격리 문제 해결
+extension SettingTarget: @MainActor APITargetType {
+    
     var path: String { return "/api/setting" }
+    
     var method: Moya.Method { return .patch }
 
-    // alarmOffMissionDefaultDuration, theme 항목 수정
-    var task:  Moya.Task {
+    // ✅ [수정 2] Moya.Task 명시: Swift Task와 이름 충돌 방지
+    var task: Moya.Task {
         switch self {
         case .updateSeconds(let second):
             let params: [String: Any] = ["alarmOffMissionDefaultDuration": second]
@@ -37,23 +39,5 @@ extension SettingTarget: TargetType {
             let params: [String: Any] = ["smartBriefing": smartvoice]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
         }
-        
     }
-    
-    var headers: [String : String]? {
-            // 1. 기본 헤더 설정
-            var header = ["Content-Type": "application/json"]
-            
-            // 2. 키체인에서 저장된 토큰 꺼내오기
-            // (LoginViewModel에서 저장할 때 썼던 키 "userSession"과 똑같아야 합니다)
-            if let userInfo: UserInfo = KeychainManager.standard.loadSession(for: "userSession") {
-                
-                // 3. 헤더에 토큰 추가 (Bearer + 공백 + 토큰)
-                header["Authorization"] = "Bearer \(userInfo.accessToken ?? "토큰 없음")"
-                
-                print("🔑 헤더에 토큰 추가됨: \(userInfo.accessToken ?? "토큰 없음")")
-            }
-            
-            return header
-        }
-    }
+}

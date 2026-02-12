@@ -14,6 +14,9 @@ class HomeViewModel: ObservableObject {
     // MARK: - Services
     private let homeService = HomeService()
     private let todoService = TodoService()
+    private let localService = TodoLocalService.shared
+    
+    private let tokenCheckClient = MainAPIClient<HomeEndpoint>()
     
     // MARK: - Published Properties
     @Published var tasks: [Task] = []
@@ -30,159 +33,174 @@ class HomeViewModel: ObservableObject {
     // MARK: - Data Loading
     func loadAllData() {
         let today = Date()
+        
+        // 1. [로컬 우선 원칙] 무조건 로컬 데이터부터 가져와서 UI 즉시 렌더링
+        fetchTodoListFromLocal(date: today)
+        
+        // 2. 네트워크(서버)가 연결되어 있다면 백그라운드 동기화 진행
+        if tokenCheckClient.isLoggedIn {
+            print("✅ [Online] 서버 연결 확인됨. 백그라운드 동기화 시작.")
+            
+            // 미전송 데이터를 먼저 싹 밀어넣고 -> 그 다음 서버 목록을 가져옴 (순서 보장)
+            syncUnsyncedData { [weak self] in
+                self?.fetchHomeInfo()
+                self?.fetchTodoListFromServer(date: today)
+            }
+        } else {
+            print("⚠️ [Offline] 서버 연결 불가. 로컬 단독 모드로 작동합니다.")
+        }
+    }
+    
+    // 달력에서 다른 날짜를 선택했을 때 실행되는 함수
+    func loadTasksForSpecificDate(date: Date) {
+        // 무조건 로컬 먼저 즉시 로드
+        fetchTodoListFromLocal(date: date)
+        
+        // 온라인이면 서버에서 가져와 최신화
+        if tokenCheckClient.isLoggedIn {
+            fetchTodoListFromServer(date: date)
+        }
+    }
+    
+    // 로컬 DB에서 불러와서 UI에 띄우기 (핵심 표시 함수)
+    private func fetchTodoListFromLocal(date: Date) {
+        let entities = localService.fetchTodos(date: date)
+        self.tasks = entities.map { $0.toTask() }
+        print("📂 [Local] UI 데이터 로드 완료: \(self.tasks.count)개")
+    }
+    
+    // 서버에서 가져와서 로컬DB 덮어쓰기 (백그라운드)
+    private func fetchTodoListFromServer(date: Date) {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        let dateString = formatter.string(from: today)
+        let dateString = formatter.string(from: date)
         
-        fetchHomeInfo()
-        fetchTodoList(date: dateString)
+        todoService.fetchTodoList(date: dateString) { [weak self] result in
+            guard let self = self else { return }
+            
+            if case .success(let dtos) = result {
+                // 서버 데이터를 로컬에 지능적으로 병합
+                self.localService.syncWithServerData(dtos: dtos, date: date)
+                // 로컬DB가 갱신되었으니 UI도 한 번 더 새로고침
+                self.fetchTodoListFromLocal(date: date)
+            }
+        }
     }
     
     private func fetchHomeInfo() {
         homeService.fetchHomeData { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let data):
-                self.dailyQuote = data.encouragement
-                self.missionStat = MissionStat(
+            if case .success(let data) = result {
+                self?.dailyQuote = data.encouragement
+                self?.missionStat = MissionStat(
                     consecutiveDays: data.missionRecord.consecutiveSuccessCnt,
                     monthlyAchievementRate: Double(data.missionRecord.missionSuccessRate) / 100.0
                 )
-            case .failure(let error):
-                print("Home Data Error: \(error)")
-                self.errorMessage = "홈 정보를 불러오는데 실패했습니다."
             }
         }
     }
     
-    private func fetchTodoList(date: String) {
-        todoService.fetchTodoList(date: date) { [weak self] result in
-            guard let self = self else { return }
+    // 오프라인 상태에서 생성된 데이터(미동기화)를 서버로 전송
+    private func syncUnsyncedData(completion: @escaping () -> Void) {
+        let unsynced = localService.fetchUnsyncedTodos()
+        
+        if unsynced.isEmpty {
+            completion()
+            return
+        }
+        
+        print("🔄 [Sync] 미동기화 데이터 \(unsynced.count)개 전송 중...")
+        let group = DispatchGroup()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        for todo in unsynced {
+            group.enter()
+            let dateString = formatter.string(from: todo.date)
             
-            switch result {
-            case .success(let dtos):
-                self.tasks = dtos.map { dto in
-                    Task(
-                        id: UUID(),
-                        apiId: dto.id,
-                        title: dto.content,
-                        isCompleted: false,
-                        date: self.date(from: dto.eventDate) ?? Date()
-                    )
+            todoService.createTodo(date: dateString, content: todo.title) { [weak self] result in
+                defer { group.leave() }
+                if case .success(let dto) = result {
+                    // 성공 시 로컬 데이터에 서버 ID를 박아줌
+                    self?.localService.updateApiId(localId: todo.id, apiId: dto.id)
                 }
-                print("✅ 할 일 목록 로드 완료: \(self.tasks.count)개")
-            case .failure(let error):
-                print("Todo List Error: \(error)")
             }
+        }
+        
+        group.notify(queue: .main) {
+            print("🏁 [Sync] 미동기화 데이터 전송 완료")
+            completion()
         }
     }
     
-    //추후 미션 후에 브리핑하게 만들기 지금 연결할 기능은 아님
-    func fetchBriefing() {
-        todoService.fetchTodoBriefing { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let briefing):
-                self.briefingText = briefing
-            case .failure(let error):
-                print("Briefing Error: \(error)")
-            }
-        }
-    }
-    
-    // MARK: - User Interactions
+    // MARK: - User Interactions (로컬 즉시 반영 -> 서버 백그라운드)
     
     func addTask(title: String, date: Date = Date()) {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedTitle.isEmpty else { return }
         
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let dateString = formatter.string(from: date)
+        // 1. [로컬 우선] 즉시 로컬에 저장하고 화면 새로고침
+        let newEntity = localService.addTodo(title: trimmedTitle, date: date)
+        fetchTodoListFromLocal(date: date)
         
-        print("📡 서버에 할 일 추가 요청 중... (\(trimmedTitle), \(dateString))")
-        
-        todoService.createTodo(date: dateString, content: trimmedTitle) { [weak self] result in
-            // [핵심 수정] self를 여기서 안전하게 언래핑합니다.
-            guard let self = self else { return }
+        // 2. [서버 동기화] 온라인이면 백그라운드로 서버 전송
+        if tokenCheckClient.isLoggedIn {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            let dateString = formatter.string(from: date)
             
-            switch result {
-            case .success(let dto):
-                print("✅ 할 일 추가 성공! ID: \(dto.id)")
-                let newTask = Task(
-                    id: UUID(),
-                    apiId: dto.id,
-                    title: dto.content,
-                    isCompleted: false,
-                    // 이제 self가 nil이 아니므로 안전하게 호출 가능
-                    date: self.date(from: dto.eventDate) ?? Date()
-                )
-                self.tasks.append(newTask)
-                
-            case .failure(let error):
-                print("❌ Create Todo Error: \(error)")
-                self.errorMessage = "할 일을 추가하지 못했습니다."
+            todoService.createTodo(date: dateString, content: trimmedTitle) { [weak self] result in
+                if case .success(let dto) = result, let entityId = newEntity?.id {
+                    // 성공하면 로컬 DB에 서버 ID 업데이트 (사용자는 모름, 뒤에서 처리됨)
+                    self?.localService.updateApiId(localId: entityId, apiId: dto.id)
+                }
             }
         }
     }
     
     func deleteTask(id: UUID) {
-        guard let taskIndex = tasks.firstIndex(where: { $0.id == id }),
-              let apiId = tasks[taskIndex].apiId else {
-            tasks.removeAll { $0.id == id }
-            return
-        }
+        guard let task = tasks.first(where: { $0.id == id }) else { return }
         
-        print("📡 서버에 할 일 삭제 요청 중... ID: \(apiId)")
+        // 1. [로컬 우선] 즉시 화면/로컬에서 삭제
+        localService.deleteTodo(id: id)
+        fetchTodoListFromLocal(date: task.date)
         
-        todoService.deleteTodo(id: apiId) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success:
-                print("✅ 할 일 삭제 성공")
-                self.tasks.remove(at: taskIndex)
-            case .failure(let error):
-                print("❌ Delete Todo Error: \(error)")
-                self.errorMessage = "할 일을 삭제하지 못했습니다."
-            }
+        // 2. [서버 동기화] 서버 ID가 있고 온라인이면 서버에도 삭제 요청
+        if let apiId = task.apiId, tokenCheckClient.isLoggedIn {
+            todoService.deleteTodo(id: apiId) { _ in } // 결과 무시 (이미 로컬에서 지웠으므로)
         }
     }
     
     func updateTask(id: UUID, newTitle: String) {
-        guard let index = tasks.firstIndex(where: { $0.id == id }),
-              let apiId = tasks[index].apiId else { return }
+        guard let task = tasks.first(where: { $0.id == id }) else { return }
         
-        let task = tasks[index]
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let dateString = formatter.string(from: task.date)
+        // 1. [로컬 우선] 즉시 로컬 업데이트
+        localService.updateTodo(id: id, title: newTitle)
+        fetchTodoListFromLocal(date: task.date)
         
-        todoService.updateTodo(id: apiId, date: dateString, content: newTitle) { [weak self] result in
-            guard let self = self else { return }
+        // 2. [서버 동기화]
+        if let apiId = task.apiId, tokenCheckClient.isLoggedIn {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            let dateString = formatter.string(from: task.date)
             
-            switch result {
-            case .success(let dto):
-                self.tasks[index].title = dto.content
-            case .failure(let error):
-                print("Update Todo Error: \(error)")
-            }
+            todoService.updateTodo(id: apiId, date: dateString, content: newTitle) { _ in }
         }
     }
     
     func toggleTask(id: UUID) {
         if let index = tasks.firstIndex(where: { $0.id == id }) {
+            // 로컬 상태 변경
+            localService.toggleTodo(id: id)
             tasks[index].isCompleted.toggle()
         }
     }
     
-    // MARK: - Helpers
-    private func date(from string: String) -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.date(from: string)
+    func fetchBriefing() {
+        todoService.fetchTodoBriefing { [weak self] result in
+            if case .success(let briefing) = result {
+                self?.briefingText = briefing
+            }
+        }
     }
     
     var todayTasks: [Task] {

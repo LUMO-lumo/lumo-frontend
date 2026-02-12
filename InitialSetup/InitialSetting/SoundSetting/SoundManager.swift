@@ -29,20 +29,56 @@ class SoundManager: NSObject {
         }
     }
     
+    // MARK: - 파일명 매핑 로직 (AlarmKit 등 외부에서도 사용 가능)
+    func getSoundFileName(named soundName: String) -> String? {
+        switch soundName {
+        // [시끄러운]
+        case "비명 소리": return "scream14-6918"
+        case "천둥 번개": return "big-thunder-34626"
+        case "개 짖는 소리": return "big-dog-barking-112717"
+        case "절규": return "desperate-shout-106691"
+        case "뱃고동": return "traimory-mega-horn-angry-sound-effects-193408" // 파일명이 길어서 실제 파일명 확인 필요
+            
+        // [차분한]
+        case "평온한 멜로디": return "calming-melody-loop-291840"
+        case "섬의 아침": return "the-island-clearing-216263"
+        case "플루트 연주": return "native-american-style-flute-music-324301"
+        case "종소리": return "calm-music-64526" // bell 대체 (파일명 추정)
+        case "소원": return "i-wish-looping-tune-225553"
+            
+        // [동기부여]
+        case "환희의 록": return "rock-of-joy-197159"
+        case "황제": return "emperor-197164"
+        case "비트 앤 베이스": return "basic-beats-and-bass-10791"
+        case "침묵 속 노력": return "work-hard-in-silence-spoken-201870"
+        case "런어웨이": return "runaway-loop-373063"
+            
+        default: return nil
+        }
+    }
+    
     // 사운드 미리듣기 재생
     func playPreview(named soundName: String, volume: Double) {
-        // 파일명 매핑 (한글 이름 -> 영어 파일명)
-        // 실제 프로젝트에 'coffee.m4a' 등의 파일이 있어야 합니다.
-        let fileName: String
-        switch soundName {
-        case "커피한잔의 여유": fileName = "coffee"
-        case "사이렌": fileName = "siren"
-        case "빗소리": fileName = "rain"
-        default: fileName = "default_sound" // 파일이 없으면 재생 안 됨
+        // 위에서 정의한 매핑 함수 사용
+        guard let fileName = getSoundFileName(named: soundName) else {
+            print("❌ 매핑된 파일 없음: \(soundName)")
+            return
         }
         
-        guard let url = Bundle.main.url(forResource: fileName, withExtension: "m4a") else {
-            print("❌ 사운드 파일 없음: \(fileName).m4a")
+        // 확장자는 m4a, mp3, wav 등을 확인해야 합니다. 여기서는 m4a로 가정하거나 mp3로 시도합니다.
+        // 스크린샷의 아이콘을 보면 mp3 또는 wav일 가능성이 높습니다. (파일 없으면 nil)
+        var soundURL = Bundle.main.url(forResource: fileName, withExtension: "mp3")
+        
+        if soundURL == nil {
+            soundURL = Bundle.main.url(forResource: fileName, withExtension: "m4a")
+        }
+        
+        if soundURL == nil {
+            soundURL = Bundle.main.url(forResource: fileName, withExtension: "wav")
+        }
+
+        guard let url = soundURL else {
+            print("❌ 사운드 파일 없음 (Bundle): \(fileName)")
             return
         }
         

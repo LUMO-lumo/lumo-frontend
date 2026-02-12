@@ -19,6 +19,13 @@ class TodoSettingViewModel: ObservableObject {
     private let calendar = Calendar.current
     let days = ["일", "월", "화", "수", "목", "금", "토"]
     
+    // [추가] 달력에서 선택된 (연/월/일)을 합쳐서 실제 Date 객체를 만들어내는 변수
+    var resolvedSelectedDate: Date {
+        var components = calendar.dateComponents([.year, .month], from: targetDate)
+        components.day = Int(selectedDay) ?? 1
+        return calendar.date(from: components) ?? Date()
+    }
+    
     var calendarDays: [String] {
         guard let range = calendar.range(of: .day, in: .month, for: targetDate),
               let firstDayOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: targetDate)) else {

@@ -22,6 +22,10 @@
 알람 API,GET,/api/alarms/members/me/mission-history,내 미션 수행 기록 조회 API
 알람 API,GET,/api/alarms/members/me/alarm-logs,내 알람 울림 기록 API
 
+시끄러운(scream14, big thunder,  big -dog-barking , desperate shout, traimory-mega-hor   ) 
+차분한( calming-melody-loop, the Island clearing, native-americas-style flute music, bell, I wish )
+동기부여(. rock of joy, emperor, basic beats and bass, work hard in silence, runaway) 
+
 
 
 내 알람 목록 조회    /api/alarms    GET    연결됨 (fetchAlarms)
