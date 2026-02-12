@@ -67,7 +67,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         }
         
         // [Real 모드]
-        Task {
+        AsyncTask {
             do {
                 // 2. 부모 API 호출
                 // startMission이 [MissionStartResult] 배열을 반환한다고 가정 (Incoming 코드 기반)
@@ -109,13 +109,13 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
             return
         }
         
-        let request = DistanceMissionSubmitRequest(
+        let request = MissionSubmitRequest(
             contentId: contentId,
-            currentDistance: currentDistance,
+            userAnswer: String(currentDistance),
             attemptCount: attemptCount
         )
         
-        Task {
+        AsyncTask {
             do {
                 self.isLoading = true
                 
@@ -152,15 +152,15 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
             // 성공했으므로 위치 업데이트 확실히 중단
             self.locationManager.stopUpdatingLocation()
             
-            Task {
+            AsyncTask {
                 // 1.5초 딜레이 후 알람 해제 요청
-                try? await Task.sleep(nanoseconds: 1_500_000_000)
+                try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
                 await super.dismissAlarm()
             }
         } else {
             self.feedbackMessage = "아직 부족해요."
-            Task {
-                try? await Task.sleep(nanoseconds: 1_500_000_000)
+            AsyncTask {
+                try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
                 self.showFeedback = false
             }
         }
@@ -172,7 +172,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     // 위치 업데이트 감지
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         // UI 및 로직 업데이트를 위해 MainActor로 진입
-        Task { @MainActor in
+        AsyncTask { @MainActor in
             guard let location = locations.last else { return }
             
             // 1. 이전 위치가 있다면 거리 누적
@@ -210,7 +210,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     // 권한 변경 감지
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let status = manager.authorizationStatus
-        Task { @MainActor in
+        AsyncTask { @MainActor in
             print("-----------------------------------------")
             print("🕵️‍♀️ [위치 권한 상태 진단]: \(status.rawValue)")
             
@@ -224,7 +224,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
                 self.errorMessage = "위치 권한이 필요합니다. 설정에서 켜주세요."
                 
             case .notDetermined:
-                manager.requestWhenInUseAuthorization()
+                self.locationManager.requestWhenInUseAuthorization()
                 
             @unknown default:
                 break
@@ -238,8 +238,8 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         self.isLoading = true
         print("🧪 [Mock] 거리 미션 시작 (타겟: 30m)")
         
-        Task {
-            try? await Task.sleep(nanoseconds: 500_000_000)
+        AsyncTask {
+            try? await AsyncTask.sleep(nanoseconds: 500_000_000)
             self.contentId = 888
             self.targetDistance = 30.0
             self.isLoading = false
@@ -249,9 +249,9 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     }
     
     private func simulateMockWalking() {
-        Task {
+        AsyncTask {
             while currentDistance < targetDistance {
-                try? await Task.sleep(nanoseconds: 500_000_000) // 0.5초마다
+                try? await AsyncTask.sleep(nanoseconds: 500_000_000) // 0.5초마다
                 self.currentDistance += 5.0
                 print("🧪 [Mock Walking] \(currentDistance)m / \(targetDistance)m")
             }

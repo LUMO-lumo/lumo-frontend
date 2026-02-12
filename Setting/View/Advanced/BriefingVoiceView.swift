@@ -12,14 +12,14 @@ struct BriefingVoiceView: View {
     @State private var ProAlert = false
     @Environment(\.dismiss) private var dismiss
     
-    let options = ["WOMAN", "MAN", "Pro"]
+    let options = ["WOMAN", "MAN", "PRO"]
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
         List {
             ForEach(options, id: \.self) { voice in
                 Button(action: {
-                    if voice == "Pro" {
+                    if voice == "PRO" {
                         ProAlert = true
                     } else {
                         viewModel.updateVoice(voice: voice)

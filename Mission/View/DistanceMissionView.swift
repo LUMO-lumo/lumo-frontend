@@ -112,8 +112,7 @@ struct DistanceMissionView: View {
         }
         .animation(.easeInOut, value: viewModel.isMissionCompleted)
         .onAppear {
-            viewModel.start()
-
+            viewModel.startDistanceMission()
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
                     if completed {

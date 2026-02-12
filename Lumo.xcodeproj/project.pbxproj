@@ -360,12 +360,12 @@
 		B40A01112F2B921500687C64 /* Setting */ = {
 			isa = PBXGroup;
 			children = (
+				34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */,
 				34A2B4FC2F31C52200F3B9A8 /* Components */,
 				B40A01142F2B923E00687C64 /* ViewModel */,
 				B40A01132F2B923800687C64 /* Model */,
 				B40A01122F2B923100687C64 /* View */,
 				B40A01172F2BB03300687C64 /* SettingAssets.xcassets */,
-				34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */,
 			);
 			path = Setting;
 			sourceTree = "<group>";

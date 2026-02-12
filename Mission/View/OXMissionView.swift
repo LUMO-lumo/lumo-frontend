@@ -95,22 +95,9 @@ struct OXMissionView: View {
                         .scaledToFit()
                         .frame(width: 180, height: 180)
                     
-<<<<<<< HEAD
-                    // 내용 (이모티콘 + 멘트)
-                    VStack(spacing: 20) {
-                        Image(.correct)
-                            .resizable()
-                            .frame(width: 180,height: 180)
-                        
-                        Text("정답이에요!")
-                            .font(.Headline1)
-                            .foregroundStyle(Color.main200)
-                    }
-=======
                     Text(viewModel.feedbackMessage)
                         .font(.Headline1)
                         .foregroundStyle(viewModel.isCorrect ? Color.main100 : Color.main300)
->>>>>>> e5732c2 ([feat]: 미션 테스트)
                 }
                 .transition(.scale)
                 .zIndex(1) // 맨 앞으로 가져오기
