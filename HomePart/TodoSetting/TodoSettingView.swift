@@ -50,7 +50,7 @@ struct TodoSettingView: View {
                 Button(action: { withAnimation { vm.startCreatingTask() } }) {
                     Text("작성하기")
                         .font(.headline)
-                        .bold().foregroundStyle(.white)
+                        .bold().foregroundStyle(.white) // 버튼 안의 텍스트는 배경이 빨간색이므로 흰색 고정
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
                         .background(Color(hex: "F55641"))
@@ -84,7 +84,8 @@ struct TodoSettingView: View {
                         Text(day)
                             .font(.system(size: 16))
                             .fontWeight(isSelected ? .bold : .regular)
-                            .foregroundStyle(isSelected ? .white : .black)
+                            // [수정] 다크 모드 대응: 선택되지 않았을 때 .black 대신 .primary 사용
+                            .foregroundStyle(isSelected ? .white : .primary)
                             .frame(width: 32, height: 32)
                             .background(isSelected ? Circle()
                                 .fill(themeColor) : nil)
@@ -132,7 +133,8 @@ struct TaskRow: View {
     var body: some View {
         HStack {
             if isEditing { TextField("수정", text: $task.title).font(.subheadline).onSubmit { finishEditing() } }
-            else { Text(task.title).font(.subheadline).foregroundStyle(.black.opacity(0.8)) }
+            // [수정] 다크 모드 대응: .black.opacity(0.8) 대신 .primary 적용
+            else { Text(task.title).font(.subheadline).foregroundStyle(.primary) }
             Spacer()
             Button(action: {
                 isEditing ? finishEditing() : startEditing()
@@ -142,7 +144,10 @@ struct TaskRow: View {
             }
             Button(action: deleteAction) { Image(systemName: "trash").foregroundStyle(themeColor) }
         }
-        .padding(16).background(Color(hex: "FFF0EF")).cornerRadius(12)
+        .padding(16)
+        // [수정] 다크/라이트 모드 자동 적응 배경색
+        .background(Color(UIColor.secondarySystemBackground))
+        .cornerRadius(12)
     }
 }
 
@@ -163,7 +168,10 @@ struct NewTaskRow: View {
                     onConfirm) { Image(systemName: "checkmark.square.fill").foregroundStyle(themeColor) }
             Button(action: onCancel) { Image(systemName: "trash").foregroundStyle(themeColor) }
         }
-        .padding(16).background(Color(hex: "FFF0EF")).cornerRadius(12).onAppear { isFocused = true }
+        .padding(16)
+        // [수정] 다크/라이트 모드 자동 적응 배경색
+        .background(Color(UIColor.secondarySystemBackground))
+        .cornerRadius(12).onAppear { isFocused = true }
     }
 }
 

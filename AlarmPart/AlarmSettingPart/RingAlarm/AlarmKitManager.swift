@@ -10,8 +10,10 @@ import UserNotifications
 import SwiftUI
 import AlarmKit
 
+// Framework의 Alarm 타입 별칭
 typealias FrameworkAlarm = AlarmKit.Alarm
 
+// AlarmKit에서 요구하는 메타데이터 구조체
 struct EmptyAlarmMetadata: AlarmMetadata, Codable, Hashable {
     struct ContentState: Codable, Hashable {}
 }
@@ -23,9 +25,11 @@ final class AlarmKitManager {
     
     private init() {}
     
+    /// 알람 스케줄링 (시스템 알람 + 로컬 알림)
     @MainActor
     func scheduleAlarm(from alarm: Alarm) async throws {
         
+        // 기존 알람 제거 (ID 기반)
         await removeAlarm(id: alarm.id)
         
         // 1. 시/분 추출
@@ -33,10 +37,10 @@ final class AlarmKitManager {
         let hour = calendar.component(.hour, from: alarm.time)
         let minute = calendar.component(.minute, from: alarm.time)
         
-        // 2. 날짜 계산
+        // 2. 날짜 계산 (반복 요일 고려)
         let nextAlarmDate = calculateNextDate(hour: hour, minute: minute, repeatDays: alarm.repeatDays)
         
-        // --- [A] AlarmKit 등록 ---
+        // --- [A] AlarmKit 등록 (시스템 UI용) ---
         let schedule = FrameworkAlarm.Schedule.fixed(nextAlarmDate)
         
         let alert = AlarmPresentation.Alert(
@@ -55,18 +59,21 @@ final class AlarmKitManager {
             attributes: attributes
         )
         
+        // 실제 AlarmKit에 스케줄 등록
         _ = try await AlarmManager.shared.schedule(id: alarm.id, configuration: config)
         print("✅ [AlarmKit] 등록 완료. 시간: \(nextAlarmDate), 사운드: \(alarm.soundName)")
         
-        // --- [B] Local Notification 등록 (사운드 포함) ---
+        // --- [B] Local Notification 등록 (잠금화면 사운드 재생용) ---
         await scheduleLocalNotification(for: alarm, hour: hour, minute: minute)
     }
     
+    /// 알람 삭제 (AlarmKit + Local Notification)
     func removeAlarm(id: UUID) async {
         try? AlarmManager.shared.cancel(id: id)
         
         let center = UNUserNotificationCenter.current()
         var identifiersToRemove = [id.uuidString]
+        // 반복 알람의 경우 id_0, id_1 등의 식별자를 가짐
         for i in 0...6 {
             identifiersToRemove.append("\(id.uuidString)_\(i)")
         }
@@ -74,10 +81,12 @@ final class AlarmKitManager {
         print("🗑️ [Manager] 알람 삭제 완료: \(id)")
     }
     
+    /// 다음 알람 날짜 계산 로직
     private func calculateNextDate(hour: Int, minute: Int, repeatDays: [Int]) -> Date {
         let calendar = Calendar.current
         let now = Date()
         
+        // 반복 요일이 없는 경우 (1회성)
         if repeatDays.isEmpty {
             var components = DateComponents()
             components.hour = hour
@@ -87,12 +96,14 @@ final class AlarmKitManager {
             return date
         }
         
+        // 반복 요일이 있는 경우: 가장 가까운 미래의 요일 찾기
         var nextDates: [Date] = []
         for modelDay in repeatDays {
             var components = DateComponents()
             components.hour = hour
             components.minute = minute
             components.second = 0
+            // 모델의 0(일)~6(토)를 Calendar의 1(일)~7(토)로 매핑
             components.weekday = modelDay + 1
             if let date = calendar.nextDate(after: now, matching: components, matchingPolicy: .nextTime) {
                 nextDates.append(date)
@@ -109,50 +120,41 @@ final class AlarmKitManager {
         content.title = "⏰ 알람"
         content.body = alarm.label.isEmpty ? "설정된 알람입니다" : alarm.label
         content.categoryIdentifier = "ALARM_CATEGORY"
+        // 방해금지 모드 무시하고 소리 재생
         content.interruptionLevel = .timeSensitive
         
-        // [추가됨] 사운드 설정 로직
-        // 나중에 SoundManager를 만들 때 이 부분(getSoundFileName)을 잘라내서 가져가면 됩니다.
-        let soundFileName = getSoundFileName(from: alarm.soundName)
-        
-        if let fileName = soundFileName {
-            content.sound = UNNotificationSound(named: UNNotificationSoundName(fileName))
+        // [수정됨] SoundManager를 통해 실제 파일명을 가져오도록 연결
+        if let fileName = SoundManager.shared.getSoundFileName(named: alarm.soundName) {
+            // 파일명에 확장자(.mp3)를 붙여서 Notification Sound 생성
+            content.sound = UNNotificationSound(named: UNNotificationSoundName("\(fileName).mp3"))
         } else if alarm.soundName == "안 함" {
             content.sound = nil
         } else {
             content.sound = .defaultCritical
         }
         
+        // 1회성 알람 스케줄링
         if alarm.repeatDays.isEmpty {
             let nextDate = calculateNextDate(hour: hour, minute: minute, repeatDays: [])
             let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: nextDate)
             let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
             let request = UNNotificationRequest(identifier: alarm.id.uuidString, content: content, trigger: trigger)
             try? await center.add(request)
-        } else {
+        }
+        // 요일 반복 알람 스케줄링
+        else {
             for modelDay in alarm.repeatDays {
                 var components = DateComponents()
                 components.hour = hour
                 components.minute = minute
+                // 모델 0~6 -> Calendar 1~7
                 components.weekday = modelDay + 1
+                
                 let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+                // 식별자를 요일별로 구분 (UUID_요일인덱스)
                 let request = UNNotificationRequest(identifier: "\(alarm.id.uuidString)_\(modelDay)", content: content, trigger: trigger)
                 try? await center.add(request)
             }
-        }
-    }
-    
-    // [헬퍼] 사운드 이름 -> 파일명 매핑 (분리 용이하게 별도 함수로 작성)
-    private func getSoundFileName(from displayName: String) -> String? {
-        switch displayName {
-        case "안 함", "기본음": return nil
-            
-        // 예시 매핑 (실제 파일명에 맞게 수정 필요)
-        case "커피한잔의 여유": return "coffee.m4a"
-        case "사이렌": return "siren.m4a"
-        case "빗소리": return "rain.m4a"
-            
-        default: return nil
         }
     }
 }
