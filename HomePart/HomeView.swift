@@ -5,7 +5,6 @@ import PhotosUI
 import Combine
 import Moya
 
-
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @State private var showToDoSheet = false
@@ -22,7 +21,6 @@ struct HomeView: View {
                         
                         Text("단순한 알람이 아닌,\n당신을 행동으로 이끄는 AI 미션 알람 서비스")
                             .font(.headline)
-                            // [수정] 다크 모드 대응: .black 대신 .primary
                             .foregroundStyle(.primary)
                             .lineSpacing(4)
                     }
@@ -37,6 +35,10 @@ struct HomeView: View {
                 .padding(.horizontal, 24)
             }
             .toolbar(.hidden)
+            .onAppear {
+                // 홈으로 돌아올 때 오늘 데이터를 다시 동기화
+                viewModel.loadTasksForSpecificDate(date: Date())
+            }
             .navigationDestination(isPresented: $navigateToDetail) {
                 TodoSettingView(viewModel: viewModel)
             }
@@ -78,40 +80,45 @@ private extension HomeView {
                     .font(.title3)
                     .fontWeight(.bold)
                 Spacer()
-                NavigationLink(destination: TodoSettingView(viewModel: viewModel)) {
+                Button(action: { navigateToDetail = true }) {
                     Text("자세히 보기 >")
                         .font(.subheadline)
                         .foregroundStyle(Color(hex: "BBC0C7"))
                 }
             }
             VStack(alignment: .leading, spacing: 16) {
-                if viewModel.tasks.isEmpty {
-                    Text("등록된 할 일이 없습니다.")
+                if viewModel.todayTasksList.isEmpty {
+                    Text("오늘 등록된 할 일이 없습니다.")
                         .foregroundStyle(.gray)
                         .frame(maxWidth: .infinity)
                         .padding()
                 } else {
                     ForEach(Array(viewModel.previewTasks.enumerated()), id: \.element.id) { index, task in
                         VStack(alignment: .leading, spacing: 12) {
-                            Text(task.title)
-                                .font(.body)
-                                // [수정] 다크 모드 대응: .black.opacity 대신 .primary
-                                .foregroundStyle(.primary)
-                                .padding(.horizontal, 4)
+                            HStack {
+                                Circle()
+                                    .fill(task.isCompleted ? Color(hex: "F55641") : Color.gray.opacity(0.3))
+                                    .frame(width: 8, height: 8)
+                                Text(task.title)
+                                    .font(.body)
+                                    .foregroundStyle(task.isCompleted ? .secondary : .primary)
+                                    .strikethrough(task.isCompleted)
+                            }
+                            .padding(.horizontal, 4)
                             if index < viewModel.previewTasks.count - 1 {
                                 Divider()
-                                    // [수정] 구분선 색상도 자연스럽게
-                                    .background(Color.secondary.opacity(0.3)) }
+                                    .background(Color.secondary.opacity(0.3))
+                            }
                         }
                     }
                 }
             }
             .padding(20)
-            // [수정] 다크 모드 대응: 고정 컬러 대신 시스템 회색 배경
             .background(Color(UIColor.secondarySystemBackground))
             .cornerRadius(16)
             .onTapGesture {
-                showToDoSheet = true }
+                showToDoSheet = true
+            }
         }
     }
     
@@ -139,13 +146,11 @@ struct StatCard: View {
                 .fontWeight(.bold)
             Text(label)
                 .font(.caption)
-                // [수정] 다크 모드 대응: .black 대신 .secondary
                 .foregroundStyle(.secondary)
             Spacer()
         }
         .padding()
         .frame(maxWidth: .infinity)
-        // [수정] 다크 모드 대응: 고정 컬러 대신 시스템 회색 배경
         .background(Color(UIColor.secondarySystemBackground))
         .cornerRadius(16)
     }
@@ -172,14 +177,13 @@ struct ToDoSheetView: View {
                 .font(.subheadline)
                 .foregroundStyle(Color(hex: "BBC0C7"))
                 .padding(.top, 16)
-                
             }
             .padding([.top, .horizontal], 24)
             .padding(.bottom, 16)
             
             ScrollView {
                 LazyVStack(spacing: 12) {
-                    ForEach($viewModel.tasks) { $task in
+                    ForEach($viewModel.todayTasksList) { $task in
                         SheetTaskRow(task: $task, themeColor: themeColor, isEditing: editingTaskId == task.id,
                                      startEditing: { editingTaskId = task.id },
                                      finishEditing: { editingTaskId = nil },
@@ -188,7 +192,6 @@ struct ToDoSheetView: View {
                 }.padding(.horizontal)
             }
         }
-        // [수정] 다크 모드 대응: 시트 배경색도 하얀색 고정이 아닌 시스템 배경색으로
         .background(Color(UIColor.systemBackground))
     }
 }
@@ -211,7 +214,6 @@ struct SheetTaskRow: View {
                         .onSubmit { finishEditing() }
                 } else {
                     Text(task.title)
-                        // [수정] 다크 모드 대응: .black 대신 .primary
                         .foregroundStyle(.primary)
                 }
                 Spacer()
