@@ -1,3 +1,9 @@
+//
+//  DistanceMissionView.swift
+//  Lumo
+//
+//  Created by 김승겸 on 1/5/26.
+//
 import SwiftUI
 
 struct DistanceMissionView: View {
@@ -91,11 +97,7 @@ struct DistanceMissionView: View {
                     
                     // 내용 (이모티콘 + 멘트)
                     VStack(spacing: 20) {
-<<<<<<< HEAD
-                        Image("Correct")
-=======
                         Image(.correct)
->>>>>>> test/merge-check
                             .resizable()
                             .frame(width: 180,height: 180)
                         
@@ -110,13 +112,7 @@ struct DistanceMissionView: View {
         }
         .animation(.easeInOut, value: viewModel.isMissionCompleted)
         .onAppear {
-<<<<<<< HEAD
-            _Concurrency.Task {
-                await viewModel.start()
-            }
-=======
             viewModel.startDistanceMission()
->>>>>>> test/merge-check
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
                     if completed {

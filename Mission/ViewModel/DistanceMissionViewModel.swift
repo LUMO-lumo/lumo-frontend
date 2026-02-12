@@ -22,14 +22,7 @@ struct DistanceMissionSubmitRequest: Codable {
 @MainActor
 class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate {
     
-<<<<<<< HEAD
-    
-    private let locationManager = CLLocationManager()
-    private var previousLocation: CLLocation? // 이전 위치 저장용
-    
-=======
     // MARK: - Properties (UI Binding)
->>>>>>> test/merge-check
     @Published var currentDistance: Double = 0.0
     @Published var targetDistance: Double = 20.0 // 기본 목표값
     @Published var feedbackMessage: String = ""
@@ -49,7 +42,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         super.init(alarmId: alarmId)
         setupLocationManager()
     }
-    
+
     // 위치 권한 및 설정
     private func setupLocationManager() {
         locationManager.delegate = self
@@ -146,8 +139,6 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         }
     }
     
-<<<<<<< HEAD
-=======
     // MARK: - 결과 처리 (UI 업데이트)
     private func handleSubmissionResult(isCorrect: Bool) {
         self.isCorrect = isCorrect
@@ -175,9 +166,8 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         }
     }
     
->>>>>>> test/merge-check
     // MARK: - CLLocationManagerDelegate
-    
+
     
     // 위치 업데이트 감지
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -243,55 +233,6 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         }
     }
     
-<<<<<<< HEAD
-    private func handleSubmissionResult(isCorrect: Bool) {
-        self.isCorrect = isCorrect
-        self.showFeedback = true
-        
-        if isCorrect {
-            self.feedbackMessage = "미션 성공! 🎉"
-            self.locationManager.stopUpdatingLocation()
-            // 💡 BaseMissionViewModel이 isMissionCompleted를 true로 만들고
-            // API를 통해 알람을 해제할 때까지 UI 피드백을 유지합니다.
-        } else {
-            self.feedbackMessage = "아직 목표에 도달하지 못했습니다."
-            AsyncTask {
-                try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
-                self.showFeedback = false
-            }
-        }
-    }
-    
-    // MARK: - Mock Helpers
-    private func setupMockData() {
-        self.isLoading = true
-        AsyncTask {
-            try? await AsyncTask.sleep(nanoseconds: 500_000_000)
-            self.contentId = 888
-            self.targetDistance = 30.0
-            self.isLoading = false
-            self.simulateMockWalking()
-        }
-    }
-    
-    private func simulateMockWalking() {
-        AsyncTask {
-            while currentDistance < targetDistance {
-                try? await AsyncTask.sleep(nanoseconds: 500_000_000)
-                self.currentDistance += 5.0
-            }
-            await self.submit()
-        }
-    }
-    
-    private func checkMockSuccess() {
-        self.handleSubmissionResult(isCorrect: true)
-        AsyncTask {
-            try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
-            self.isMissionCompleted = true
-        }
-    }
-=======
     // MARK: - Mock Helpers (테스트용)
     private func setupMockData() {
         self.isLoading = true
@@ -320,5 +261,4 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
             }
         }
     }
->>>>>>> test/merge-check
 }
