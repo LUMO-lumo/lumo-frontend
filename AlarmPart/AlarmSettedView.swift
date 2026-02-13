@@ -53,7 +53,7 @@ struct AlarmSettedView: View {
                 HStack(alignment: .center) {
                     Text(alarm.timeString)
                         .font(.system(size: 32, weight: .bold))
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.primary) // [수정] 다크모드 대응
                     
                     Spacer()
                     
@@ -80,7 +80,8 @@ struct AlarmSettedView: View {
                         }) {
                             ZStack {
                                 Circle()
-                                    .fill(alarm.repeatDays.contains(index) ? Color(hex: "F55641") : Color(hex:"DDE1E8"))
+                                    // [수정] 선택 안된 요일 배경색 다크모드 대응 (systemGray5 등 활용)
+                                    .fill(alarm.repeatDays.contains(index) ? Color(hex: "F55641") : Color(uiColor: .systemGray5))
                                     .frame(width: 30, height: 30)
                                 
                                 Text(days[index])
@@ -103,7 +104,7 @@ struct AlarmSettedView: View {
                         
                         Text(alarm.missionTitle)
                             .font(.system(size: 13))
-                            .foregroundStyle(.black.opacity(0.8))
+                            .foregroundStyle(.primary.opacity(0.8)) // [수정] 다크모드 대응
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
@@ -124,7 +125,8 @@ struct AlarmSettedView: View {
                 }
             }
             .padding(20)
-            .background(Color(hex: "F2F4F7"))
+            // [수정] 카드 배경색 다크모드 대응 (secondarySystemBackground)
+            .background(Color(uiColor: .secondarySystemBackground))
             .cornerRadius(20)
             .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
             .offset(x: offset)
@@ -173,6 +175,10 @@ struct AlarmSettedView: View {
     private func firstupdateAlarmOnServer() {
         onUpdate?(alarm)
     }
+}
+
+#Preview {
+    AlarmSettedView(alarm: .constant(Alarm.dummyData[0]), onDelete: {})
 }
 
 #Preview {

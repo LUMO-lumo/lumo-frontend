@@ -34,7 +34,7 @@ struct AlarmChange: View {
                 Spacer()
                 Text("알람 수정")
                     .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(.black)
+                    .foregroundStyle(Color.primary) // [수정] Color 명시
                 Spacer()
                 Image(systemName: "chevron.left")
                     .font(.system(size: 20))
@@ -42,7 +42,7 @@ struct AlarmChange: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 15)
-            .background(Color.white)
+            .background(Color(uiColor: .systemBackground))
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 30) {
@@ -51,9 +51,9 @@ struct AlarmChange: View {
                         ZStack(alignment: .trailing) {
                             TextField("알람 이름을 입력해주세요", text: $viewModel.alarmTitle)
                                 .padding()
-                                .background(Color(hex: "F2F4F7"))
+                                .background(Color(uiColor: .secondarySystemBackground))
                                 .cornerRadius(10)
-                                .foregroundStyle(.black)
+                                .foregroundStyle(Color.primary) // [수정] Color 명시
                             Image(systemName: "pencil")
                                 .foregroundStyle(.gray)
                                 .padding(.trailing, 15)
@@ -64,7 +64,7 @@ struct AlarmChange: View {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("미션 선택")
                             .font(.system(size: 14))
-                            .foregroundStyle(.black)
+                            .foregroundStyle(Color.primary) // [수정]
                             .padding(.horizontal, 20)
                         HStack(spacing: 15) {
                             ForEach(AlarmChangeModel.missions, id: \.0) { mission in
@@ -84,7 +84,7 @@ struct AlarmChange: View {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("요일 선택")
                             .font(.system(size: 14))
-                            .foregroundStyle(.black)
+                            .foregroundStyle(Color.primary) // [수정]
                             .padding(.horizontal, 20)
                         HStack(spacing: 0) {
                             ForEach(0..<AlarmChangeModel.days.count, id: \.self) { index in
@@ -107,11 +107,11 @@ struct AlarmChange: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("시간 설정")
                             .font(.system(size: 14))
-                            .foregroundStyle(.black)
+                            .foregroundStyle(Color.primary) // [수정]
                             .padding(.horizontal, 20)
                         
                         ZStack {
-                            Color(.white)
+                            Color(uiColor: .secondarySystemBackground)
                                 .cornerRadius(20)
                             
                             DatePicker("", selection: $viewModel.selectedTime, displayedComponents: .hourAndMinute)
@@ -128,7 +128,7 @@ struct AlarmChange: View {
                         HStack {
                             Text("레이블")
                                 .font(.system(size: 14))
-                                .foregroundStyle(.black)
+                                .foregroundStyle(Color.primary) // [수정]
                             Spacer()
                             Text("1교시 있는 날")
                                 .font(.system(size: 14))
@@ -139,7 +139,7 @@ struct AlarmChange: View {
                         HStack {
                             Text("사운드")
                                 .font(.system(size: 14))
-                                .foregroundStyle(.black)
+                                .foregroundStyle(Color.primary) // [수정]
                             Spacer()
                             HStack(spacing: 5) {
                                 Text(viewModel.alarmSound)
@@ -185,7 +185,7 @@ struct AlarmChange: View {
             }
         }
         .navigationBarHidden(true)
-        .background(Color.white)
+        .background(Color(uiColor: .systemBackground))
         .onAppear {
             viewModel.requestNotificationPermission()
         }
@@ -211,7 +211,8 @@ struct AlarmChange: View {
                     }
                     Text(title)
                         .font(.system(size: 12))
-                        .foregroundStyle(isSelected ? .black : .gray)
+                        // [수정 핵심] .primary 대신 Color.primary 사용
+                        .foregroundStyle(isSelected ? Color.primary : Color.gray)
                 }
             }
         }
@@ -227,7 +228,7 @@ struct AlarmChange: View {
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(isSelected ? .white : .gray)
                     .frame(width: 36, height: 36)
-                    .background(isSelected ? Color(hex: "F55641") : Color(hex: "F2F4F7"))
+                    .background(isSelected ? Color(hex: "F55641") : Color(uiColor: .secondarySystemBackground))
                     .clipShape(Circle())
             }
         }
