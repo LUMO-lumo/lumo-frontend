@@ -14,6 +14,7 @@ enum SettingTarget {
     case updateTheme(theme: String)
     case updateVoice(voice: String)
     case smartVoice(smartvoice: Bool)
+    case updateMissionLevel(level: String)
 }
 
 // ✅ [수정 1] @MainActor 추가: 메인 스레드 격리 문제 해결
@@ -37,6 +38,9 @@ extension SettingTarget: @MainActor APITargetType {
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
         case .smartVoice(let smartvoice):
             let params: [String: Any] = ["smartBriefing": smartvoice]
+            return .requestParameters(parameters: params, encoding: JSONEncoding.default)
+        case .updateMissionLevel(let level):
+            let params: [String: Any] = ["alarmOffMissionDefaultLevel": level]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
         }
     }

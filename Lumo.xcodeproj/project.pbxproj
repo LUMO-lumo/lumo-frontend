@@ -18,6 +18,9 @@
 		3492C5972F3B419000958A4D /* TodoSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3492C5892F3B419000958A4D /* TodoSettingModel.swift */; };
 		3492C5982F3B419000958A4D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3492C58F2F3B419000958A4D /* HomeView.swift */; };
 		3492C5992F3B419000958A4D /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3492C5902F3B419000958A4D /* HomeViewModel.swift */; };
+		349EBC012F3F2838009F76A2 /* MissionLevelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC002F3F2838009F76A2 /* MissionLevelViewModel.swift */; };
+		349EBC032F3F2BAA009F76A2 /* MissionLevelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC022F3F2BAA009F76A2 /* MissionLevelView.swift */; };
+		349EBC052F3F3099009F76A2 /* CustomStepSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC042F3F3099009F76A2 /* CustomStepSlider.swift */; };
 		34A2B45E2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */; };
 		34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */; };
 		34A2B4F72F31C30D00F3B9A8 /* SettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */; };
@@ -105,6 +108,9 @@
 		3492C58E2F3B419000958A4D /* HomePartTodoWrite.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = HomePartTodoWrite.md; sourceTree = "<group>"; };
 		3492C58F2F3B419000958A4D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		3492C5902F3B419000958A4D /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		349EBC002F3F2838009F76A2 /* MissionLevelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionLevelViewModel.swift; sourceTree = "<group>"; };
+		349EBC022F3F2BAA009F76A2 /* MissionLevelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionLevelView.swift; sourceTree = "<group>"; };
+		349EBC042F3F3099009F76A2 /* CustomStepSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStepSlider.swift; sourceTree = "<group>"; };
 		34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingView.swift; sourceTree = "<group>"; };
 		34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingViewModel.swift; sourceTree = "<group>"; };
 		34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModel.swift; sourceTree = "<group>"; };
@@ -254,6 +260,7 @@
 			isa = PBXGroup;
 			children = (
 				34A2B4FD2F31C53B00F3B9A8 /* TopNavigationBar.swift */,
+				349EBC042F3F3099009F76A2 /* CustomStepSlider.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -267,12 +274,13 @@
 			path = Notice;
 			sourceTree = "<group>";
 		};
-		34A4699B2F3C586D00F0290D /* SmartBriefing */ = {
+		34A4699B2F3C586D00F0290D /* Pro */ = {
 			isa = PBXGroup;
 			children = (
 				34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */,
+				349EBC002F3F2838009F76A2 /* MissionLevelViewModel.swift */,
 			);
-			path = SmartBriefing;
+			path = Pro;
 			sourceTree = "<group>";
 		};
 		34A4699C2F3C588C00F0290D /* Advanced */ = {
@@ -406,7 +414,7 @@
 			isa = PBXGroup;
 			children = (
 				34A4699C2F3C588C00F0290D /* Advanced */,
-				34A4699B2F3C586D00F0290D /* SmartBriefing */,
+				34A4699B2F3C586D00F0290D /* Pro */,
 				B400C5DE2F3B173900DBDC08 /* Login */,
 			);
 			path = ViewModel;
@@ -504,6 +512,7 @@
 			isa = PBXGroup;
 			children = (
 				348C8B662F3463CD00C384BC /* SmartBriefingView.swift */,
+				349EBC022F3F2BAA009F76A2 /* MissionLevelView.swift */,
 				B4E284832F2C52BD00D8FD4D /* ProSectionView.swift */,
 			);
 			path = Pro;
@@ -688,6 +697,9 @@
 				B44CC1462F36F528004D19A6 /* PWResetView.swift in Sources */,
 				B400C5E32F3B1BBD00DBDC08 /* AddTypeSheet.swift in Sources */,
 				B44CC1512F3A21D7004D19A6 /* TokenProviding.swift in Sources */,
+				349EBC052F3F3099009F76A2 /* CustomStepSlider.swift in Sources */,
+				349EBC032F3F2BAA009F76A2 /* MissionLevelView.swift in Sources */,
+				349EBC012F3F2838009F76A2 /* MissionLevelViewModel.swift in Sources */,
 				34A4699A2F3C369400F0290D /* DistanceMissionViewModel.swift in Sources */,
 				34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */,
 				348C8B622F345FF000C384BC /* BriefingVoiceViewModel.swift in Sources */,
