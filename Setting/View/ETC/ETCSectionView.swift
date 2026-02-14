@@ -28,7 +28,7 @@ struct ETCSectionView: View {
     var body: some View {
         HStack(spacing: 30) {
             
-            NavigationLink(destination: Text("공지사항")) {
+            NavigationLink(destination: NoticeView()) {
                 Text("공지사항")
                     .font(.Body2)
                     .foregroundStyle(Color.gray700)

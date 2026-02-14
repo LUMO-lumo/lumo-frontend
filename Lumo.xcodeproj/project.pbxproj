@@ -21,6 +21,8 @@
 		349EBC012F3F2838009F76A2 /* MissionLevelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC002F3F2838009F76A2 /* MissionLevelViewModel.swift */; };
 		349EBC032F3F2BAA009F76A2 /* MissionLevelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC022F3F2BAA009F76A2 /* MissionLevelView.swift */; };
 		349EBC052F3F3099009F76A2 /* CustomStepSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC042F3F3099009F76A2 /* CustomStepSlider.swift */; };
+		349EBC082F405F78009F76A2 /* NoticeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC072F405F78009F76A2 /* NoticeModel.swift */; };
+		349EBC0B2F4078CC009F76A2 /* NoticeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC0A2F4078CC009F76A2 /* NoticeDetailView.swift */; };
 		34A2B45E2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */; };
 		34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */; };
 		34A2B4F72F31C30D00F3B9A8 /* SettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */; };
@@ -111,6 +113,8 @@
 		349EBC002F3F2838009F76A2 /* MissionLevelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionLevelViewModel.swift; sourceTree = "<group>"; };
 		349EBC022F3F2BAA009F76A2 /* MissionLevelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionLevelView.swift; sourceTree = "<group>"; };
 		349EBC042F3F3099009F76A2 /* CustomStepSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStepSlider.swift; sourceTree = "<group>"; };
+		349EBC072F405F78009F76A2 /* NoticeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeModel.swift; sourceTree = "<group>"; };
+		349EBC0A2F4078CC009F76A2 /* NoticeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailView.swift; sourceTree = "<group>"; };
 		34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingView.swift; sourceTree = "<group>"; };
 		34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingViewModel.swift; sourceTree = "<group>"; };
 		34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModel.swift; sourceTree = "<group>"; };
@@ -256,6 +260,23 @@
 			path = HomePart;
 			sourceTree = "<group>";
 		};
+		349EBC062F405F67009F76A2 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */,
+				349EBC072F405F78009F76A2 /* NoticeModel.swift */,
+			);
+			path = Setting;
+			sourceTree = "<group>";
+		};
+		349EBC092F406178009F76A2 /* ETC */ = {
+			isa = PBXGroup;
+			children = (
+				34A468112F3C150400F0290D /* NoticeViewModel.swift */,
+			);
+			path = ETC;
+			sourceTree = "<group>";
+		};
 		34A2B4FC2F31C52200F3B9A8 /* Components */ = {
 			isa = PBXGroup;
 			children = (
@@ -263,15 +284,6 @@
 				349EBC042F3F3099009F76A2 /* CustomStepSlider.swift */,
 			);
 			path = Components;
-			sourceTree = "<group>";
-		};
-		34A4680E2F3C14E600F0290D /* Notice */ = {
-			isa = PBXGroup;
-			children = (
-				34A4680F2F3C14F000F0290D /* NoticeView.swift */,
-				34A468112F3C150400F0290D /* NoticeViewModel.swift */,
-			);
-			path = Notice;
 			sourceTree = "<group>";
 		};
 		34A4699B2F3C586D00F0290D /* Pro */ = {
@@ -379,7 +391,6 @@
 		B40A01112F2B921500687C64 /* Setting */ = {
 			isa = PBXGroup;
 			children = (
-				34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */,
 				34A2B4FC2F31C52200F3B9A8 /* Components */,
 				B40A01142F2B923E00687C64 /* ViewModel */,
 				B40A01132F2B923800687C64 /* Model */,
@@ -405,6 +416,7 @@
 		B40A01132F2B923800687C64 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				349EBC062F405F67009F76A2 /* Setting */,
 				B400C5D72F3B16FF00DBDC08 /* Login */,
 			);
 			path = Model;
@@ -413,6 +425,7 @@
 		B40A01142F2B923E00687C64 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				349EBC092F406178009F76A2 /* ETC */,
 				34A4699C2F3C588C00F0290D /* Advanced */,
 				34A4699B2F3C586D00F0290D /* Pro */,
 				B400C5DE2F3B173900DBDC08 /* Login */,
@@ -540,7 +553,8 @@
 		B4E2848B2F2CA3EB00D8FD4D /* ETC */ = {
 			isa = PBXGroup;
 			children = (
-				34A4680E2F3C14E600F0290D /* Notice */,
+				34A4680F2F3C14F000F0290D /* NoticeView.swift */,
+				349EBC0A2F4078CC009F76A2 /* NoticeDetailView.swift */,
 				B4E2848C2F2CA3F900D8FD4D /* ETCSectionView.swift */,
 			);
 			path = ETC;
@@ -665,6 +679,7 @@
 				B4D641FE2F2FA4AC000B4C08 /* LoginView.swift in Sources */,
 				B4D6420E2F30E384000B4C08 /* KeychainManager.swift in Sources */,
 				34A469922F3C1D6E00F0290D /* SettingTarget.swift in Sources */,
+				349EBC082F405F78009F76A2 /* NoticeModel.swift in Sources */,
 				B4FD5F2E2F17DEE80022CF67 /* LumoApp.swift in Sources */,
 				B4F28C442F3DA6BB005EB80A /* AppState.swift in Sources */,
 				4161A5842F3D231B0060D0B1 /* TodoLocalService.swift in Sources */,
@@ -719,6 +734,7 @@
 				3492C5972F3B419000958A4D /* TodoSettingModel.swift in Sources */,
 				3492C5982F3B419000958A4D /* HomeView.swift in Sources */,
 				3492C5992F3B419000958A4D /* HomeViewModel.swift in Sources */,
+				349EBC0B2F4078CC009F76A2 /* NoticeDetailView.swift in Sources */,
 				B4B4DAA82F2767C400C29EDC /* RoutineViewModel.swift in Sources */,
 				B4B4DAA92F2767C400C29EDC /* RoutineModel.swift in Sources */,
 				348C8B672F3463CD00C384BC /* SmartBriefingView.swift in Sources */,
