@@ -17,9 +17,11 @@ struct LoginSectionView: View {
     let user: UserModel?
     
     /// 토큰 존재 여부 확인: KeychainManager에 저장된 "userSession"이 있으면 true
-    private var isLoggedIn: Bool {
-        KeychainManager.standard.loadSession(for: "userSession") != nil
-    }
+        private var isLoggedIn: Bool {
+            // 수정됨: loadSession이 throws를 하므로 try?를 사용하여 에러 발생 시 nil로 처리
+            // (try? 결과가 nil이 아니면 토큰이 존재한다는 뜻)
+            return (try? KeychainManager.standard.loadSession(for: "userSession")) != nil
+        }
     
     var body: some View {
         // 로그인 섹션

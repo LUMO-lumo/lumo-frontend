@@ -75,7 +75,7 @@ struct MissionLevelView: View {
         .padding(.top, 26)
         .topNavigationBar(title: "미션 난이도 조절 ")
         .navigationBarHidden(true)
-        .onChange(of: viewModel.SmartBriefingEnabled) { oldValue, newValue in
+        .onChange(of: viewModel.smartBriefingEnabled) { oldValue, newValue in
             print("토글 상태: \(newValue)")
             viewModel.updateMissionLevel(level: String(newValue))
         }
