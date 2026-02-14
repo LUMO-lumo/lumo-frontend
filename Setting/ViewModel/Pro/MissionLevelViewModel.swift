@@ -18,17 +18,20 @@ class MissionLevelViewModel {
     var selectedLevel: String = "MEDIUM" // UI 반영용 (기본값)
     
     // UserDefaults 초기화 (앱 켤 때 저장된 값 불러오기)
-    var SmartBriefingEnabled: Bool = UserDefaults.standard.bool(forKey: "isSmartBriefing")
+    // 관례상 변수명은 소문자로 시작 (SmartBriefingEnabled -> smartBriefingEnabled)
+    var smartBriefingEnabled: Bool = UserDefaults.standard.bool(forKey: "isSmartBriefing")
     
-    // 로그인 체크
+    // 로그인 체크 (수정됨)
     private var isLoggedIn: Bool {
-        return KeychainManager.standard.loadSession(for: "userSession") != nil
+        // loadSession이 throws를 하므로 try?를 사용하여 에러 발생 시 nil로 처리
+        return (try? KeychainManager.standard.loadSession(for: "userSession")) != nil
     }
     
-    // MARK: - 1. 스마트 브리핑 토글 (Bool)
+    // MARK: - 1. 스마트 브리핑(또는 미션 난이도 활성화) 토글
+    // 함수 이름과 내부 로직 변수명이 약간 매칭되지 않으나, 기존 로직을 유지하며 수정했습니다.
     func updateMissionDifficulty(isEnabled: Bool) {
         // Optimistic UI: 서버 응답 기다리지 않고 즉시 UI/로컬 반영
-        self.SmartBriefingEnabled = isEnabled
+        self.smartBriefingEnabled = isEnabled
         UserDefaults.standard.set(isEnabled, forKey: "isSmartBriefing")
         print("💾 로컬 설정 저장 완료: \(isEnabled)")
         
@@ -37,47 +40,45 @@ class MissionLevelViewModel {
             print("📡 서버 동기화 시작...")
             requestServerUpdate(isEnabled: isEnabled)
         } else {
-            print("⚠️ 비로그인 상태: 로컬 설정만 변경됨")
+            print("ℹ️ 비로그인 상태: 로컬 설정만 변경됨")
         }
     }
     
     // MARK: - 2. 미션 난이도 변경 (String)
     func updateMissionLevel(level: String) {
-        // 1️⃣ [변경 전] 현재 설정값을 임시 저장
+        // 1️⃣ [변경 전] 현재 설정값을 임시 저장 (실패 시 롤백용 혹은 로그용)
         let oldLevel = self.selectedLevel
         
         print("⏳ 난이도 변경 요청 중... (\(oldLevel) ➡️ \(level))")
 
-        // ⚠️ SettingTarget에 .updateMissionLevel 케이스가 있어야 합니다!
+        // Optimistic UI 적용 (먼저 UI를 바꿈)
+        self.selectedLevel = level
+
         provider.request(.updateMissionLevel(level: level)) { [weak self] result in
             switch result {
             case .success(let response):
-                // 2️⃣ [변경 후] 성공 시 값 업데이트 및 로그
-                self?.selectedLevel = level
-                
+                // 2️⃣ [성공]
                 print("✅ 미션 난이도 변경 완료!")
                 print("   ㄴ 변경 내역: \(oldLevel) 👉 \(level)")
                 print("   ㄴ 응답 상태: \(response.statusCode)")
                 
             case .failure(let error):
-                // 3️⃣ 실패 시 로그
-                print("❌ 난이도 변경 실패 (기존 \(oldLevel) 유지)")
+                // 3️⃣ [실패] UI 롤백
+                print("❌ 난이도 변경 실패 (기존 \(oldLevel)로 복구)")
+                self?.selectedLevel = oldLevel
                 
                 // ★ 서버 에러 메시지 확인
-                if let response = error.response,
-                   let message = String(data: response.data, encoding: .utf8) {
-                    print("\n📝 [서버의 불만사항]: \(message)\n")
+                if let response = error.response {
+                    print("🔢 상태 코드: \(response.statusCode)")
+                    if let message = String(data: response.data, encoding: .utf8) {
+                        print("📝 서버 메시지: \(message)")
+                    }
+                } else {
+                    print("🌍 네트워크 연결 문제 (서버 응답 없음)")
                 }
                 
-                // 에러 타입 분석
-                switch error {
-                case .underlying(let nsError as NSError, _):
-                    print("⚡️ 시스템/네트워크 에러: \(nsError.localizedDescription)")
-                case .statusCode:
-                    print("⚡️ 상태 코드 에러")
-                default:
-                    print("⚡️ 기타 Moya 에러: \(error.localizedDescription)")
-                }
+                // 에러 타입 로그
+                print("⚡️ 에러 상세: \(error.localizedDescription)")
                 print("====================================================\n")
             }
         }
@@ -89,10 +90,10 @@ class MissionLevelViewModel {
         provider.request(.smartVoice(smartvoice: isEnabled)) { result in
             switch result {
             case .success(let response):
-                print("✅ 스마트 브리핑 동기화 성공: \(response.statusCode)")
+                print("✅ 설정 서버 동기화 성공: \(response.statusCode)")
                 
             case .failure(let error):
-                print("\n================ [❌ 스마트 브리핑 동기화 실패] ================")
+                print("\n================ [❌ 설정 동기화 실패] ================")
                 
                 if let response = error.response {
                     print("🔢 상태 코드: \(response.statusCode)")
@@ -102,7 +103,7 @@ class MissionLevelViewModel {
                 } else {
                     print("🌍 네트워크 연결 문제 (서버 응답 없음)")
                 }
-                print("==============================================================\n")
+                print("========================================================\n")
             }
         }
     }

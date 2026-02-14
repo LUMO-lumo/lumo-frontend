@@ -20,7 +20,9 @@ struct ETCSectionView: View {
     
     // 로그인 상태 확인: 유저 정보 있음 + 토큰 있음
     private var isLoggedIn: Bool {
-        user != nil && KeychainManager.standard.loadSession(for: "userSession") != nil
+        // 수정됨: loadSession이 throws하므로 try? 사용
+        // (try? 결과가 nil이 아니면 토큰이 있다는 뜻)
+        user != nil && (try? KeychainManager.standard.loadSession(for: "userSession")) != nil
     }
     
     var body: some View {
@@ -77,13 +79,14 @@ struct ETCSectionView: View {
     
     /// 실제 로그아웃 처리 로직
     private func logout(user: UserModel) {
-        // 1. 키체인에서 토큰 삭제
-        KeychainManager.standard.deleteSession(for: "userSession")
+        // 1. 키체인에서 토큰 삭제 (수정됨: try? 사용)
+        // 삭제 실패 에러는 로그아웃 과정에서 크게 중요하지 않으므로 무시해도 무방함
+        try? KeychainManager.standard.deleteSession(for: "userSession")
         
         // 2. SwiftData에서 유저 정보 삭제
         modelContext.delete(user)
         
-        print("로그아웃 완료: 데이터 삭제됨")
+        print("✅ 로그아웃 완료: 데이터 삭제됨")
     }
 }
 

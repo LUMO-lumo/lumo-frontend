@@ -44,6 +44,7 @@ class SignUpViewModel: ObservableObject {
         !verificationCode.isEmpty
     }
     
+    // APIManager나 MoyaProvider 생성 방식은 프로젝트 상황에 맞게 유지
     private let provider = APIManager.shared.createProvider(for: UserTarget.self)
     
     // MARK: - Initialization
@@ -183,11 +184,18 @@ class SignUpViewModel: ObservableObject {
                 if decoded.success {
                     print("🎉 회원가입 로직 성공! 토큰 저장을 시도합니다.")
                     
-                    // 1. 토큰 저장
+                    // 1. 토큰 저장 (수정됨: try-catch 추가)
                     if let resultData = decoded.result, let token = resultData.accessToken {
                         let userInfo = UserInfo(accessToken: token, refreshToken: nil)
-                        _ = KeychainManager.standard.saveSession(userInfo, for: "userSession")
-                        print("🔑 토큰 키체인 저장 완료")
+                        
+                        do {
+                            // saveSession이 throws를 하므로 try 사용
+                            try KeychainManager.standard.saveSession(userInfo, for: "userSession")
+                            print("🔑 토큰 키체인 저장 완료")
+                        } catch {
+                            print("❌ 키체인 저장 실패: \(error)")
+                            // 회원가입은 성공했지만 자동 로그인이 안 될 수 있음을 인지해야 함
+                        }
                     } else {
                         print("⚠️ 경고: 성공 응답이지만 토큰이 없습니다.")
                     }
@@ -196,6 +204,7 @@ class SignUpViewModel: ObservableObject {
                     let newUser = UserModel(nickname: storedNickname)
                     modelContext.insert(newUser)
                     print("💾 SwiftData 유저 저장 완료")
+                    
                     self.step = .success
                     print("👉 단계 변경 완료: .success")
                     
@@ -223,6 +232,7 @@ class SignUpViewModel: ObservableObject {
     }
 }
 
+// 아래 Extension은 그대로 유지 (비동기 처리에 유용함)
 extension MoyaProvider {
     // 컴파일러의 엄격한 Sendable 검사를 우회하기 위한 래퍼
     struct UncheckedSendable<T>: @unchecked Sendable {
