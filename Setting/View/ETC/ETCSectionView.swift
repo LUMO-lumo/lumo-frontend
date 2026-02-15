@@ -34,7 +34,7 @@ struct ETCSectionView: View {
                     .foregroundStyle(Color.gray700)
             }
             
-            NavigationLink(destination: Text("의견 보내기")) {
+            NavigationLink(destination: FeedbackView()) {
                 Text("의견 보내기")
                     .font(.Body2)
                     .foregroundStyle(Color.gray)

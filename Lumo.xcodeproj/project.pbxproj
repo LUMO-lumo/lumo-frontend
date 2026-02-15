@@ -23,6 +23,10 @@
 		349EBC052F3F3099009F76A2 /* CustomStepSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC042F3F3099009F76A2 /* CustomStepSlider.swift */; };
 		349EBC082F405F78009F76A2 /* NoticeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC072F405F78009F76A2 /* NoticeModel.swift */; };
 		349EBC0B2F4078CC009F76A2 /* NoticeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC0A2F4078CC009F76A2 /* NoticeDetailView.swift */; };
+		349EBC0D2F419C71009F76A2 /* FeedbackTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC0C2F419C71009F76A2 /* FeedbackTarget.swift */; };
+		349EBC0F2F419CDA009F76A2 /* FeedbackModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC0E2F419CDA009F76A2 /* FeedbackModel.swift */; };
+		349EBC112F419E55009F76A2 /* FeedbackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC102F419E55009F76A2 /* FeedbackViewModel.swift */; };
+		349EBC132F419EA4009F76A2 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349EBC122F419EA4009F76A2 /* FeedbackView.swift */; };
 		34A2B45E2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */; };
 		34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */; };
 		34A2B4F72F31C30D00F3B9A8 /* SettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */; };
@@ -115,6 +119,10 @@
 		349EBC042F3F3099009F76A2 /* CustomStepSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStepSlider.swift; sourceTree = "<group>"; };
 		349EBC072F405F78009F76A2 /* NoticeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeModel.swift; sourceTree = "<group>"; };
 		349EBC0A2F4078CC009F76A2 /* NoticeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailView.swift; sourceTree = "<group>"; };
+		349EBC0C2F419C71009F76A2 /* FeedbackTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackTarget.swift; sourceTree = "<group>"; };
+		349EBC0E2F419CDA009F76A2 /* FeedbackModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackModel.swift; sourceTree = "<group>"; };
+		349EBC102F419E55009F76A2 /* FeedbackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackViewModel.swift; sourceTree = "<group>"; };
+		349EBC122F419EA4009F76A2 /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		34A2B45D2F318C6C00F3B9A8 /* MissionAlarmSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingView.swift; sourceTree = "<group>"; };
 		34A2B4612F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionAlarmSettingViewModel.swift; sourceTree = "<group>"; };
 		34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModel.swift; sourceTree = "<group>"; };
@@ -265,6 +273,7 @@
 			children = (
 				34A2B4F62F31C30D00F3B9A8 /* SettingModel.swift */,
 				349EBC072F405F78009F76A2 /* NoticeModel.swift */,
+				349EBC0E2F419CDA009F76A2 /* FeedbackModel.swift */,
 			);
 			path = Setting;
 			sourceTree = "<group>";
@@ -273,6 +282,7 @@
 			isa = PBXGroup;
 			children = (
 				34A468112F3C150400F0290D /* NoticeViewModel.swift */,
+				349EBC102F419E55009F76A2 /* FeedbackViewModel.swift */,
 			);
 			path = ETC;
 			sourceTree = "<group>";
@@ -343,6 +353,7 @@
 				B44CC1412F363B9B004D19A6 /* UserTarget.swift */,
 				34A469912F3C1D6E00F0290D /* SettingTarget.swift */,
 				34A468132F3C156200F0290D /* NoticeTarget.swift */,
+				349EBC0C2F419C71009F76A2 /* FeedbackTarget.swift */,
 			);
 			path = Target;
 			sourceTree = "<group>";
@@ -556,6 +567,7 @@
 				34A4680F2F3C14F000F0290D /* NoticeView.swift */,
 				349EBC0A2F4078CC009F76A2 /* NoticeDetailView.swift */,
 				B4E2848C2F2CA3F900D8FD4D /* ETCSectionView.swift */,
+				349EBC122F419EA4009F76A2 /* FeedbackView.swift */,
 			);
 			path = ETC;
 			sourceTree = "<group>";
@@ -675,6 +687,7 @@
 				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
 				34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */,
 				B400C7822F3BABE600DBDC08 /* MathMissionView.swift in Sources */,
+				349EBC132F419EA4009F76A2 /* FeedbackView.swift in Sources */,
 				B42F48072F26FAFD0057284E /* TabBar.swift in Sources */,
 				B4D641FE2F2FA4AC000B4C08 /* LoginView.swift in Sources */,
 				B4D6420E2F30E384000B4C08 /* KeychainManager.swift in Sources */,
@@ -690,8 +703,10 @@
 				B4D642742F338534000B4C08 /* AppConfig.swift in Sources */,
 				B4E284872F2C720000D8FD4D /* AdvancedSectionView.swift in Sources */,
 				B44CC1572F3A39E9004D19A6 /* TokenResponse.swift in Sources */,
+				349EBC112F419E55009F76A2 /* FeedbackViewModel.swift in Sources */,
 				B44CC1532F3A26AF004D19A6 /* AuthRouter.swift in Sources */,
 				B44CC14F2F3998EC004D19A6 /* TokenProvider.swift in Sources */,
+				349EBC0D2F419C71009F76A2 /* FeedbackTarget.swift in Sources */,
 				34A468122F3C150400F0290D /* NoticeViewModel.swift in Sources */,
 				34A4699E2F3C7A8700F0290D /* OXMissionView.swift in Sources */,
 				B44CC1422F363B9F004D19A6 /* UserTarget.swift in Sources */,
@@ -724,6 +739,7 @@
 				B400C7762F3BA9A500DBDC08 /* MissionTarget.swift in Sources */,
 				34A2B4F92F31C38B00F3B9A8 /* ScreenThemeSettingView.swift in Sources */,
 				34A2B4FE2F31C53B00F3B9A8 /* TopNavigationBar.swift in Sources */,
+				349EBC0F2F419CDA009F76A2 /* FeedbackModel.swift in Sources */,
 				34A2B4FB2F31C39800F3B9A8 /* ScreenThemeSettingViewModel.swift in Sources */,
 				B4B4DAA72F2767C400C29EDC /* RoutineView.swift in Sources */,
 				3492C5942F3B419000958A4D /* HomeModel.swift in Sources */,
