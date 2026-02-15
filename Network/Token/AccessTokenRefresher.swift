@@ -51,7 +51,7 @@ class AccessTokenRefresher: @unchecked Sendable, RequestInterceptor {
     ) {
         guard request.retryCount < 1,
               let response = request.task?.response as? HTTPURLResponse,
-              [401, 404].contains(response.statusCode) else {
+        [401, 404].contains(response.statusCode) else {
             return completion(.doNotRetry)
         }
         
@@ -77,6 +77,9 @@ class AccessTokenRefresher: @unchecked Sendable, RequestInterceptor {
                             self.requestToRetry.forEach { $0(.retry) }
                         } else {
                             self.requestToRetry.forEach { $0(.doNotRetry) }
+                            // 앱 전체에 "강제 로그아웃" 알림 발송
+                            print("🚨 토큰 갱신 실패 -> 강제 로그아웃 신호 발송")
+                            NotificationCenter.default.post(name: .forceLogout, object: nil)
                         }
                         self.requestToRetry.removeAll()
                     }
@@ -87,6 +90,9 @@ class AccessTokenRefresher: @unchecked Sendable, RequestInterceptor {
                         self.isRefreshing = false
                         self.requestToRetry.forEach { $0(.doNotRetryWithError(error)) }
                         self.requestToRetry.removeAll()
+                        
+                        print("🚨 갱신 중 에러 발생 -> 강제 로그아웃 신호 발송")
+                        NotificationCenter.default.post(name: .forceLogout, object: nil)
                     }
                 }
             }
