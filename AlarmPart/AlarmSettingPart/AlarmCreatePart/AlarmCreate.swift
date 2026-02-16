@@ -101,7 +101,7 @@ struct AlarmCreate: View {
                 Spacer()
                 Text("알람 생성")
                     .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(.black)
+                    .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                 Spacer()
                 Image(systemName: "chevron.left")
                     .font(.system(size: 20))
@@ -109,7 +109,7 @@ struct AlarmCreate: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 15)
-            .background(Color.white)
+            .background(Color(uiColor: .systemBackground)) // ✅ 다크모드 대응
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 30) {
@@ -118,9 +118,9 @@ struct AlarmCreate: View {
                         ZStack(alignment: .trailing) {
                             TextField("알람 이름을 입력해주세요", text: $viewModel.alarmTitle)
                                 .padding()
-                                .background(Color(hex: "F2F4F7"))
+                                .background(Color(uiColor: .secondarySystemBackground)) // ✅ 다크모드 대응
                                 .cornerRadius(10)
-                                .foregroundStyle(.black)
+                                .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                             Image(systemName: "pencil")
                                 .foregroundStyle(.gray)
                                 .padding(.trailing, 15)
@@ -131,7 +131,7 @@ struct AlarmCreate: View {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("미션 선택")
                             .font(.system(size: 14))
-                            .foregroundStyle(.black)
+                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                             .padding(.horizontal, 20)
                         HStack(spacing: 15) {
                             ForEach(missions, id: \.0) { mission in
@@ -151,7 +151,7 @@ struct AlarmCreate: View {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("요일 선택")
                             .font(.system(size: 14))
-                            .foregroundStyle(.black)
+                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                             .padding(.horizontal, 20)
                         HStack(spacing: 0) {
                             ForEach(0..<7) { index in
@@ -174,11 +174,11 @@ struct AlarmCreate: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("시간 설정")
                             .font(.system(size: 14))
-                            .foregroundStyle(.black)
+                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                             .padding(.horizontal, 20)
                         
                         ZStack {
-                            Color(.white)
+                            Color(uiColor: .secondarySystemGroupedBackground) // ✅ 다크모드 대응
                                 .cornerRadius(20)
                             
                             DatePicker("", selection: $viewModel.selectedTime, displayedComponents: .hourAndMinute)
@@ -195,7 +195,7 @@ struct AlarmCreate: View {
                         HStack {
                             Text("레이블")
                                 .font(.system(size: 14))
-                                .foregroundStyle(.black)
+                                .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                             Spacer()
                             Text("1교시 있는 날")
                                 .font(.system(size: 14))
@@ -209,7 +209,7 @@ struct AlarmCreate: View {
                             HStack {
                                 Text("사운드")
                                     .font(.system(size: 14))
-                                    .foregroundStyle(.black)
+                                    .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                                 Spacer()
                                 HStack(spacing: 5) {
                                     Text(viewModel.alarmSound)
@@ -259,7 +259,7 @@ struct AlarmCreate: View {
             }
         }
         .navigationBarHidden(true)
-        .background(Color.white)
+        .background(Color(uiColor: .systemBackground)) // ✅ 다크모드 대응
     }
 }
 
@@ -283,7 +283,7 @@ private struct CreateMissionButton: View {
                 }
                 Text(title)
                     .font(.system(size: 12))
-                    .foregroundStyle(isSelected ? .black : .gray)
+                    .foregroundStyle(isSelected ? Color.primary : .gray) // ✅ 다크모드 대응
             }
         }
     }
@@ -299,7 +299,8 @@ private struct CreateDayButton: View {
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(isSelected ? .white : .gray)
                 .frame(width: 36, height: 36)
-                .background(isSelected ? Color(hex: "F55641") : Color(hex: "F2F4F7"))
+                // ✅ 다크모드 대응
+                .background(isSelected ? Color(hex: "F55641") : Color(uiColor: .secondarySystemBackground))
                 .clipShape(Circle())
         }
     }

@@ -53,7 +53,7 @@ struct AlarmSettedView: View {
                 HStack(alignment: .center) {
                     Text(alarm.timeString)
                         .font(.system(size: 32, weight: .bold))
-                        .foregroundStyle(.black)
+                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                     
                     Spacer()
                     
@@ -80,7 +80,8 @@ struct AlarmSettedView: View {
                         }) {
                             ZStack {
                                 Circle()
-                                    .fill(alarm.repeatDays.contains(index) ? Color(hex: "F55641") : Color(hex:"DDE1E8"))
+                                    // ✅ 다크모드 대응: 비활성화 시 시스템 그레이 사용
+                                    .fill(alarm.repeatDays.contains(index) ? Color(hex: "F55641") : Color(uiColor: .systemGray5))
                                     .frame(width: 30, height: 30)
                                 
                                 Text(days[index])
@@ -103,10 +104,11 @@ struct AlarmSettedView: View {
                         
                         Text(alarm.missionTitle)
                             .font(.system(size: 13))
-                            .foregroundStyle(.black.opacity(0.8))
+                            .foregroundStyle(Color.primary.opacity(0.8)) // ✅ 다크모드 대응
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
+                    // ✅ 다크모드 대응: 배경 투명도 조절 혹은 시스템 컬러 사용
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(12)
                     
@@ -124,7 +126,8 @@ struct AlarmSettedView: View {
                 }
             }
             .padding(20)
-            .background(Color(hex: "F2F4F7"))
+            // ✅ 다크모드 대응: 카드 배경색 (라이트: 연회색 / 다크: 짙은 회색)
+            .background(Color(uiColor: .secondarySystemBackground))
             .cornerRadius(20)
             .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
             .offset(x: offset)
