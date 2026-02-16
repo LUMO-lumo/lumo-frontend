@@ -19,11 +19,9 @@ class AlarmCreateViewModel: ObservableObject {
     @Published var selectedDays: Set<Int> = []
     @Published var selectedTime: Date = Date()
     @Published var isSoundOn: Bool = true
-    @Published var alarmSound: String = "기본음"
     
-    func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
-    }
+    // [연동] 사운드 저장 변수
+    @Published var alarmSound: String = "기본음"
     
     func createNewAlarm() -> Alarm {
         let mappedDays = selectedDays.map { ($0 + 1) % 7 }.sorted()
@@ -36,7 +34,7 @@ class AlarmCreateViewModel: ObservableObject {
         default: mType = "계산"
         }
         
-        // 앱 내에서는 '한국어' 사운드 이름을 사용
+        // [추가됨] soundName 저장
         return Alarm(
             time: selectedTime,
             label: alarmTitle.isEmpty ? "새 알람" : alarmTitle,
@@ -48,40 +46,32 @@ class AlarmCreateViewModel: ObservableObject {
         )
     }
     
-    // ✅ [수정] 전송될 JSON을 콘솔에 상세히 출력하는 디버깅 로직 추가
-    func requestCreateAlarm(completion: @escaping (Alarm?) -> Void) {
+    // [수정됨] 실제 서버 API 호출 및 DTO 연결
+    func requestCreateAlarm(completion: @escaping (Bool) -> Void) {
+        // 1. 로컬 알람 객체 생성
         let newAlarm = createNewAlarm()
         
-        // AlarmDTO.swift의 toDictionary()를 사용하여 딕셔너리 생성
+        // 2. 서버 요청용 파라미터 변환 (AlarmModel의 extension 활용 - DTO 변환)
         let params = newAlarm.toDictionary()
         
-        // 🔍 [Debug] 실제 서버로 날아가는 JSON 문자열 확인
-        // 이 부분이 추가되었습니다: 딕셔너리를 JSON 문자열로 변환하여 출력
-        if let jsonData = try? JSONSerialization.data(withJSONObject: params, options: .prettyPrinted),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
-            print("\n==================================================")
-            print("🚀 [Debug] 서버로 전송할 JSON Body (Raw String):")
-            print(jsonString)
-            print("==================================================\n")
-        } else {
-            print("⚠️ [Debug] JSON 변환 실패: params 딕셔너리를 확인하세요.")
-            print(params)
-        }
+        print("[Debug] 알람 생성 요청: \(params)")
         
-        // 요청 전송
+        // 3. 서비스 호출 (서버 통신)
         AlarmService.shared.createAlarm(params: params) { result in
             switch result {
             case .success(let dto):
-                print("✅ 알람 생성 성공: ID \(dto.alarmId)")
-                let createdAlarm = Alarm(from: dto)
-                completion(createdAlarm)
+                print("알람 생성 성공: ID \(dto.alarmId)")
+                // 성공 시 true 반환
+                completion(true)
             case .failure(let error):
-                print("❌ 알람 생성 실패: \(error.localizedDescription)")
-                // 에러 발생 시 더 자세한 정보가 있다면 출력 (MainAPIClient에서 이미 출력 중)
-                completion(nil)
+                print("알람 생성 실패: \(error.localizedDescription)")
+                // 실패 시 false 반환 (필요 시 에러 처리 로직 추가 가능)
+                completion(false)
             }
         }
     }
+    
+    func scheduleLocalNotification() {}
 }
 
 // MARK: - View
@@ -91,7 +81,13 @@ struct AlarmCreate: View {
     
     var onCreate: ((Alarm) -> Void)?
     
-    let missions = [("수학문제", "MathMission"), ("OX 퀴즈", "OXMission"), ("따라쓰기", "WriteMission"), ("거리미션", "DestMission")]
+    let missions = [
+        ("수학문제", "MathMission"),
+        ("OX 퀴즈", "OXMission"),
+        ("따라쓰기", "WriteMission"),
+        ("거리미션", "DestMission")
+    ]
+    
     let days = ["월", "화", "수", "목", "금", "토", "일"]
     
     var body: some View {
@@ -105,9 +101,11 @@ struct AlarmCreate: View {
                 Spacer()
                 Text("알람 생성")
                     .font(.system(size: 18, weight: .bold))
-
                     .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                 Spacer()
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 20))
+                    .foregroundStyle(.clear)
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 15)
@@ -126,7 +124,6 @@ struct AlarmCreate: View {
                             Image(systemName: "pencil")
                                 .foregroundStyle(.gray)
                                 .padding(.trailing, 15)
-
                         }
                     }
                     .padding(.horizontal, 20)
@@ -138,7 +135,11 @@ struct AlarmCreate: View {
                             .padding(.horizontal, 20)
                         HStack(spacing: 15) {
                             ForEach(missions, id: \.0) { mission in
-                                CreateMissionButton(title: mission.0, imageName: mission.1, isSelected: viewModel.selectedMission == mission.0) {
+                                CreateMissionButton(
+                                    title: mission.0,
+                                    imageName: mission.1,
+                                    isSelected: viewModel.selectedMission == mission.0
+                                ) {
                                     viewModel.selectedMission = mission.0
                                 }
                                 Spacer()
@@ -154,9 +155,15 @@ struct AlarmCreate: View {
                             .padding(.horizontal, 20)
                         HStack(spacing: 0) {
                             ForEach(0..<7) { index in
-                                CreateDayButton(text: days[index], isSelected: viewModel.selectedDays.contains(index)) {
-                                    if viewModel.selectedDays.contains(index) { viewModel.selectedDays.remove(index) }
-                                    else { viewModel.selectedDays.insert(index) }
+                                CreateDayButton(
+                                    text: days[index],
+                                    isSelected: viewModel.selectedDays.contains(index)
+                                ) {
+                                    if viewModel.selectedDays.contains(index) {
+                                        viewModel.selectedDays.remove(index)
+                                    } else {
+                                        viewModel.selectedDays.insert(index)
+                                    }
                                 }
                                 if index != 6 { Spacer() }
                             }
@@ -173,11 +180,15 @@ struct AlarmCreate: View {
                         ZStack {
                             Color(uiColor: .secondarySystemGroupedBackground) // ✅ 다크모드 대응
                                 .cornerRadius(20)
-                         
+                            
                             DatePicker("", selection: $viewModel.selectedTime, displayedComponents: .hourAndMinute)
-                                .datePickerStyle(.wheel).labelsHidden().frame(height: 200).background(Color.clear)
+                                .datePickerStyle(.wheel)
+                                .labelsHidden()
+                                .frame(height: 200)
+                                .background(Color.clear)
                         }
-                        .frame(height: 200).padding(.horizontal, 20)
+                        .frame(height: 200)
+                        .padding(.horizontal, 20)
                     }
                     
                     VStack(spacing: 0) {
@@ -186,11 +197,14 @@ struct AlarmCreate: View {
                                 .font(.system(size: 14))
                                 .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                             Spacer()
-                            Text("1교시 있는 날").font(.system(size: 14)).foregroundStyle(.gray)
+                            Text("1교시 있는 날")
+                                .font(.system(size: 14))
+                                .foregroundStyle(.gray)
                         }
                         .padding(.vertical, 15)
                         Divider()
                         
+                        // [연결] SoundSettingView로 이동 (Binding 전달)
                         NavigationLink(destination: SoundSettingView(alarmSound: $viewModel.alarmSound)) {
                             HStack {
                                 Text("사운드")
@@ -198,8 +212,12 @@ struct AlarmCreate: View {
                                     .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                                 Spacer()
                                 HStack(spacing: 5) {
-                                    Text(viewModel.alarmSound).font(.system(size: 14)).foregroundStyle(.gray)
-                                    Image(systemName: "chevron.right").font(.system(size: 12)).foregroundStyle(.gray)
+                                    Text(viewModel.alarmSound)
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(.gray)
+                                    Image(systemName: "chevron.right")
+                                        .font(.system(size: 12))
+                                        .foregroundStyle(.gray)
                                 }
                             }
                             .padding(.vertical, 15)
@@ -208,13 +226,17 @@ struct AlarmCreate: View {
                     .padding(.horizontal, 20)
                     
                     Button(action: {
-                        // 서버 통신 시도
-                        viewModel.requestCreateAlarm { createdAlarm in
-                            if let alarm = createdAlarm {
-                                onCreate?(alarm)
+                        let newAlarm = viewModel.createNewAlarm()
+                        
+                        // ✅ [수정] 중복 호출 제거
+                        // 여기서 AlarmKitManager를 직접 호출하지 않습니다.
+                        // viewModel.requestCreateAlarm 완료 후 onCreate 클로저를 통해
+                        // AlarmMenuView -> AlarmViewModel.addAlarm 내에서 한 번만 등록하도록 합니다.
+                        
+                        viewModel.requestCreateAlarm { success in
+                            if success {
+                                onCreate?(newAlarm)
                                 dismiss()
-                            } else {
-                                print("서버 생성 실패로 인해 로컬 알람을 생성하지 않습니다.")
                             }
                         }
                     }) {
@@ -250,7 +272,11 @@ private struct CreateMissionButton: View {
                     Circle()
                         .fill(isSelected ? Color(hex: "FF8C68").opacity(0.1) : Color.gray.opacity(0.1))
                         .frame(width: 50, height: 50)
-                    Image(imageName).resizable().scaledToFit().frame(width: 30, height: 30).opacity(isSelected ? 1.0 : 0.4)
+                    Image(imageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30, height: 30)
+                        .opacity(isSelected ? 1.0 : 0.4)
                 }
                 Text(title)
                     .font(.system(size: 12))

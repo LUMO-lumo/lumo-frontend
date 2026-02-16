@@ -16,11 +16,10 @@ struct Alarm: Identifiable {
     var time: Date
     var label: String
     var isEnabled: Bool
-    var repeatDays: [Int]
+    var repeatDays: [Int] // 0: Sun, 1: Mon, ..., 6: Sat
     var missionTitle: String
     var missionType: String
     
-    // 앱 내부에서는 '한국어' 이름 사용 ("비명 소리")
     var soundName: String = "기본음"
     
     var timeString: String {
@@ -30,11 +29,20 @@ struct Alarm: Identifiable {
     }
     
     static let dummyData: [Alarm] = [
-        Alarm(time: Date(), label: "테스트", isEnabled: true, repeatDays: [], missionTitle: "테스트", missionType: "NONE")
+        Alarm(
+            time: Calendar.current.date(from: DateComponents(hour: 6, minute: 0)) ?? Date(),
+            label: "새벽 기상",
+            isEnabled: true,
+            repeatDays: [1, 2, 3, 4, 5],
+            missionTitle: "물 한잔 마시기",
+            missionType: "건강",
+            soundName: "커피한잔의 여유"
+        )
     ]
 }
 
-// MARK: - DTO Definitions (API Models - Response)
+// MARK: - DTO Definitions (API Models)
+
 struct AlarmDTO: Codable {
     let alarmId: Int
     let alarmTime: String
@@ -45,7 +53,6 @@ struct AlarmDTO: Codable {
     let volume: Int
     let repeatDays: [String]
     let snoozeSetting: SnoozeSettingDTO?
-    let missionSetting: MissionSettingDTO?
 }
 
 struct SnoozeSettingDTO: Codable {
@@ -108,143 +115,83 @@ struct AlarmSoundDTO: Codable {
     let isDefault: Bool
 }
 
-// MARK: - Request DTOs (서버 요청용 구조체)
-struct CreateAlarmRequest: Encodable {
-    let alarmTime: String
-    let label: String
-    let isEnabled: Bool
-    let soundType: String
-    let vibration: Bool
-    let volume: Int
-    let repeatDays: [String]
-    let snoozeSetting: SnoozeRequest
-    let missionSetting: MissionRequest
-}
-
-struct SnoozeRequest: Encodable {
-    let isEnabled: Bool
-    let intervalSec: Int
-    let maxCount: Int
-}
-
-struct MissionRequest: Encodable {
-    let missionType: String
-    let difficulty: String
-    let walkGoalMeter: Int
-    let questionCount: Int
-}
-
 // MARK: - Extensions (Mapping Logic)
 extension Alarm {
     
-    // ✅ 한글 이름 <-> 서버용 실제 파일명 매핑
-    private static let soundMapping: [String: String] = [
-        "비명 소리": "scream14-6918",
-        "천둥 번개": "big-thunder-34626",
-        "개 짖는 소리": "big-dog-barking-112717",
-        "절규": "desperate-shout-106691",
-        "뱃고동": "traimory-mega-horn-angry-siren-f-cinematic-trailer-sound-effects-193408",
-        "평온한 멜로디": "calming-melody-loop-291840",
-        "섬의 아침": "the-island-clearing-216263",
-        "플루트 연주": "native-american-style-flute-music-324301",
-        "종소리": "calm-music-64526",
-        "소원": "i-wish-looping-tune-225553",
-        "환희의 록": "rock-of-joy-197159",
-        "황제": "emperor-197164",
-        "비트 앤 베이스": "basic-beats-and-bass-10791",
-        "침묵 속 노력": "work-hard-in-silence-spoken-201870",
-        "런어웨이": "runaway-loop-373063",
-        "기본음": "scream14-6918"
-    ]
-    
-    // DTO -> Alarm (서버 데이터를 앱 모델로)
     init(from dto: AlarmDTO) {
         self.serverId = dto.alarmId
         self.label = dto.label ?? ""
         self.isEnabled = dto.isEnabled
+        self.soundName = dto.soundType
         
-        let foundKey = Alarm.soundMapping.first { $0.value == dto.soundType }?.key
-        self.soundName = foundKey ?? "기본음"
-        
-        // 시간 파싱 (HH:mm:ss 또는 HH:mm 모두 대응)
         let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm:ss"
-        if let date = formatter.date(from: dto.alarmTime) {
-            self.time = date
-        } else {
-            formatter.dateFormat = "HH:mm"
-            self.time = formatter.date(from: dto.alarmTime) ?? Date()
-        }
+        formatter.dateFormat = "HH:mm"
+        self.time = formatter.date(from: dto.alarmTime) ?? Date()
         
         self.repeatDays = Alarm.convertRepeatDaysToInt(dto.repeatDays)
         
-        if let mission = dto.missionSetting {
-            self.missionType = mission.missionType
-            switch mission.missionType {
-            case "CALCULATION": self.missionTitle = "수학문제"
-            case "DICTATION": self.missionTitle = "따라쓰기"
-            case "WALK": self.missionTitle = "거리미션"
-            case "OX": self.missionTitle = "OX 퀴즈"
-            default: self.missionTitle = "미션 없음"
-            }
-        } else {
-            self.missionTitle = "미션 정보 없음"
-            self.missionType = "NONE"
-        }
+        self.missionTitle = "미션 정보 없음"
+        self.missionType = "NONE"
     }
     
-    // Alarm -> Dictionary (앱 모델을 서버 요청 데이터로)
+    // ✅ [핵심 수정] 요청하신 포맷과 완벽히 일치하도록 구성
     func toDictionary() -> [String: Any] {
         let timeFormatter = DateFormatter()
-        // 🚨 [수정] 다시 "HH:mm"으로 복구 + Locale 설정
-        // 1. Locale을 설정해야 사용자 폰 설정(12시간제 등)에 영향받지 않고 정확한 "14:30" 형식이 나옵니다.
-        // 2. 서버가 "HH:mm:ss"가 아닌 "HH:mm"을 원할 가능성이 매우 높습니다.
-        timeFormatter.locale = Locale(identifier: "en_US_POSIX")
         timeFormatter.dateFormat = "HH:mm"
         
-        let serverMissionType: String
+        // 1. 미션 타입 매핑
+        // ✅ 요청하신 대로 미션 타입을 무조건 "NONE"으로 설정하여 전송
+        let serverMissionType = "NONE"
+        
+        /* 기존 매핑 로직 주석 처리 (필요시 복구 가능)
         switch self.missionType {
-        case "계산", "수학문제": serverMissionType = "CALCULATION"
-        case "받아쓰기", "따라쓰기": serverMissionType = "DICTATION"
-        case "운동", "거리미션": serverMissionType = "WALK"
-        case "OX", "OX 퀴즈": serverMissionType = "OX"
+        case "계산": serverMissionType = "CALCULATION"
+        case "받아쓰기": serverMissionType = "DICTATION"
+        case "운동": serverMissionType = "WALK"
+        case "OX": serverMissionType = "OX_QUIZ"
         default: serverMissionType = "NONE"
         }
+        */
         
-        let serverSoundType = Alarm.soundMapping[self.soundName] ?? "scream14-6918"
-        
-        // ✅ [유지] 수동 Dictionary 생성 (Bool 타입 보장)
-        let dict: [String: Any] = [
-            "alarmTime": timeFormatter.string(from: self.time),
-            "label": self.label,
-            "isEnabled": self.isEnabled,
-            "soundType": serverSoundType,
-            "vibration": true,
-            "volume": 100,
-            "repeatDays": Alarm.convertRepeatDaysToString(self.repeatDays),
-            "snoozeSetting": [
-                "isEnabled": true,
-                "intervalSec": 300,
-                "maxCount": 3
-            ] as [String: Any],
-            "missionSetting": [
-                "missionType": serverMissionType,
-                "difficulty": "EASY",
-                "walkGoalMeter": serverMissionType == "WALK" ? 50 : 0,
-                "questionCount": 3
-            ] as [String: Any]
+        // 2. 미션 설정 (요청하신 예시: missionType -> difficulty -> walkGoalMeter:0 -> questionCount:0)
+        let missionSetting: [String: Any] = [
+            "missionType": serverMissionType, // 항상 "NONE" 전송
+            "difficulty": "EASY",
+            "walkGoalMeter": 0,    // 요청값 0
+            "questionCount": 0     // 요청값 0
         ]
         
-        return dict
+        // 3. 스누즈 설정 (요청하신 예시: isEnabled -> intervalSec:0 -> maxCount:0)
+        let snoozeSetting: [String: Any] = [
+            "isEnabled": true,
+            "intervalSec": 0,      // 요청값 0
+            "maxCount": 0          // 요청값 0
+        ]
+        
+        // 4. 전체 데이터 구조 (요청하신 순서 반영)
+        return [
+            "alarmTime": timeFormatter.string(from: self.time),
+            "label": self.label,
+            "soundType": self.soundName, // 서버가 받는 String 값
+            "vibration": true,
+            "volume": 100, // 요청값 100
+            "repeatDays": Alarm.convertRepeatDaysToString(self.repeatDays),
+            "snoozeSetting": snoozeSetting,
+            "missionSetting": missionSetting
+        ]
     }
     
     static func convertRepeatDaysToInt(_ days: [String]) -> [Int] {
-        let dayMap: [String: Int] = ["SUN": 0, "MON": 1, "TUE": 2, "WED": 3, "THU": 4, "FRI": 5, "SAT": 6]
+        let dayMap: [String: Int] = [
+            "SUN": 0, "MON": 1, "TUE": 2, "WED": 3, "THU": 4, "FRI": 5, "SAT": 6
+        ]
         return days.compactMap { dayMap[$0] }.sorted()
     }
     
     static func convertRepeatDaysToString(_ days: [Int]) -> [String] {
-        let dayMap: [Int: String] = [0: "SUN", 1: "MON", 2: "TUE", 3: "WED", 4: "THU", 5: "FRI", 6: "SAT"]
-        return days.compactMap { dayMap[$0] }
+        let dayMap: [Int: String] = [
+            0: "SUN", 1: "MON", 2: "TUE", 3: "WED", 4: "THU", 5: "FRI", 6: "SAT"
+        ]
+        return days.sorted().compactMap { dayMap[$0] }
     }
 }
