@@ -18,7 +18,7 @@ extension Notification.Name {
 @main
 struct LumoApp: App {
     // UserDefaults 연동
-    @AppStorage("userTheme") private var userTheme: String = "SYSTEM"
+    @AppStorage("userTheme") private var userTheme: String = "System"
     @AppStorage("isOnboardingFinished") var isOnboardingFinished: Bool = false
     
     // 전역 상태 관리 객체 생성

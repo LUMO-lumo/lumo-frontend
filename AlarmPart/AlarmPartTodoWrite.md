@@ -26,6 +26,32 @@
 차분한( calming-melody-loop, the Island clearing, native-americas-style flute music, bell, I wish )
 동기부여(. rock of joy, emperor, basic beats and bass, work hard in silence, runaway) 
 
+{"volume":100,
+"alarmTime":"01:07",
+"label":"ㄴㄴ",
+"snoozeSetting":{
+    "maxCount":0,
+    "intervalSec":0,
+    "isEnabled":true
+    },
+"missionSetting":{
+    "difficulty":"EASY",
+    "missionType":"CALCULATION",
+    "walkGoalMeter":0,
+    "questionCount":0
+    },
+"repeatDays":[
+    "TUE","THU","FRI"
+    ],
+"soundType":"DEFAULT_BELL",
+"vibration":true
+}
+📩 서버 응답(Raw): {"code":"INVALID_JSON","message":"JSON 형식이 올바르지 않습니다.","result":null,"success":false}
+
+
+
+
+
 
 
 내 알람 목록 조회    /api/alarms    GET    연결됨 (fetchAlarms)
