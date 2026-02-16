@@ -7,6 +7,8 @@
 
 import SwiftUI
 import SwiftData
+import UserNotifications
+import Combine
 
 // ✅ 1. Notification 이름 정의 (다른 파일에 없다면 여기에 포함)
 extension Notification.Name {
@@ -22,6 +24,9 @@ struct LumoApp: App {
     // 전역 상태 관리 객체 생성
     @StateObject private var appState = AppState()
     @State private var onboardingViewModel = OnboardingViewModel()
+    
+    // ✅ [추가] 알람 매니저 상태 감지 (알람이 울리는지 확인하기 위해 추가)
+    @StateObject private var alarmManager = AlarmKitManager.shared
     
     var body: some Scene {
         WindowGroup {

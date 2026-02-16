@@ -37,7 +37,7 @@ class SoundManager: NSObject {
         case "천둥 번개": return "big-thunder-34626"
         case "개 짖는 소리": return "big-dog-barking-112717"
         case "절규": return "desperate-shout-106691"
-        case "뱃고동": return "traimory-mega-horn-angry-sound-effects-193408" // 파일명이 길어서 실제 파일명 확인 필요
+        case "뱃고동": return "traimory-mega-horn-angry-siren-f-cinematic-trailer-sound-effects-193408" // [수정됨] 실제 파일명 반영
             
         // [차분한]
         case "평온한 멜로디": return "calming-melody-loop-291840"

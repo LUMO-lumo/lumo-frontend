@@ -54,7 +54,6 @@ struct AlarmSettedView: View {
                     Text(alarm.timeString)
                         .font(.system(size: 32, weight: .bold))
                         .foregroundStyle(Color.primary) // ✅ 다크모드 대응
-                    
                     Spacer()
                     
                     Toggle("", isOn: $alarm.isEnabled)
@@ -80,7 +79,6 @@ struct AlarmSettedView: View {
                         }) {
                             ZStack {
                                 Circle()
-                                    // ✅ 다크모드 대응: 비활성화 시 시스템 그레이 사용
                                     .fill(alarm.repeatDays.contains(index) ? Color(hex: "F55641") : Color(uiColor: .systemGray5))
                                     .frame(width: 30, height: 30)
                                 
@@ -176,6 +174,10 @@ struct AlarmSettedView: View {
     private func firstupdateAlarmOnServer() {
         onUpdate?(alarm)
     }
+}
+
+#Preview {
+    AlarmSettedView(alarm: .constant(Alarm.dummyData[0]), onDelete: {})
 }
 
 #Preview {

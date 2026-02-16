@@ -32,7 +32,6 @@ class MainAPIClient<T: TargetType> {
     }()
     
     // 4. 커스텀 세션을 사용하는 MoyaProvider 생성
-    // ✅ [핵심 수정] endpointClosure를 추가하여 요청 생성 시점에 토큰을 강제로 헤더에 박아넣음
     private lazy var provider = MoyaProvider<T>(
         endpointClosure: { [weak self] target in
             // 1. 기본 Endpoint 생성
@@ -48,22 +47,19 @@ class MainAPIClient<T: TargetType> {
         session: session
     )
     
-    // -------------------------------------------------------------
-    // ✅ [추가] 외부에서 토큰 존재 여부 확인 가능
+    // 외부에서 토큰 존재 여부 확인 가능
     var isLoggedIn: Bool {
         return tokenProvider.accessToken != nil
     }
 
     func request<D: Codable>(_ target: T, completion: @escaping (Result<D, MainAPIError>) -> Void) {
         
-        // 1. 요청 시작 로그 (토큰 보유 여부도 같이 출력하여 디버깅)
         let tokenStatus = isLoggedIn ? "O" : "X"
         print("\n🚀 [API Request] \(target.method.rawValue) \(target.path) 요청 시작 (Token: \(tokenStatus))")
         
         provider.request(target) { result in
             switch result {
             case .success(let response):
-                // 원본 데이터를 문자열로 변환
                 let responseString = String(data: response.data, encoding: .utf8) ?? "Data encoding failed"
                 
                 // 2. HTTP 상태 코드 에러 체크 (200~299가 아닌 경우)
@@ -83,11 +79,18 @@ class MainAPIClient<T: TargetType> {
                         print("✅ [API Success] \(target.path) 요청 성공")
                         
                         if let data = wrapper.result {
+                            // 결과값이 있으면 정상 반환
                             completion(.success(data))
                         } else {
-                            // Result가 없어도 성공으로 칠지, 에러로 칠지는 서버 스펙에 따라 다름
-                            print("⚠️ Success is true but Result is nil")
-                            completion(.failure(.decodingError))
+                            // ✅ [수정] 결과값이 null일 때의 처리 (삭제 API 등에서 발생)
+                            // 기대하는 타입(D)이 옵셔널(String? 등)이라면 nil을 성공으로 반환
+                            if let nilResult = Any?.none as? D {
+                                completion(.success(nilResult))
+                            } else {
+                                // 기대하는 타입이 필수(String)인데 null이 오면 에러 처리
+                                print("⚠️ Success is true but Result is nil (Expected non-optional)")
+                                completion(.failure(.decodingError))
+                            }
                         }
                     } else {
                         // success가 false인 경우
