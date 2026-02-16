@@ -16,7 +16,7 @@ extension Notification.Name {
 @main
 struct LumoApp: App {
     // UserDefaults 연동
-    @AppStorage("userTheme") private var userTheme: String = "System"
+    @AppStorage("userTheme") private var userTheme: String = "SYSTEM"
     @AppStorage("isOnboardingFinished") var isOnboardingFinished: Bool = false
     
     // 전역 상태 관리 객체 생성
@@ -112,8 +112,8 @@ struct LumoContentView: View {
     /// 테마 설정
     var selectedScheme: ColorScheme? {
         switch userTheme {
-        case "Light": return .light
-        case "Dark": return .dark
+        case "LIHGT": return .light
+        case "DARK": return .dark
         default: return nil
         }
     }
