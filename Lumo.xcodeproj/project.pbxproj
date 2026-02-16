@@ -73,9 +73,7 @@
 		B44CC14D2F3998D9004D19A6 /* AccessTokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC14C2F3998C9004D19A6 /* AccessTokenRefresher.swift */; };
 		B44CC14F2F3998EC004D19A6 /* TokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC14E2F3998EA004D19A6 /* TokenProvider.swift */; };
 		B44CC1512F3A21D7004D19A6 /* TokenProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1502F3A21D2004D19A6 /* TokenProviding.swift */; };
-		B44CC1532F3A26AF004D19A6 /* AuthRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1522F3A26AA004D19A6 /* AuthRouter.swift */; };
 		B44CC1552F3A2A33004D19A6 /* APITargetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1542F3A2A2D004D19A6 /* APITargetType.swift */; };
-		B44CC1572F3A39E9004D19A6 /* TokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44CC1562F3A39E2004D19A6 /* TokenResponse.swift */; };
 		B450728A2F3E31DA00A9762E /* LumoIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = B45072892F3E31DA00A9762E /* LumoIcon.icon */; };
 		B450745D2F3E36BE00A9762E /* TypingMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B450745C2F3E36B700A9762E /* TypingMissionViewModel.swift */; };
 		B450745F2F3E3C9100A9762E /* TypingMission.swift in Sources */ = {isa = PBXBuildFile; fileRef = B450745E2F3E3C8B00A9762E /* TypingMission.swift */; };
@@ -94,6 +92,7 @@
 		B4E284872F2C720000D8FD4D /* AdvancedSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E284862F2C71F900D8FD4D /* AdvancedSectionView.swift */; };
 		B4E2848A2F2C864300D8FD4D /* SupportSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E284892F2C863B00D8FD4D /* SupportSectionView.swift */; };
 		B4E2848D2F2CA3FC00D8FD4D /* ETCSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E2848C2F2CA3F900D8FD4D /* ETCSectionView.swift */; };
+		B4F19E692F42AE7700F899AA /* TokenInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F19E682F42AE7200F899AA /* TokenInterceptor.swift */; };
 		B4F28C442F3DA6BB005EB80A /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F28C432F3DA6B5005EB80A /* AppState.swift */; };
 		B4FD5F2E2F17DEE80022CF67 /* LumoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FD5F142F17DEE80022CF67 /* LumoApp.swift */; };
 		B4FD5F372F17E61C0022CF67 /* OnBoardingPartTodoWrite.md in Resources */ = {isa = PBXBuildFile; fileRef = B4FD5F322F17E61C0022CF67 /* OnBoardingPartTodoWrite.md */; };
@@ -167,9 +166,7 @@
 		B44CC14C2F3998C9004D19A6 /* AccessTokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenRefresher.swift; sourceTree = "<group>"; };
 		B44CC14E2F3998EA004D19A6 /* TokenProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProvider.swift; sourceTree = "<group>"; };
 		B44CC1502F3A21D2004D19A6 /* TokenProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProviding.swift; sourceTree = "<group>"; };
-		B44CC1522F3A26AA004D19A6 /* AuthRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRouter.swift; sourceTree = "<group>"; };
 		B44CC1542F3A2A2D004D19A6 /* APITargetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITargetType.swift; sourceTree = "<group>"; };
-		B44CC1562F3A39E2004D19A6 /* TokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenResponse.swift; sourceTree = "<group>"; };
 		B45072892F3E31DA00A9762E /* LumoIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = LumoIcon.icon; sourceTree = "<group>"; };
 		B450745C2F3E36B700A9762E /* TypingMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingMissionViewModel.swift; sourceTree = "<group>"; };
 		B450745E2F3E3C8B00A9762E /* TypingMission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingMission.swift; sourceTree = "<group>"; };
@@ -191,6 +188,7 @@
 		B4E284862F2C71F900D8FD4D /* AdvancedSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSectionView.swift; sourceTree = "<group>"; };
 		B4E284892F2C863B00D8FD4D /* SupportSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportSectionView.swift; sourceTree = "<group>"; };
 		B4E2848C2F2CA3F900D8FD4D /* ETCSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ETCSectionView.swift; sourceTree = "<group>"; };
+		B4F19E682F42AE7200F899AA /* TokenInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenInterceptor.swift; sourceTree = "<group>"; };
 		B4F28C432F3DA6B5005EB80A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		B4F2926F2F3DECA8005EB80A /* LumoIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = LumoIcon.icon; sourceTree = "<group>"; };
 		B4FD5F132F17DEE80022CF67 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -450,7 +448,6 @@
 				B44CC14B2F3998C4004D19A6 /* Token */,
 				B400C7742F3BA8DD00DBDC08 /* Target */,
 				B44CC1542F3A2A2D004D19A6 /* APITargetType.swift */,
-				B44CC1522F3A26AA004D19A6 /* AuthRouter.swift */,
 				4161A5622F3CEB1A0060D0B1 /* AlarmTarget.swift */,
 				B44CC1502F3A21D2004D19A6 /* TokenProviding.swift */,
 				B44CC1492F39989C004D19A6 /* APIManger.swift */,
@@ -473,7 +470,7 @@
 		B44CC14B2F3998C4004D19A6 /* Token */ = {
 			isa = PBXGroup;
 			children = (
-				B44CC1562F3A39E2004D19A6 /* TokenResponse.swift */,
+				B4F19E682F42AE7200F899AA /* TokenInterceptor.swift */,
 				B44CC14E2F3998EA004D19A6 /* TokenProvider.swift */,
 				B44CC14C2F3998C9004D19A6 /* AccessTokenRefresher.swift */,
 			);
@@ -684,6 +681,7 @@
 				B44CC1552F3A2A33004D19A6 /* APITargetType.swift in Sources */,
 				34A2B4F72F31C30D00F3B9A8 /* SettingModel.swift in Sources */,
 				B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */,
+				B4F19E692F42AE7700F899AA /* TokenInterceptor.swift in Sources */,
 				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
 				34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */,
 				B400C7822F3BABE600DBDC08 /* MathMissionView.swift in Sources */,
@@ -702,9 +700,7 @@
 				B4E2848D2F2CA3FC00D8FD4D /* ETCSectionView.swift in Sources */,
 				B4D642742F338534000B4C08 /* AppConfig.swift in Sources */,
 				B4E284872F2C720000D8FD4D /* AdvancedSectionView.swift in Sources */,
-				B44CC1572F3A39E9004D19A6 /* TokenResponse.swift in Sources */,
 				349EBC112F419E55009F76A2 /* FeedbackViewModel.swift in Sources */,
-				B44CC1532F3A26AF004D19A6 /* AuthRouter.swift in Sources */,
 				B44CC14F2F3998EC004D19A6 /* TokenProvider.swift in Sources */,
 				349EBC0D2F419C71009F76A2 /* FeedbackTarget.swift in Sources */,
 				34A468122F3C150400F0290D /* NoticeViewModel.swift in Sources */,
