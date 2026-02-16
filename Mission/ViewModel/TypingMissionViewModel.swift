@@ -1,15 +1,15 @@
 //
-//  MathMissionViewModel.swift
+//  TypingMissionViewModel.swift
 //  Lumo
 //
-//  Created by 김승겸 on 2/12/26.
+//  Created by 김승겸 on 2/13/26.
 //
-
 import Foundation
 import Combine
+import SwiftUI
 
 @MainActor
-class MathMissionViewModel: BaseMissionViewModel {
+class TypingMissionViewModel: BaseMissionViewModel {
     
     // MARK: - UI Properties
     @Published var questionText: String = "문제를 불러오는 중..."
@@ -21,9 +21,10 @@ class MathMissionViewModel: BaseMissionViewModel {
     // BaseViewModel에 없는 Math 전용 프로퍼티
     let alarmLabel: String
     
-    // Mock Mode
+    // MARK: - Mock Mode (테스트용 설정)
     private let isMockMode: Bool = true
-    private var mockAnswer: String = "35"
+    private let mockQuestion = "할 수 있다!"
+    private let mockAnswer = "할 수 있다!" // 정답 설정
     
     // MARK: - Initialization
     init(alarmId: Int, alarmLabel: String) {
@@ -32,7 +33,7 @@ class MathMissionViewModel: BaseMissionViewModel {
     }
     
     // MARK: - 1. 미션 시작 (View에서 호출)
-    func startMathMission() {
+    func startTypingMission() {
         // [Mock]
         if isMockMode {
             setupMockData()
@@ -42,22 +43,28 @@ class MathMissionViewModel: BaseMissionViewModel {
         // [Real]
         AsyncTask {
             do {
-                // 🚨 수정 1: Base가 이제 배열([])이 아니라 단일 객체(MissionStartResult?)를 반환합니다.
+                self.isLoading = true
+                
+                // Base의 startMission 호출
                 if let result = try await super.startMission() {
                     self.contentId = result.contentId
                     self.questionText = result.question
-                    print("✅ 문제 로드 완료: \(result.question)")
+                    print("🌐 [SERVER] 문제 로드 성공: \(result.question)")
                 } else {
                     self.errorMessage = "문제를 불러오지 못했습니다."
                 }
+                
+                self.isLoading = false
             } catch {
-                self.handleError(error)
+                self.isLoading = false
+                print("❌ [SERVER] 문제 로드 실패: \(error)")
+                self.errorMessage = "네트워크 연결을 확인해주세요."
             }
         }
     }
     
-    // MARK: - 2. 답안 제출 (View에서 호출)
-    func submitAnswer() {
+    // MARK: - 2. 제출 (버튼 클릭 시)
+    func submitAnswer(_ answer: String) {
         guard !userAnswer.isEmpty else { return }
         
         // [Mock]
@@ -78,15 +85,18 @@ class MathMissionViewModel: BaseMissionViewModel {
         
         AsyncTask {
             do {
-                // 🚨 수정 2: Base가 이제 객체가 아니라 성공 여부(Bool)만 반환합니다.
-                // (Base 내부에서 정답이면 이미 dismissAlarm을 호출함)
+                self.isLoading = true
+                
+                // 서버에 정답 확인 요청
                 let isSuccess = try await super.submitMission(request: body)
                 
+                self.isLoading = false
                 self.handleSubmissionResult(isCorrect: isSuccess)
                 
-                self.handleSubmissionResult(isCorrect: isSuccess)
             } catch {
-                self.handleError(error)
+                self.isLoading = false
+                print("❌ 제출 중 에러 발생: \(error)")
+                self.errorMessage = "전송 실패. 다시 시도해주세요."
             }
         }
     }
@@ -98,14 +108,14 @@ class MathMissionViewModel: BaseMissionViewModel {
         self.isCorrect = isCorrect
         self.showFeedback = true
         if isCorrect {
-            self.feedbackMessage = "정답이에요!"
+            self.feedbackMessage = "잘했어요!"
             
             // Base에서 이미 dismissAlarm()을 호출했으므로,
             // 여기서는 UI 피드백(동그라미 애니메이션 등)을 보여줄 시간만 벌어줍니다.
             // View는 Base의 @Published isMissionCompleted를 보고 화면을 닫습니다.
 
         } else {
-            self.feedbackMessage = "틀렸어요!"
+            self.feedbackMessage = "다시 시도해주세요"
             AsyncTask {
                 try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
                 self.showFeedback = false
@@ -131,12 +141,10 @@ class MathMissionViewModel: BaseMissionViewModel {
     private func setupMockData() {
         self.isLoading = true
         AsyncTask {
-            try? await AsyncTask.sleep(nanoseconds: 500_000_000)
-            self.contentId = 999
-            self.questionText = "15 + 20"
-            self.mockAnswer = "35"
+            try? await AsyncTask.sleep(nanoseconds: 500_000_000) // 로딩 흉내
+            self.questionText = mockQuestion
             self.isLoading = false
-            print("🧪 [Mock] 데이터 로드 완료")
+            print("💻 [LOCAL] 테스트 문제 로드 완료")
         }
     }
     

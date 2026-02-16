@@ -21,7 +21,7 @@ struct AlarmMenuView: View {
                 VStack(alignment: .leading) {
                     Text("알람 목록")
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundStyle(.primary) // [수정] 다크모드 대응 (흰색/검은색 자동 전환)
+                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응 (Black -> White)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 20)
                         .padding(.horizontal, 20)
@@ -71,7 +71,7 @@ struct AlarmMenuView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationBarHidden(true)
-            .background(Color(uiColor: .systemBackground)) // [수정] 다크모드 대응 배경색
+            .background(Color(uiColor: .systemBackground)) // ✅ 다크모드 대응 (White -> Black)
         }
     }
 }

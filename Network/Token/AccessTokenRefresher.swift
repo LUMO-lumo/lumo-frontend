@@ -8,7 +8,7 @@
 import Foundation
 import Alamofire
 
-class AccessTokenRefresher: @unchecked Sendable, RequestInterceptor {
+class AccessTokenRefresher: @unchecked Sendable, @preconcurrency RequestInterceptor {
     
     private var tokenProviding: TokenProviding
     private var isRefreshing: Bool = false
@@ -42,54 +42,27 @@ class AccessTokenRefresher: @unchecked Sendable, RequestInterceptor {
     }
     
     // MARK: - RequestRetrier
-    
-    func retry(
-        _ request: Request,
-        for session: Session,
-        dueTo error: any Error,
-        completion: @escaping (RetryResult) -> Void
-    ) {
-        guard request.retryCount < 1,
-              let response = request.task?.response as? HTTPURLResponse,
-              [401, 404].contains(response.statusCode) else {
-            return completion(.doNotRetry)
+    @MainActor
+    func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        
+        guard let response = request.task?.response as? HTTPURLResponse else {
+            completion(.doNotRetryWithError(error))
+            return
         }
         
-        // 1. 작업을 큐에 넣기 (동시성 문제 방지를 위해 메인 액터 사용 권장되지만, 여기선 일단 진행)
-        requestToRetry.append(completion)
-        
-        if !isRefreshing {
-            isRefreshing = true
+        // 서버가 401(Unauthorized) 또는 403(Forbidden)을 줬다는 것은
+        // 자동 갱신조차 불가능한 상태
+        if response.statusCode == 401 || response.statusCode == 403 {
+            print("🚨 인증 실패(401/403) -> 강제 로그아웃 처리")
             
-            _Concurrency.Task { [weak self] in
-                guard let self = self else { return }
-                
-                do {
-                    // 2. 토큰 갱신 시도 (오래 걸리는 작업)
-                    let isSuccess = try await self.tokenProviding.refreshToken()
-                    
-                    // 3. ✅ [중요] 결과 처리는 반드시 MainActor(한 곳)에서 모아서 실행!
-                    // 이렇게 해야 "배열 수정 중에 다른 애가 건드려서 앱이 죽는 문제"를 막습니다.
-                    await MainActor.run {
-                        self.isRefreshing = false
-                        
-                        if isSuccess {
-                            self.requestToRetry.forEach { $0(.retry) }
-                        } else {
-                            self.requestToRetry.forEach { $0(.doNotRetry) }
-                        }
-                        self.requestToRetry.removeAll()
-                    }
-                    
-                } catch {
-                    // 4. 실패 시 처리도 MainActor에서
-                    await MainActor.run {
-                        self.isRefreshing = false
-                        self.requestToRetry.forEach { $0(.doNotRetryWithError(error)) }
-                        self.requestToRetry.removeAll()
-                    }
-                }
-            }
+            // 강제 로그아웃 알림 발송
+            NotificationCenter.default.post(name: .forceLogout, object: nil)
+            
+            // 재시도 하지 않음
+            completion(.doNotRetry)
+        } else {
+            // 그 외 에러(타임아웃 등)는 Alamofire 기본 정책 따름 (또는 재시도 로직 추가 가능)
+            completion(.doNotRetryWithError(error))
         }
     }
 }

@@ -1,10 +1,3 @@
-//
-//  BaseMissionViewModel.swift
-//  Lumo
-//
-//  Created by 정승윤 on 2/11/26.
-//
-
 import Foundation
 import Combine
 import Moya
@@ -17,8 +10,7 @@ typealias AsyncTask = _Concurrency.Task
 class BaseMissionViewModel: NSObject, ObservableObject {
     
     // MARK: - 공통 프로퍼티
-    // 자식 클래스에서 사용할 Provider (Base에서 관리)
-    let provider = MoyaProvider<MissionTarget>()
+    let provider: MoyaProvider<MissionTarget>
     
     var alarmId: Int
     var contentId: Int?
@@ -37,6 +29,7 @@ class BaseMissionViewModel: NSObject, ObservableObject {
         // 키체인 사용 시: let token = KeychainManager.standard.loadSession(for: "userSession")?.accessToken ?? ""
         
         let authPlugin = AccessTokenPlugin { _ in token }
+        self.provider = MoyaProvider<MissionTarget>(plugins: [authPlugin])
     }
     
     // MARK: - 공통 API 1: 미션 시작
@@ -126,8 +119,7 @@ extension MoyaProvider {
         }
     }
 }
-
-// 에러 타입 정의
+// 에러 타입
 enum MissionError: Error {
     case serverError(message: String)
 }

@@ -34,7 +34,7 @@ struct SmartBriefingView: View {
             }
             
             HStack {
-                Toggle("스마트 브리핑 활성화", isOn: $viewModel.SmartBriefingEnabled)
+                Toggle("스마트 브리핑 활성화", isOn: $viewModel.smartBriefingEnabled)
                     .font(.Subtitle3)
                     .foregroundStyle(Color.gray800)
                     .tint(Color.main300)
@@ -46,7 +46,7 @@ struct SmartBriefingView: View {
         .padding(.top, 20)
         .topNavigationBar(title: "스마트 브리핑")
         .navigationBarHidden(true)
-        .onChange(of: viewModel.SmartBriefingEnabled) { oldValue, newValue in
+        .onChange(of: viewModel.smartBriefingEnabled) { oldValue, newValue in
             print("토글 상태: \(newValue)")
             viewModel.updateSmartBriefing(isEnabled: newValue)
         }

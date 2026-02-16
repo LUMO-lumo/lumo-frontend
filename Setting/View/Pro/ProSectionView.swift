@@ -13,7 +13,7 @@ struct ProSectionView: View {
                 .font(.Subtitle3)
                 .foregroundStyle(Color.primary)
             
-            NavigationLink(destination: Text("미션 난이도 조정")) {
+            NavigationLink(destination: MissionLevelView()) {
                 HStack {
                     Text("미션 난이도 조정")
                         .font(.Body1)

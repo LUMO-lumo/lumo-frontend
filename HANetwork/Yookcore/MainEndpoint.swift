@@ -8,7 +8,6 @@
 import Foundation
 import Moya
 
-
 protocol MainEndpoint: TargetType { }
 
 extension MainEndpoint {
