@@ -154,17 +154,12 @@ struct AlarmChange: View {
                     }
                     .padding(.horizontal, 20)
                     
-                    // [수정 핵심] Moya.Task 충돌 방지
+                    // [수정 핵심] 로컬 알람 업데이트 제거 (서버 성공 후 처리하도록 변경)
                     Button(action: {
                         let updatedAlarm = viewModel.getUpdatedAlarm()
                         
-                        _Concurrency.Task {
-                            do {
-                                try await AlarmKitManager.shared.scheduleAlarm(from: updatedAlarm)
-                            } catch {
-                                print("알람 수정 등록 실패: \(error)")
-                            }
-                        }
+                        // 🚨 [수정] 여기서 직접 AlarmKitManager를 호출하지 않습니다.
+                        // 부모 뷰(AlarmMenuView)의 onUpdate가 서버 통신 성공 후 로컬 알람을 갱신합니다.
                         
                         onSave?(updatedAlarm)
                         dismiss()

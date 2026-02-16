@@ -76,6 +76,12 @@
     "isEnabled": true,
     "intervalSec": 0,
     "maxCount": 0
+  },
+  "missionSetting": {
+    "missionType": "NONE",
+    "difficulty": "EASY",
+    "walkGoalMeter": 0,
+    "questionCount": 0
   }
 }
 - response
@@ -160,6 +166,12 @@
     "isEnabled": true,
     "intervalSec": 0,
     "maxCount": 0
+  },
+  "missionSetting": {
+    "missionType": "NONE",
+    "difficulty": "EASY",
+    "walkGoalMeter": 0,
+    "questionCount": 0
   }
 }
 - response

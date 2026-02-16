@@ -96,18 +96,54 @@ enum AlarmEndpoint: @MainActor MainEndpoint {
             return .patch
         }
     }
+    
+    // ✅ [추가] Headers를 명시적으로 지정하여 Content-Type 누락 방지
+    var headers: [String : String]? {
+        return ["Content-Type": "application/json"]
+    }
 
-    // MARK: - Moya Task
+    // MARK: - Moya Task (인코딩 방식 변경)
     var task: Moya.Task {
         switch self {
-        case .updateAlarm(_, let body),
-             .createAlarm(let body),
+        
+        // 🚨 [수정] JSONEncoding.default 대신 직접 Data로 변환하여 전송 (.requestData)
+        // 이렇게 하면 Alamofire가 중간에서 데이터를 건드리지 않고, 우리가 만든 JSON 그대로 서버에 날아갑니다.
+        case .createAlarm(let body),
+             .updateAlarm(_, let body),
              .updateSnoozeSettings(_, let body),
              .updateRepeatDays(_, let body),
              .updateMissionSettings(_, let body),
              .updateWalkMissionDistance(_, let body),
              .submitMissionAnswer(_, let body):
-            return .requestParameters(parameters: body, encoding: JSONEncoding.default)
+            
+            // 🚨 [추가] 서버 전송 전 데이터 클렌징 (Data Sanitization)
+            var cleanBody = body
+            
+            // 1. alarmTime 포맷 강제 수정 (HH:mm:ss -> HH:mm)
+            // DTO에서 초 단위가 포함되어 넘어오더라도, 여기서 잘라내어 서버가 좋아하는 HH:mm 형식으로 맞춥니다.
+            if let timeString = cleanBody["alarmTime"] as? String, timeString.count > 5 {
+                let timeParts = timeString.split(separator: ":")
+                if timeParts.count >= 2 {
+                    let fixedTime = "\(timeParts[0]):\(timeParts[1])"
+                    cleanBody["alarmTime"] = fixedTime
+                }
+            }
+            
+            // 딕셔너리를 JSON 데이터로 직접 변환
+            do {
+                // 수정된 cleanBody를 사용하여 JSON 생성
+                let jsonData = try JSONSerialization.data(withJSONObject: cleanBody, options: [])
+                // 디버깅용: 실제로 전송되는 데이터 확인
+                if let jsonString = String(data: jsonData, encoding: .utf8) {
+                    print("📦 [Client Encoding] Final JSON: \(jsonString)")
+                }
+                return .requestData(jsonData)
+            } catch {
+                print("❌ JSON Encoding Failed: \(error)")
+                // 실패 시 백업으로 기존 방식 사용
+                return .requestParameters(parameters: body, encoding: JSONEncoding.default)
+            }
+            
         default:
             return .requestPlain
         }
