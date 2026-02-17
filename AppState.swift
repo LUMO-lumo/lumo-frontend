@@ -14,8 +14,8 @@ class AppState: ObservableObject {
         case onboarding     // 온보딩
         case main           // 메인 화면
         case mathMission(alarmId: Int, label: String) // 수학 미션 화면
-        case distanceMission(alarmId: Int) // 거리 미션 화면 (필요 시 사용)
-        case oxMission(alarmId: Int)
+        case distanceMission(alarmId: Int, label: String) // 거리 미션 화면 (필요 시 사용)
+        case oxMission(alarmId: Int, label: String)
         case typingMission(alarmId: Int, label: String)
     }
     
