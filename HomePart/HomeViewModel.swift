@@ -18,6 +18,12 @@ class HomeViewModel: ObservableObject {
     
     private let tokenCheckClient = MainAPIClient<HomeEndpoint>()
     
+    private let apiDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
+    
     // MARK: - Published Properties
     // 현재 UI(상세 설정창 등)에서 보여주고 있는 "특정 날짜"의 할 일 목록
     @Published var tasks: [Task] = []
@@ -88,13 +94,20 @@ class HomeViewModel: ObservableObject {
     }
     
     private func fetchHomeInfo() {
-        homeService.fetchHomeData { [weak self] result in
+        // 1. 오늘 날짜를 "yyyy-MM-dd" 문자열로 변환
+        let todayString = apiDateFormatter.string(from: Date())
+        
+        // 2. Service에 날짜 전달
+        homeService.fetchHomeData(today: todayString) { [weak self] result in
             if case .success(let data) = result {
                 self?.dailyQuote = data.encouragement
                 self?.missionStat = MissionStat(
                     consecutiveDays: data.missionRecord.consecutiveSuccessCnt,
                     monthlyAchievementRate: Double(data.missionRecord.missionSuccessRate) / 100.0
                 )
+            } else if case .failure(let error) = result {
+                // 에러 로그 확인용
+                print("❌ 홈 데이터 로드 실패: \(error)")
             }
         }
     }

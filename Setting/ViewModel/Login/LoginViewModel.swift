@@ -70,6 +70,9 @@ class LoginViewModel: ObservableObject {
                         
                         // 1. 토큰 저장 (수정됨: try-catch 추가)
                         if let token = resultData.accessToken {
+                            
+                            print("\n🔥🔥🔥 [DEBUG] SWAGGER용 토큰: \(token)\n")
+                            
                             let userInfo = UserInfo(
                                 accessToken: token,
                                 refreshToken: nil // 필요하다면 리프레시 토큰도 여기에 추가

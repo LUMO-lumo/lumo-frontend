@@ -68,24 +68,39 @@ final class KeychainManager: @unchecked Sendable {
     // MARK: - Private Raw Keychain Operations (키체인 저수준 로직)
     
     private func save(_ data: Data, for key: String) throws {
-        // 기존 데이터가 있으면 삭제 (덮어쓰기 위해)
-        // 삭제 시 데이터가 없어도(.errSecItemNotFound) 에러가 아니므로 무시
-        try? delete(key: key)
-        
-        let query: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: key,
-            kSecValueData: data,
-            // 보안 수준 설정 (잠금 해제 시 접근 가능)
-            kSecAttrAccessible: kSecAttrAccessibleWhenUnlocked
-        ]
-        
-        let status = SecItemAdd(query as CFDictionary, nil)
-        
-        guard status == errSecSuccess else {
-            throw KeychainError.unexpectedStatus(status)
+            let query: [CFString: Any] = [
+                kSecClass: kSecClassGenericPassword,
+                kSecAttrAccount: key
+            ]
+            
+            // 1. 업데이트 시도
+            let attributesToUpdate: [CFString: Any] = [
+                kSecValueData: data
+            ]
+            
+            let status = SecItemUpdate(query as CFDictionary, attributesToUpdate as CFDictionary)
+            
+            // 2. 업데이트 성공 시 종료
+            if status == errSecSuccess { return }
+            
+            // 3. 아이템이 없으면(.errSecItemNotFound) 새로 추가
+            if status == errSecItemNotFound {
+                let newQuery: [CFString: Any] = [
+                    kSecClass: kSecClassGenericPassword,
+                    kSecAttrAccount: key,
+                    kSecValueData: data,
+                    kSecAttrAccessible: kSecAttrAccessibleWhenUnlocked
+                ]
+                
+                let addStatus = SecItemAdd(newQuery as CFDictionary, nil)
+                if addStatus != errSecSuccess {
+                    throw KeychainError.unexpectedStatus(addStatus)
+                }
+            } else {
+                // 그 외 에러는 투척
+                throw KeychainError.unexpectedStatus(status)
+            }
         }
-    }
     
     private func load(key: String) throws -> Data {
         let query: [CFString: Any] = [

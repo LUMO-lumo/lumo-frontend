@@ -10,8 +10,8 @@ import Foundation
 class HomeService {
     private let client = MainAPIClient<HomeEndpoint>()
 
-    // HomeModel.swift에 정의된 HomeDTO를 반환 타입으로 사용
-    func fetchHomeData(completion: @escaping (Result<HomeDTO, MainAPIError>) -> Void) {
-        client.request(.getHomeInfo, completion: completion)
+    func fetchHomeData(today: String, completion: @escaping (Result<HomeDTO, MainAPIError>) -> Void) {
+        // Endpoint에 today 전달
+        client.request(.getHomeInfo(today: today), completion: completion)
     }
 }

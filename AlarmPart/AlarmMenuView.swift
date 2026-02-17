@@ -17,7 +17,7 @@ struct AlarmMenuView: View {
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottomTrailing) {
-
+                
                 VStack(alignment: .leading) {
                     Text("알람 목록")
                         .font(.system(size: 24, weight: .bold))
@@ -28,18 +28,38 @@ struct AlarmMenuView: View {
                     
                     ScrollView {
                         LazyVStack(spacing: 20) {
-                            ForEach($viewModel.alarms) { $alarm in
+                            // [수정 1] $viewModel.alarms 대신 viewModel.alarms 사용 (값으로 순회)
+                            ForEach(viewModel.alarms) { alarm in
+                                
+                                // [수정 2] 안전한 커스텀 바인딩 생성
+                                // 배열의 인덱스가 바뀌거나 삭제되어도 안전하게 ID로 찾아서 연결해줍니다.
+                                let alarmBinding = Binding<Alarm>(
+                                    get: {
+                                        // 현재 배열에서 이 ID를 가진 최신 알람을 찾아서 반환
+                                        // (만약 삭제되어서 없으면 현재 alarm 값을 그냥 반환해서 크래시 방지)
+                                        guard let index = viewModel.alarms.firstIndex(where: { $0.id == alarm.id }) else {
+                                            return alarm
+                                        }
+                                        return viewModel.alarms[index]
+                                    },
+                                    set: { newAlarm in
+                                        // 수정된 내용을 배열에 반영
+                                        if let index = viewModel.alarms.firstIndex(where: { $0.id == alarm.id }) {
+                                            viewModel.alarms[index] = newAlarm
+                                        }
+                                    }
+                                )
+                                
                                 AlarmSettedView(
-                                    alarm: $alarm,
+                                    alarm: alarmBinding, // 위에서 만든 안전한 바인딩 전달
                                     onDelete: {
                                         withAnimation {
-                                            viewModel.firstdeleteAlarm(id: alarm.id)
+                                            viewModel.deleteAlarm(id: alarm.id)
                                         }
                                     },
                                     onUpdate: { updatedAlarm in
-                                        viewModel.firstupdateAlarm(updatedAlarm)
+                                        viewModel.updateAlarm(updatedAlarm)
                                     },
-                                    // ✅ [추가] 토글 이벤트를 뷰모델에 연결
                                     onToggle: { isOn in
                                         viewModel.toggleAlarmState(alarm: alarm, isOn: isOn)
                                     }
