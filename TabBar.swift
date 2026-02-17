@@ -10,6 +10,7 @@ import Foundation
 import SwiftData
 import PhotosUI
 
+
 // MARK: - 앱의 시작점
 struct MainView: View {
     // 현재 선택된 탭 (0: 홈, 1: 알람, 2: 루틴, 3: 설정)
@@ -19,7 +20,6 @@ struct MainView: View {
     
     // 탭바 숨김 여부를 관리하는 변수
     @State private var isTabBarHidden: Bool = false
-    
     var body: some View {
         ZStack(alignment: .bottom) {
             Group {
@@ -27,19 +27,18 @@ struct MainView: View {
                 case 0:
                     HomeView()
                 case 1:
-                    Text(" 알람 파트")
+                    AlarmMenuView()
                 case 2:
                     RoutineView(isTabBarHidden: $isTabBarHidden)
                 case 3:
-                    Text("설정 화면") // 나중에 SettingView()로 교체
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.white)
+                    ProfileSettingView(isTabBarHidden: $isTabBarHidden)
                 default:
                     EmptyView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
+
           if !isTabBarHidden {
               CustomTabBar(selectedTab: $selectedTab)
             }
@@ -52,14 +51,14 @@ struct MainView: View {
 struct CustomTabBar: View {
     @Binding var selectedTab: Int
     // 브랜드 컬러 (LUMO Pink/Red)
-    let activeColor = Color(hex: "F55641")
+    let activeColor = Color.main300
     let inactiveColor = Color.gray.opacity(0.8)
-    
+    @Environment(\.colorScheme) var scheme
     var body: some View {
         HStack {
             // 탭 1: 홈
             TabBarButton(
-                icon: selectedTab == 0 ? "house.fill" : "house",
+                icon: "Home",
                 text: "홈",
                 isSelected: selectedTab == 0,
                 activeColor: activeColor,
@@ -70,7 +69,7 @@ struct CustomTabBar: View {
             
             // 탭 2: 알람
             TabBarButton(
-                icon: selectedTab == 1 ? "bell.fill" : "bell",
+                icon: "Alarm",
                 text: "알람",
                 isSelected: selectedTab == 1,
                 activeColor: activeColor,
@@ -81,7 +80,7 @@ struct CustomTabBar: View {
             
             // 탭 3: 루틴
             TabBarButton(
-                icon: "chart.xyaxis.line", // 루틴 아이콘
+                icon: "Routine",
                 text: "루틴",
                 isSelected: selectedTab == 2,
                 activeColor: activeColor,
@@ -92,7 +91,7 @@ struct CustomTabBar: View {
             
             // 탭 4: 설정
             TabBarButton(
-                icon: selectedTab == 3 ? "gearshape.fill" : "gearshape",
+                icon: "Setting",
                 text: "설정",
                 isSelected: selectedTab == 3,
                 activeColor: activeColor,
@@ -102,9 +101,14 @@ struct CustomTabBar: View {
         .padding(.horizontal, 30) // 좌우 여백
         .padding(.top, 14) // 아이콘 위 여백
         .padding(.bottom, 10) // 아이콘 아래 여백 (SafeArea 고려 전)
-        .background(Color.white) // 배경색 흰색
+        .background(
+                    scheme == .dark ? Color(hex: "121212") : Color.white
+                )
         // 상단 그림자 효과 (사진처럼 보이게)
-        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: -5)
+        .shadow(
+                    color: scheme == .dark ? Color.clear : Color.black.opacity(0.05),
+                    radius: 5, x: 0, y: -5
+                )
     }
 }
 
@@ -120,17 +124,24 @@ struct TabBarButton: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: 6) {
-                Image(systemName: icon)
-                    .font(.system(size: 24))
+                Image(icon)
+                    .renderingMode(.template)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 24, height: 24)
                 
                 Text(text)
                     .font(.caption)
                     .fontWeight(isSelected ? .bold : .regular)
             }
-            .foregroundColor(isSelected ? activeColor : inactiveColor)
+            .foregroundStyle(isSelected ? activeColor : inactiveColor)
             .frame(maxWidth: .infinity)
         }
     }
 }
 
+
+#Preview{
+    MainView()
+}
 

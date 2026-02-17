@@ -1,0 +1,11 @@
+//
+//  Security.xcconfig
+//  Lumo
+//
+//  Created by 김승겸 on 2/2/26.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+BASE_URL = http:/$()/13.124.31.129

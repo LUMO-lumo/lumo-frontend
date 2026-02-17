@@ -12,8 +12,8 @@ struct InitialSetupContainerView: View {
     @State private var currentPage = 0
     @Environment(OnboardingViewModel.self) var viewModel
     
-    @Environment(\.modelContext) private var modelContext
-    @Query private var userModel: [UserModel]
+//    @Environment(\.modelContext) private var modelContext
+//    @Query private var userModel: [UserModel]
     
     var body: some View {
         VStack(spacing: 0) {
@@ -118,16 +118,9 @@ struct InitialSetupContainerView: View {
     }
     
     private func saveNickname() {
-        if let existingUser = userModel.first {
-            // 기존 데이터 수정
-            existingUser.nickname = viewModel.nickname
-        } else {
-            // 새 데이터 생성
-            let newUser = UserModel(nickname: viewModel.nickname)
-            modelContext.insert(newUser)
-        }
+        UserDefaults.standard.set(viewModel.nickname, forKey: "tempNickname")
         
-        print("닉네임 저장 완료: \(viewModel.nickname)")
+        print("닉네임 임시 저장 완료 (비로그인 상태 유지): \(viewModel.nickname)")
     }
 }
 

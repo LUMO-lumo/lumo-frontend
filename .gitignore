@@ -1,0 +1,10 @@
+# Mac OS
+.DS_Store
+
+# Xcode 사용자 설정 (충돌 방지)
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
+
+# 보안 파일 (IP 주소)
+Security.xcconfig.DS_Store
