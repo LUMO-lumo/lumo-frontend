@@ -51,7 +51,7 @@ struct HomeView: View {
                         
                         Button {
                             withAnimation {
-                                appState.currentRoot = .distanceMission(alarmId: 999)
+                                appState.currentRoot = .distanceMission(alarmId: 999, label: "1교시 없는 날")
                             }
                         } label: {
                             Text("거리 미션 테스트")
@@ -64,7 +64,7 @@ struct HomeView: View {
                         }
                         Button {
                             withAnimation {
-                                appState.currentRoot = .oxMission(alarmId: 999)
+                                appState.currentRoot = .oxMission(alarmId: 999, label: "1교시 있는 날")
                             }
                         } label: {
                             Text("OX 미션 테스트")

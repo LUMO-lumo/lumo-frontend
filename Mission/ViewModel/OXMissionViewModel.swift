@@ -29,6 +29,9 @@ class OXMissionViewModel: BaseMissionViewModel {
     @Published var showFeedback: Bool = false
     @Published var isCorrect: Bool = false     // 정답 이미지 표시용
     
+    // OX 전용 프로퍼티
+    let alarmLabel: String
+    
     // 로컬 정답 확인용
     private var localCorrectAnswer: String = ""
     
@@ -47,7 +50,8 @@ class OXMissionViewModel: BaseMissionViewModel {
     ]
     
     // MARK: - Initialization
-    override init(alarmId: Int = 1) {
+    init(alarmId: Int, alarmLabel: String) {
+        self.alarmLabel = alarmLabel
         super.init(alarmId: alarmId)
     }
     
@@ -85,9 +89,12 @@ class OXMissionViewModel: BaseMissionViewModel {
     // MARK: - 2. 제출 (버튼 클릭 시)
     // View에서 "O" 또는 "X" 스트링을 넘겨준다고 가정
     func submitAnswer(_ answer: String) {
+        // View에서 인자로 넘어오는 answer를 self.userAnswer에 반영
+        self.userAnswer = answer
+        
         // [Mock Mode]
         if isMockMode {
-            checkMockAnswer(userAnswer: answer)
+            checkMockAnswer()
             return
         }
         
@@ -97,12 +104,11 @@ class OXMissionViewModel: BaseMissionViewModel {
             return
         }
         
-        attemptCount += 1
-        
+        // 보낼 데이터 준비
         let request = MissionSubmitRequest(
             contentId: contentId,
-            userAnswer: answer,
-            attemptCount: attemptCount
+            userAnswer: userAnswer,
+            attemptCount: self.attemptCount + 1
         )
         
         AsyncTask {
@@ -123,7 +129,7 @@ class OXMissionViewModel: BaseMissionViewModel {
         }
     }
     
-    // MARK: - Helper (결과 처리 공통 로직)
+    // MARK: - Helper (UI Logic)
     private func handleSubmissionResult(isCorrect: Bool) {
         self.isCorrect = isCorrect
         self.showFeedback = true
@@ -131,7 +137,6 @@ class OXMissionViewModel: BaseMissionViewModel {
         if isCorrect {
             // ✅ 정답일 때
             self.feedbackMessage = "정답이에요!"
-            print("🎉 정답입니다!")
             
             // Mock 모드일 때는 수동으로 완료 처리
             if isMockMode {
@@ -154,6 +159,19 @@ class OXMissionViewModel: BaseMissionViewModel {
         }
     }
     
+    // 에러 처리
+    private func handleError(_ error: Error) {
+        if let missionError = error as? MissionError {
+            switch missionError {
+            case .serverError(let message):
+                self.errorMessage = message
+            }
+        } else {
+            self.errorMessage = "오류가 발생했습니다."
+        }
+        print("❌ Error: \(error)")
+    }
+    
     // MARK: - Mock Helpers (Local Logic)
     private func setupMockData() {
         self.isLoading = true
@@ -172,13 +190,13 @@ class OXMissionViewModel: BaseMissionViewModel {
         }
     }
     
-    private func checkMockAnswer(userAnswer: String) {
+    private func checkMockAnswer() {
         AsyncTask {
-            // 통신 흉내
+            // 통신 흉내 (너무 빠르면 어색하므로 약간 딜레이)
             try? await AsyncTask.sleep(nanoseconds: 300_000_000)
             
             // "O" 또는 "X" 비교
-            let isCorrect = (userAnswer == self.localCorrectAnswer)
+            let isCorrect = (self.userAnswer == self.localCorrectAnswer)
             self.handleSubmissionResult(isCorrect: isCorrect)
         }
     }
