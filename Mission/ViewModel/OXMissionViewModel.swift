@@ -9,8 +9,18 @@ import Foundation
 import Combine
 import SwiftUI
 
+// 로컬 테스트용 문제 모델
+struct LocalOXProblem {
+    let question: String
+    let answer: String // "O" 또는 "X"
+}
+
 @MainActor
 class OXMissionViewModel: BaseMissionViewModel {
+    
+    // MARK: - Configuration
+    // ⭐️ 이 값을 false로 바꾸면 API 모드로 작동합니다.
+    private let isMockMode: Bool = true
     
     // MARK: - UI Properties
     @Published var questionText: String = "로딩 중..."
@@ -19,10 +29,22 @@ class OXMissionViewModel: BaseMissionViewModel {
     @Published var showFeedback: Bool = false
     @Published var isCorrect: Bool = false     // 정답 이미지 표시용
     
-    // MARK: - Mock Mode (테스트용 설정)
-    private let isMockMode: Bool = true
-    private let mockQuestion = "바나나는 사실 베리류(Berry)에 속한다?"
-    private let mockAnswer = "O" // 정답 설정
+    // 로컬 정답 확인용
+    private var localCorrectAnswer: String = ""
+    
+    // MARK: - 🚨 Local Mock Data Pool (요청하신 데이터)
+    private let problemPool: [LocalOXProblem] = [
+        LocalOXProblem(question: "한국의 국화는 무궁화이다", answer: "O"),
+        LocalOXProblem(question: "세종대왕은 한글을 만들었다", answer: "O"),
+        LocalOXProblem(question: "광합성은 밤에 일어난다", answer: "X"),
+        LocalOXProblem(question: "남극은 북극보다 춥다", answer: "O"),
+        LocalOXProblem(question: "박쥐는 새의 한 종류이다", answer: "X"),
+        LocalOXProblem(question: "독도는 한국 영토이다", answer: "O"),
+        LocalOXProblem(question: "거북이는 파충류이다", answer: "O"),
+        LocalOXProblem(question: "고래는 물고기다", answer: "X"),
+        LocalOXProblem(question: "한반도는 아시아에 있다", answer: "O"),
+        LocalOXProblem(question: "토마토는 채소이다", answer: "X")
+    ]
     
     // MARK: - Initialization
     override init(alarmId: Int = 1) {
@@ -31,13 +53,13 @@ class OXMissionViewModel: BaseMissionViewModel {
     
     // MARK: - 1. 미션 시작 (View에서 호출)
     func startOXMission() {
-        // [Mock]
+        // [Mock Mode]
         if isMockMode {
             setupMockData()
             return
         }
         
-        // [Real]
+        // [Real API Mode] - 기존 코드 보존
         AsyncTask {
             do {
                 self.isLoading = true
@@ -61,14 +83,15 @@ class OXMissionViewModel: BaseMissionViewModel {
     }
     
     // MARK: - 2. 제출 (버튼 클릭 시)
+    // View에서 "O" 또는 "X" 스트링을 넘겨준다고 가정
     func submitAnswer(_ answer: String) {
-        // [Mock]
+        // [Mock Mode]
         if isMockMode {
             checkMockAnswer(userAnswer: answer)
             return
         }
         
-        // [Real]
+        // [Real API Mode] - 기존 코드 보존
         guard let contentId = contentId else {
             print("❌ contentId 없음")
             return
@@ -102,18 +125,26 @@ class OXMissionViewModel: BaseMissionViewModel {
     
     // MARK: - Helper (결과 처리 공통 로직)
     private func handleSubmissionResult(isCorrect: Bool) {
-
         self.isCorrect = isCorrect
         self.showFeedback = true
+        
         if isCorrect {
-            // ✅ 정답일 때 로직 추가됨
+            // ✅ 정답일 때
             self.feedbackMessage = "정답이에요!"
+            print("🎉 정답입니다!")
             
-            // 1.5초 뒤에 완료 처리 -> 뷰가 닫힘
-            AsyncTask {
-                try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
-                self.isMissionCompleted = true
-            }} else {
+            // Mock 모드일 때는 수동으로 완료 처리
+            if isMockMode {
+                AsyncTask {
+                    try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
+                    self.isMissionCompleted = true
+                }
+            } else {
+                // API 모드에서는 BaseViewModel이 dismissAlarm 성공 시 isMissionCompleted = true 처리
+            }
+            
+        } else {
+            // ❌ 오답일 때
             self.feedbackMessage = "틀렸어요!"
             AsyncTask {
                 try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
@@ -123,14 +154,21 @@ class OXMissionViewModel: BaseMissionViewModel {
         }
     }
     
-    // MARK: - Mock Helpers
+    // MARK: - Mock Helpers (Local Logic)
     private func setupMockData() {
         self.isLoading = true
         AsyncTask {
             try? await AsyncTask.sleep(nanoseconds: 500_000_000) // 로딩 흉내
-            self.questionText = mockQuestion
+            
+            // 랜덤으로 문제 하나 선택
+            if let randomProblem = self.problemPool.randomElement() {
+                self.contentId = 999
+                self.questionText = randomProblem.question
+                self.localCorrectAnswer = randomProblem.answer
+                print("💻 [LOCAL] OX 문제 로드: \(randomProblem.question) (정답: \(randomProblem.answer))")
+            }
+            
             self.isLoading = false
-            print("💻 [LOCAL] 테스트 문제 로드 완료")
         }
     }
     
@@ -139,7 +177,8 @@ class OXMissionViewModel: BaseMissionViewModel {
             // 통신 흉내
             try? await AsyncTask.sleep(nanoseconds: 300_000_000)
             
-            let isCorrect = (userAnswer == mockAnswer)
+            // "O" 또는 "X" 비교
+            let isCorrect = (userAnswer == self.localCorrectAnswer)
             self.handleSubmissionResult(isCorrect: isCorrect)
         }
     }
