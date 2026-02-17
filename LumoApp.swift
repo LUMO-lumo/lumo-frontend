@@ -85,11 +85,11 @@ struct LumoContentView: View {
             case .mathMission(let alarmId, let label):
                 MathMissionView(alarmId: alarmId, alarmLabel: label)
                 
-            case .distanceMission(let alarmId):
-                DistanceMissionView(alarmId: alarmId)
+            case .distanceMission(let alarmId, let label):
+                DistanceMissionView(alarmId: alarmId, alarmLabel: label)
                 
-            case .oxMission(let alarmID):
-                OXMissionView(alarmId: alarmID)
+            case .oxMission(let alarmID, let label):
+                OXMissionView(alarmId: alarmID, alarmLabel: label)
                 
             case .typingMission(let alarmId, let label):
                 TypingMissionView(alarmId: alarmId, alarmLabel: label)

@@ -5,24 +5,47 @@
 //  Created by 김승겸 on 1/5/26.
 //
 import SwiftUI
+import Combine
 
 struct DistanceMissionView: View {
     @EnvironmentObject var appState: AppState
     @StateObject private var viewModel: DistanceMissionViewModel
     
-    init(alarmId: Int) {
-        _viewModel = StateObject(wrappedValue: DistanceMissionViewModel(alarmId: alarmId))
+    @State private var currentTime = Date()
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    init(alarmId: Int, alarmLabel: String) {
+        _viewModel = StateObject(
+            wrappedValue: DistanceMissionViewModel(
+                alarmId: alarmId,
+                alarmLabel: alarmLabel
+            )
+        )
     }
+    
+    private var timeFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH : mm"
+        return formatter
+    }
+    
     var body: some View {
         ZStack{
             VStack {
-                Spacer()
-                
-                Text("알람 정보")
-                    .font(.Subtitle2)
-                    .foregroundStyle(Color.primary)
-                
-                Spacer()
+                // 상단 시간 정보
+                VStack(spacing: 8) {
+                    Text(viewModel.alarmLabel)
+                        .font(.pretendardMedium16)
+                        .foregroundStyle(Color.primary)
+                    
+                    Text(timeFormatter.string(from: currentTime))
+                        .font(.pretendardSemiBold60)
+                        .foregroundStyle(Color.primary)
+                        .onReceive(timer) { input in
+                            currentTime = input
+                        }
+                }
+                .padding(.top, 72)
                 
                 Text("거리 미션을 수행해 주세요!")
                     .font(.Body1)
@@ -30,6 +53,7 @@ struct DistanceMissionView: View {
                     .padding(.vertical, 8)
                     .foregroundStyle(Color.white)
                     .background(Color.main300, in: RoundedRectangle(cornerRadius: 6))
+                    .padding(.top, 74)
                 
                 Spacer().frame(height:14)
                 
@@ -69,11 +93,12 @@ struct DistanceMissionView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 
                 Spacer().frame(height:74)
+                
                 Button(action:{
                     withAnimation {
                         viewModel.showFeedback = true
                         viewModel.isMissionCompleted = true
-
+                        
                     }
                 }) {Text("SNOOZE")}
                     .font(.Subtitle2)
@@ -115,17 +140,17 @@ struct DistanceMissionView: View {
             viewModel.startDistanceMission()
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
-                    if completed {
-                        print("🏁 거리 미션 완료! 메인 화면으로 이동합니다.")
-                        withAnimation(.easeInOut(duration: 0.5)) {
-                            appState.currentRoot = .main
-                        }
-                    }
-
+            if completed {
+                print("🏁 거리 미션 완료! 메인 화면으로 이동합니다.")
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    appState.currentRoot = .main
                 }
             }
+            
         }
+    }
+}
 
 #Preview {
-    DistanceMissionView(alarmId: 1)
+    DistanceMissionView(alarmId: 1, alarmLabel: "1교시 없는 날")
 }

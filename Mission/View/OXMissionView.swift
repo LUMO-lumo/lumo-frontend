@@ -6,86 +6,137 @@
 //
 
 import SwiftUI
+import Combine
 
 struct OXMissionView: View {
     @EnvironmentObject var appState: AppState
     @StateObject var viewModel: OXMissionViewModel
-    init(alarmId: Int = 1) {
-        _viewModel = StateObject(wrappedValue: OXMissionViewModel(alarmId: alarmId))
+    
+    @State private var currentTime = Date()
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    // UI 디자인을 위한 임의의 폰트 및 컬러 설정
+    let primaryColor = Color.pink.opacity(0.8)
+    
+    init(alarmId: Int, alarmLabel: String) {
+        _viewModel = StateObject(
+            wrappedValue: OXMissionViewModel(
+                alarmId: alarmId,
+                alarmLabel: alarmLabel
+            )
+        )
+    }
+    
+    private var timeFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH : mm"
+        return formatter
     }
     
     var body: some View {
-        ZStack{
-        VStack {
-                Spacer()
-                
-                Text("알람 정보")
-                    .font(.Subtitle2)
-                    .foregroundStyle(Color.primary)
-                
-                
-                Spacer()
-                
-                Text("OX퀴즈 미션을 수행해 주세요!")
-                    .font(.Body1)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .foregroundStyle(Color.white)
-                    .background(Color.main300, in: RoundedRectangle(cornerRadius: 6))
-                
-                Spacer().frame(height:14)
-                
-                HStack {
-                 Text("Q. \(viewModel.questionText)")
-                        .font(.Subtitle2)
+        ZStack {
+            
+            // 메인 컨텐츠
+            VStack {
+                // 상단 시간 정보
+                VStack(spacing: 8) {
+                    Text(viewModel.alarmLabel)
+                        .font(.pretendardMedium16)
                         .foregroundStyle(Color.primary)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(24)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.gray300, lineWidth: 2)
-                )
-                Spacer().frame(height:15)
-                HStack(spacing: 10) {
                     
-                    Button(action:{
+                    Text(timeFormatter.string(from: currentTime))
+                        .font(.pretendardSemiBold60)
+                        .foregroundStyle(Color.primary)
+                        .onReceive(timer) { input in
+                            currentTime = input
+                        }
+                }
+                .padding(.top, 72)
+                
+                // OX 퀴즈 컨테이너
+                VStack(spacing: 0) {
+                    // 미션 타이틀 배지
+                    Text("OX퀴즈 미션을 수행해 주세요!")
+                        .font(.Body1)
+                        .foregroundStyle(Color.white)
+                        .padding(.vertical, 9)
+                        .padding(.horizontal, 17)
+                        .background(Color.main300, in: RoundedRectangle(cornerRadius: 6))
+                        .padding(.bottom, 14)
+                    
+                    // 문제 영역
+                    HStack {
+                        Text("Q. \(viewModel.questionText)")
+                            .font(.Subtitle2)
+                            .foregroundStyle(Color.primary)
+                        Spacer()
+                    }
+                    .padding(24)
+                    .overlay(alignment: .center) {
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.gray300, lineWidth: 2)
+                    }
+                    
+                    Spacer().frame(height: 15)
+                    
+                    // O / X 버튼 영역
+                    HStack(spacing: 10) {
+                        // O 버튼
+                        Button(action: {
                             viewModel.submitAnswer("O")
-                    }){
-                        Text("O")
-                            .font(.Subtitle1)
-                            .foregroundStyle(Color.primary)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 176)
-                            .background(Color(hex: "E9F2FF"))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .stroke(Color(hex: "96C0FF"), lineWidth: 2)
-                            )
-                    }
-                    
-                    Button(action:{
+                        }) {
+                            Text("O")
+                                .font(.Subtitle1)
+                                .foregroundStyle(Color.primary)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 176)
+                                .background(Color(hex: "E9F2FF"))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(Color(hex: "96C0FF"), lineWidth: 2)
+                                )
+                                .cornerRadius(16)
+                        }
+                        .disabled(viewModel.isLoading || viewModel.showFeedback) // 로딩/피드백 중 클릭 방지
+                        
+                        // X 버튼
+                        Button(action: {
                             viewModel.submitAnswer("X")
-
-                    }){
-                        Text("X")
-                            .font(.Subtitle1)
-                            .foregroundStyle(Color.primary)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 176)
-                            .background(Color(hex: "FFE9E6"))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .stroke(Color(hex: "F9A094"), lineWidth: 2)
-                            )
+                        }) {
+                            Text("X")
+                                .font(.Subtitle1)
+                                .foregroundStyle(Color.primary)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 176)
+                                .background(Color(hex: "FFE9E6"))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(Color(hex: "F9A094"), lineWidth: 2)
+                                )
+                                .cornerRadius(16)
+                        }
+                        .disabled(viewModel.isLoading || viewModel.showFeedback) // 로딩/피드백 중 클릭 방지
                     }
                 }
+                .padding(.top, 100)
+                .padding(.bottom, 205)
                 
                 Spacer()
             }
             .padding(.horizontal, 24)
-            .blur(radius: viewModel.isMissionCompleted ? 2 : 0)
+            .blur(radius: viewModel.showFeedback || viewModel.isLoading ? 3 : 0) // 피드백/로딩 시 배경 블러
             
+            // ✅ 로딩 인디케이터 (TypingMissionView와 동일한 로직)
+            if viewModel.isLoading {
+                ZStack {
+                    Color.black.opacity(0.2).ignoresSafeArea()
+                    ProgressView()
+                        .scaleEffect(1.5)
+                        .tint(.white)
+                }
+            }
+            
+            // ✅ 피드백 오버레이 (TypingMissionView와 동일한 로직)
             if viewModel.showFeedback {
                 Color.black.opacity(0.6).ignoresSafeArea()
                 
@@ -100,11 +151,10 @@ struct OXMissionView: View {
                         .foregroundStyle(viewModel.isCorrect ? Color.main100 : Color.main300)
                 }
                 .transition(.scale)
-                .zIndex(1) // 맨 앞으로 가져오기
+                .zIndex(1)
             }
         }
         .onAppear {
-            // ✅ ViewModel 내부에서 비동기 처리하므로 await 불필요
             viewModel.startOXMission()
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
@@ -115,7 +165,6 @@ struct OXMissionView: View {
                 }
             }
         }
-        // ✅ 에러 발생 시 알림 표시
         .alert("알림", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { _ in viewModel.errorMessage = nil }
@@ -130,6 +179,5 @@ struct OXMissionView: View {
 }
 
 #Preview {
-    OXMissionView()
+    OXMissionView(alarmId: 1, alarmLabel: "1교시 있는 날")
 }
-

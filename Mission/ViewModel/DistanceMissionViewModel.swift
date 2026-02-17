@@ -29,6 +29,8 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     @Published var showFeedback: Bool = false
     @Published var isCorrect: Bool = false
     
+    let alarmLabel: String
+    
     // MARK: - Internal Properties (Location)
     private let locationManager = CLLocationManager()
     private var previousLocation: CLLocation? // 이전 위치 저장용
@@ -38,9 +40,9 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     private let isMockMode: Bool = false
     
     // MARK: - Initialization
-    override init(alarmId: Int) {
+    init(alarmId: Int, alarmLabel: String) {
+        self.alarmLabel = alarmLabel
         super.init(alarmId: alarmId)
-        setupLocationManager()
     }
 
     // 위치 권한 및 설정
