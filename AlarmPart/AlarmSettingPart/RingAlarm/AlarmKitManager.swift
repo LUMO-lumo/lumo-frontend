@@ -96,9 +96,17 @@ final class AlarmKitManager: NSObject, ObservableObject {
             sound: .named("\(soundFileName).mp3") // 확장자 명시
         )
         
-        _ = try await AlarmManager.shared.schedule(id: alarm.id, configuration: config)
+        // ✅ [수정 핵심] AlarmKit 등록이 실패해도 로컬 알림은 등록되도록 do-catch 처리
+        do {
+            _ = try await AlarmManager.shared.schedule(id: alarm.id, configuration: config)
+            print("✅ AlarmKit 시스템 알람 등록 성공")
+        } catch {
+            // Code=1 등의 에러가 발생해도 여기서 잡고 넘어감 (함수 중단 방지)
+            print("⚠️ AlarmKit 등록 실패 (Code: \(error)), 하지만 로컬 알림(배너)은 계속 진행합니다.")
+        }
         
         // --- [B] 로컬 알림(UserNotifications) 등록 (앱 깨우기용) ---
+        // 위에서 에러가 나도 이 코드는 반드시 실행됨
         await scheduleLocalNotification(for: alarm, hour: hour, minute: minute, second: second, soundName: soundFileName)
     }
     

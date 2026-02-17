@@ -46,9 +46,30 @@
 "soundType":"DEFAULT_BELL",
 "vibration":true
 }
-📩 서버 응답(Raw): {"code":"INVALID_JSON","message":"JSON 형식이 올바르지 않습니다.","result":null,"success":false}
 
 
+#앞으로 작업 내용물
+
+Trigger (시작점): AlarmKit 알람이 울리고 사용자가 이를 끕니다(Dismiss).
+지연 실행: 알람 종료 후 정확히 5초 뒤부터 '지옥의 루프'가 시작됩니다.
+Loop (반복 알림):
+간격: 5초마다 반복.
+알림 내용:
+Title: 설정한 알람 이름 (예: "기상").
+Body: "알람을 끄려면 여기를 눌러 앱을 실행하세요."
+Sound: 사용자가 설정한 사운드 재생.
+Level: .timeSensitive (방해금지 모드 뚫기).
+Interaction (사용자 반응):
+
+알림 배너 클릭 -> 잠금화면 -> 잠금 해제(FaceID/Passcode) -> 앱 진입.
+Mission Phase (미션 수행):
+앱 진입 시 MissionView가 즉시 표시됩니다.
+소리: 미션을 성공하기 전까지 알람 소리는 계속 울립니다.
+성공 조건: 수학, 따라쓰기 등 미션 완료.
+성공 시: 소리 중단(stopAlarmSound) 및 예약된 5초 반복 알림 전체 취소.
+End Phase (브리핑):
+미션 성공 직후, "오늘의 할 일 브리핑 API"를 호출.
+화면에 오늘 날짜의 일정/할 일을 브리핑하며 하루를 시작.
 
 
 

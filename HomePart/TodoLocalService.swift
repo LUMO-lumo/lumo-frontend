@@ -26,7 +26,8 @@ class TodoLocalService {
                 UserModel.self,
                 RoutineTask.self,
                 RoutineType.self,
-                AlarmModel.self
+                AlarmModel.self,
+                //LocalAlarm.self
                 //, RoutineModel.self, AlarmModel.self // 다른 모델이 있다면 주석 해제 후 추가
             ])
             
