@@ -7,125 +7,207 @@ class AlarmViewModel: ObservableObject {
     
     @Published var alarms: [Alarm] = []
     
+    // [추가] 중복 요청 방지용 플래그
+    @Published var isLoading: Bool = false
+    
     init() {
         fetchAlarms()
     }
     
-    // MARK: - READ
+    // MARK: - READ (알람 목록 조회)
     func fetchAlarms() {
         print("📡 서버에서 알람 목록 조회 요청...")
+        isLoading = true
+        
         AlarmService.shared.fetchMyAlarms { [weak self] result in
             guard let self = self else { return }
-            switch result {
-            case .success(let dtos):
-                let fetchedAlarms = dtos.map { Alarm(from: $0) }
-                _Concurrency.Task { @MainActor in
+            
+            // UI 업데이트는 메인 스레드에서
+            DispatchQueue.main.async {
+                self.isLoading = false
+                
+                switch result {
+                case .success(let dtos):
+                    let fetchedAlarms = dtos.map { Alarm(from: $0) }
                     self.alarms = fetchedAlarms
                     print("✅ 알람 목록 로드 성공: \(fetchedAlarms.count)개")
-                    await self.syncAlarmKit(alarms: fetchedAlarms)
+                    
+                    // AlarmKit 동기화 (비동기)
+                    AsyncTask {
+                        await self.syncAlarmKit(alarms: fetchedAlarms)
+                    }
+                    
+                case .failure(let error):
+                    print("❌ 알람 목록 로드 실패: \(error.localizedDescription)")
                 }
-            case .failure(let error):
-                print("❌ 알람 목록 로드 실패: \(error.localizedDescription)")
             }
         }
     }
     
-    // MARK: - DELETE
-    func firstdeleteAlarm(id: UUID) {
-        guard let index = alarms.firstIndex(where: { $0.id == id }) else { return }
-        let alarmToDelete = alarms[index]
+    // MARK: - DELETE (알람 삭제)
+    // [수정] Index 대신 ID를 사용하여 안전하게 삭제
+    func deleteAlarm(id: UUID) {
+        // 1. 로컬 목록에서 해당 알람 찾기
+        guard let alarmToDelete = alarms.first(where: { $0.id == id }) else {
+            print("⚠️ 이미 삭제된 알람입니다.")
+            return
+        }
         
+        print("🗑 삭제 시도: \(alarmToDelete.label), ServerID: \(String(describing: alarmToDelete.serverId))")
+        
+        // 2. 서버 ID가 있으면 서버 요청
         if let serverId = alarmToDelete.serverId {
+            isLoading = true
+            
             AlarmService.shared.deleteAlarm(alarmId: serverId) { [weak self] result in
                 guard let self = self else { return }
-                switch result {
-                case .success:
-                    print("✅ 서버 알람 삭제 성공")
-                    self.removeLocalAlarm(at: index, id: id)
-                case .failure(let error):
-                    print("❌ 서버 알람 삭제 실패: \(error.localizedDescription)")
+                
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    
+                    switch result {
+                    case .success:
+                        print("✅ 서버 알람 삭제 성공")
+                        // 3. 서버 성공 시 로컬 및 시스템 알람 삭제
+                        self.removeLocalAndSystemAlarm(id: id)
+                        
+                    case .failure(let error):
+                        print("❌ 서버 알람 삭제 실패: \(error.localizedDescription)")
+                        // 실패 시 사용자에게 알림을 주거나, 목록을 다시 불러오는 것이 좋음
+                        // self.fetchAlarms()
+                    }
                 }
             }
         } else {
-            removeLocalAlarm(at: index, id: id)
+            // 서버 ID가 없는 로컬 알람이라면 즉시 삭제
+            print("⚠️ ServerID가 없어서 로컬에서만 삭제합니다.")
+            removeLocalAndSystemAlarm(id: id)
         }
     }
     
-    private func removeLocalAlarm(at index: Int, id: UUID) {
-        _Concurrency.Task { @MainActor in
-            if self.alarms.indices.contains(index) { self.alarms.remove(at: index) }
+    // [수정] 안전한 로컬/시스템 알람 삭제 헬퍼
+    private func removeLocalAndSystemAlarm(id: UUID) {
+        // 1. UI 목록에서 ID로 찾아서 삭제 (Index 사용 X)
+        if let index = self.alarms.firstIndex(where: { $0.id == id }) {
+            self.alarms.remove(at: index)
         }
-        _Concurrency.Task { await AlarmKitManager.shared.removeAlarm(id: id) }
+        
+        // 2. 시스템 알람(AlarmKit)에서도 삭제
+        AsyncTask {
+            await AlarmKitManager.shared.removeAlarm(id: id)
+        }
     }
     
-    // MARK: - UPDATE (전체 수정)
-    func firstupdateAlarm(_ updatedAlarm: Alarm) {
+    // MARK: - UPDATE (알람 수정)
+    func updateAlarm(_ updatedAlarm: Alarm) {
         guard let serverId = updatedAlarm.serverId else { return }
+        
+        // [방어] 로딩 중이면 요청 무시 (연타 방지)
+        if isLoading { return }
+        isLoading = true
+        
         let params = updatedAlarm.toDictionary()
         
         AlarmService.shared.updateAlarm(alarmId: serverId, params: params) { [weak self] result in
             guard let self = self else { return }
-            switch result {
-            case .success(let dto):
-                let newAlarmModel = Alarm(from: dto)
-                _Concurrency.Task { @MainActor in
-                    if let index = self.alarms.firstIndex(where: { $0.id == updatedAlarm.id }) {
+            
+            DispatchQueue.main.async {
+                self.isLoading = false
+                
+                switch result {
+                case .success(let dto):
+                    let newAlarmModel = Alarm(from: dto)
+                    
+                    // 1. 로컬 목록 갱신 (ID로 찾아서 교체)
+                    if let index = self.alarms.firstIndex(where: { $0.id == newAlarmModel.id }) {
                         self.alarms[index] = newAlarmModel
                     }
-                    do {
-                        try await AlarmKitManager.shared.scheduleAlarm(from: newAlarmModel)
-                    } catch {
-                        print("❌ 시스템 알람 갱신 실패: \(error)")
+                    
+                    // 2. 시스템 알람 재설정
+                    AsyncTask {
+                        do {
+                            try await AlarmKitManager.shared.scheduleAlarm(from: newAlarmModel)
+                            print("✅ 시스템 알람 갱신 완료")
+                        } catch {
+                            print("❌ 시스템 알람 갱신 실패: \(error)")
+                        }
                     }
+                    
+                case .failure(let error):
+                    print("❌ 서버 알람 수정 실패: \(error.localizedDescription)")
                 }
-            case .failure(let error):
-                print("❌ 서버 알람 수정 실패: \(error.localizedDescription)")
             }
         }
     }
     
-    // ✅ [추가] 상태 토글 전용 함수 (PATCH API 사용)
+    // MARK: - TOGGLE (ON/OFF 스위치)
     func toggleAlarmState(alarm: Alarm, isOn: Bool) {
         guard let serverId = alarm.serverId else { return }
         print("🔘 알람 ON/OFF 토글 요청: \(alarm.label) -> \(isOn ? "ON" : "OFF")")
         
-        // 1. 서버에 토글 상태 전송 (PATCH API)
+        // Optimistic UI: 서버 응답 기다리지 않고 UI 먼저 반영 (반응성 향상)
+        if let index = self.alarms.firstIndex(where: { $0.id == alarm.id }) {
+            self.alarms[index].isEnabled = isOn
+        }
+        
         AlarmService.shared.toggleAlarm(alarmId: serverId) { [weak self] result in
-            switch result {
-            case .success(let dto):
-                print("✅ 서버 알람 토글 성공 (상태: \(dto.isEnabled))")
-                
-                // 2. 서버 통신 성공 후 로컬 알람 스케줄링 관리
-                _Concurrency.Task { @MainActor in
-                    if dto.isEnabled {
-                        // ON일 경우 새로 스케줄링 등록
-                        var updatedAlarm = alarm
-                        updatedAlarm.isEnabled = true
-                        try? await AlarmKitManager.shared.scheduleAlarm(from: updatedAlarm)
-                    } else {
-                        // OFF일 경우 시스템 알림에서 해제
-                        await AlarmKitManager.shared.removeAlarm(id: alarm.id)
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let dto):
+                    print("✅ 서버 알람 토글 동기화 성공 (상태: \(dto.isEnabled))")
+                    
+                    // 시스템 알람 스케줄링 동기화
+                    AsyncTask {
+                        if dto.isEnabled {
+                            // ON: 스케줄링 등록
+                            // (주의: dto에는 일부 정보가 없을 수 있으니 기존 alarm 정보와 합쳐서 사용 권장)
+                            var updatedAlarm = alarm
+                            updatedAlarm.isEnabled = true
+                            try? await AlarmKitManager.shared.scheduleAlarm(from: updatedAlarm)
+                        } else {
+                            // OFF: 스케줄링 해제
+                            await AlarmKitManager.shared.removeAlarm(id: alarm.id)
+                        }
+                    }
+                    
+                case .failure(let error):
+                    print("❌ 서버 알람 토글 실패: \(error.localizedDescription)")
+                    // 실패 시 롤백 (원래 상태로 되돌림)
+                    if let index = self.alarms.firstIndex(where: { $0.id == alarm.id }) {
+                        self.alarms[index].isEnabled = !isOn
                     }
                 }
-            case .failure(let error):
-                print("❌ 서버 알람 토글 실패: \(error.localizedDescription)")
-                // 통신 실패 시 UI 스위치를 다시 원래대로 되돌리는 롤백 로직을 추가할 수도 있습니다.
             }
         }
     }
     
-    // MARK: - CREATE
+    // MARK: - CREATE (새 알람 추가)
+    // 보통 서버 생성이 먼저 이루어지고, 그 결과를 받아서 addAlarm을 호출하는 흐름이 일반적입니다.
+    // 여기서는 로컬에 먼저 추가하는 로직으로 보입니다.
     func addAlarm(_ newAlarm: Alarm) {
-        _Concurrency.Task { @MainActor in
+        DispatchQueue.main.async {
             self.alarms.append(newAlarm)
-            do {
-                try await AlarmKitManager.shared.scheduleAlarm(from: newAlarm)
-            } catch {
-                print("❌ 새 알람 등록 실패: \(error)")
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.fetchAlarms()
+            }
+            
+            AsyncTask {
+                do {
+                    try await AlarmKitManager.shared.scheduleAlarm(from: newAlarm)
+                    print("✅ 새 알람 시스템 등록 완료")
+                } catch {
+                    print("❌ 새 알람 등록 실패: \(error)")
+                }
             }
         }
     }
     
     // MARK: - Helper
-    private func syncAlarmKit(alarms: [Alarm]) async {}
+    private func syncAlarmKit(alarms: [Alarm]) async {
+        // 서버에서 받아온 목록으로 시스템 알람을 싹 동기화하는 로직 (구현 필요 시 작성)
+        // 예: 기존 시스템 알람 다 지우고, 받아온 목록 중 isEnabled인 것만 다시 등록
+    }
 }
