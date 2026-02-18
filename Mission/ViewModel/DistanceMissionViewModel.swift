@@ -115,6 +115,8 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
                 print("⚠️ [SERVER] 시작 실패: \(error)")
                 print("⚠️ 네트워크/서버 오류로 인해 기본 목표(20m)로 진행합니다.")
                 
+                self.isMockMode = true
+                
                 // 🚨 비상 착륙: 서버 연결 실패해도 GPS 미션은 진행
                 self.contentId = 888 // 로컬 처리를 위한 가상 ID
                 self.targetDistance = 50.0
