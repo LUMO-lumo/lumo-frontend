@@ -77,6 +77,13 @@ struct MissionContentDTO: Codable {
     let answer: String?
 }
 
+struct MissionStartResponse: Codable {
+    let code: String?
+    let message: String?
+    let result: [MissionContentDTO] 
+    let success: Bool?
+}
+
 struct MissionSubmitResultDTO: Codable {
     let isCorrect: Bool
     let isCompleted: Bool
@@ -134,7 +141,7 @@ extension Alarm {
         // ⚠️ 주의: 현재는 서버에서 받아온 미션을 앱에 반영하는 로직이 없어서 'NONE'으로 고정되어 있습니다.
         // 추후 서버의 MissionSettingDTO를 해석해서 missionType을 설정하는 로직 추가가 필요합니다.
         self.missionTitle = "미션 정보 없음"
-        self.missionType = "NONE"
+        self.missionType = "MATH"
     }
     
     // 2. 앱 모델 -> 서버 DTO 변환 (POST/PUT)
@@ -226,17 +233,39 @@ extension Alarm {
         timeFormatter.locale = Locale(identifier: "en_US_POSIX")
         timeFormatter.dateFormat = "HH:mm"
         
-        // 1. 미션 설정 강제 고정 (NONE / 0 / 0)
-        let serverMissionType = "NONE"
-        let questionCount = 0
-        let walkGoalMeter = 0
+        var serverMissionType = "NONE"
+        var questionCount = 0
+        var walkGoalMeter = 0
         
-        let missionSetting: [String: Any] = [
-            "missionType": serverMissionType, // "NONE"
-            "difficulty": "EASY",
-            "walkGoalMeter": walkGoalMeter,   // 0
-            "questionCount": questionCount    // 0
-        ]
+        switch self.missionType {
+            case "MATH", "수학", "계산", "CALCULATION":
+                serverMissionType = "MATH"
+                questionCount = 1 // 기본값 (나중에 UI에서 설정 가능하게 변경 필요)
+                
+            case "DICTATION", "받아쓰기", "명언":
+                serverMissionType = "TYPING"
+                questionCount = 1
+                
+            case "WALK", "건강", "걷기", "운동":
+                serverMissionType = "DISTANCE"
+                walkGoalMeter = 50 // 기본 50걸음
+                
+            case "OX", "퀴즈", "시사":
+                serverMissionType = "OX"
+                questionCount = 1
+                
+            default:
+                serverMissionType = "NONE"
+            }
+            
+            print("📤 미션 변환: \(self.missionType) -> \(serverMissionType)")
+
+            let missionSetting: [String: Any] = [
+                "missionType": serverMissionType,
+                "difficulty": "EASY", // 일단 EASY 고정
+                "walkGoalMeter": walkGoalMeter,
+                "questionCount": questionCount
+            ]
         
         // 2. 스누즈 설정
         let snoozeSetting: [String: Any] = [

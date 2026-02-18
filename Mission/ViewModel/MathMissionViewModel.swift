@@ -20,7 +20,7 @@ class MathMissionViewModel: BaseMissionViewModel {
     
     // MARK: - Configuration
     // ⭐️ 이 값을 false로 바꾸면 즉시 API 모드로 작동합니다.
-    private let isMockMode: Bool = true
+    private let isMockMode: Bool = false
     
     // MARK: - UI Properties
     @Published var questionText: String = "문제를 불러오는 중..."
@@ -67,14 +67,24 @@ class MathMissionViewModel: BaseMissionViewModel {
         isLoading = true
         AsyncTask {
             do {
-                // BaseMissionViewModel의 startMission 호출
-                if let result = try await super.startMission() {
-                    self.contentId = result.contentId
-                    self.questionText = result.question
-                    print("✅ [API] 문제 로드 완료: \(result.question)")
-                } else {
-                    self.errorMessage = "문제를 불러오지 못했습니다."
-                }
+                            // ✅ [핵심 수정] 결과를 배열([MissionContentDTO])로 캐스팅합니다.
+                            // BaseViewModel이나 Service에서 이미 리턴 타입을 [MissionContentDTO]로 수정했다고 가정합니다.
+                            if let results = try await super.startMission() as? [MissionContentDTO] {
+                                
+                                // ✅ 배열에서 첫 번째 문제를 가져옵니다.
+                                if let firstProblem = results.first {
+                                    self.contentId = firstProblem.contentId
+                                    self.questionText = firstProblem.question ?? "문제 내용 없음"
+                                    print("✅ [API] 문제 로드 완료: \(self.questionText)")
+                                } else {
+                                    self.errorMessage = "도착한 문제가 없습니다."
+                                    self.questionText = "문제 오류"
+                                }
+                                
+                            } else {
+                                // 캐스팅 실패 시 (여전히 객체로 오거나 타입이 안 맞을 때)
+                                self.errorMessage = "데이터 형식이 올바르지 않습니다."
+                            }
             } catch {
                 self.handleError(error)
             }

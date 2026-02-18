@@ -33,7 +33,7 @@ class BaseMissionViewModel: NSObject, ObservableObject {
     }
     
     // MARK: - 공통 API 1: 미션 시작
-    func startMission() async throws -> MissionStartResult? {
+    func startMission() async throws -> [MissionContentDTO]? {
         isLoading = true
         defer { isLoading = false }
         
@@ -41,12 +41,11 @@ class BaseMissionViewModel: NSObject, ObservableObject {
         
         switch result {
         case .success(let response):
-            let decoded = try response.map(BaseResponse<MissionStartResult>.self)
-            
-            if let data = decoded.result {
-                // 🚨 [수정] 모델 정의에 맞춰 'missionContentId' -> 'contentId'로 변경
-                self.contentId = data.contentId
-                return data
+            let decoded = try response.map(BaseResponse<[MissionContentDTO]>.self)
+                        
+                        if let data = decoded.result {
+                            // 성공적으로 배열을 받음
+                            return data
             } else {
                 throw MissionError.serverError(message: decoded.message)
             }

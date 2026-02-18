@@ -67,17 +67,16 @@ class TypingMissionViewModel: BaseMissionViewModel {
         AsyncTask {
             do {
                 self.isLoading = true
-                
-                // Base의 startMission 호출
-                if let result = try await super.startMission() {
-                    self.contentId = result.contentId
-                    self.questionText = result.question
-                    print("🌐 [SERVER] 문제 로드 성공: \(result.question)")
-                } else {
-                    self.errorMessage = "문제를 불러오지 못했습니다."
+                if let results = try await super.startMission() {
+                    // Base의 startMission 호출
+                    if let firstProblem = results.first {
+                        self.contentId = firstProblem.contentId
+                        self.questionText = firstProblem.question ?? "문제 내용 없음"
+                        print("🌐 [SERVER] 문제 로드 성공: \(self.questionText)")
+                    } else {
+                        self.errorMessage = "문제를 불러오지 못했습니다."
+                    }
                 }
-                
-                self.isLoading = false
             } catch {
                 self.isLoading = false
                 print("❌ [SERVER] 문제 로드 실패: \(error)")
