@@ -58,7 +58,7 @@ struct CustomTabBar: View {
         HStack {
             // 탭 1: 홈
             TabBarButton(
-                icon: "home",
+                icon: "Home",
                 text: "홈",
                 isSelected: selectedTab == 0,
                 activeColor: activeColor,
