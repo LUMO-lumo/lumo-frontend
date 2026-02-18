@@ -40,6 +40,7 @@ struct OxMissionExView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 176)
                     .background(Color(hex: "E9F2FF"))
+                    .cornerRadius(16)
                     .overlay(
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(Color(hex: "96C0FF"), lineWidth: 2)
@@ -51,6 +52,7 @@ struct OxMissionExView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 176)
                     .background(Color(hex: "FFE9E6"))
+                    .cornerRadius(16)
                     .overlay(
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(Color(hex: "F9A094"), lineWidth: 2)
