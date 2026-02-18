@@ -96,11 +96,15 @@ struct AlarmMenuView: View {
                     }
                 }
                 .padding(.trailing, 20)
-                .padding(.bottom, 30)
+                .padding(.bottom, 104)
                 .zIndex(1)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(uiColor: .systemBackground))
         }
     }
+}
+
+#Preview {
+    AlarmMenuView()
 }
