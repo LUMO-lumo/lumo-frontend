@@ -66,28 +66,44 @@ class MathMissionViewModel: BaseMissionViewModel {
         // [Real API Mode] - 기존 코드 보존
         isLoading = true
         AsyncTask {
+            self.isLoading = true
+            
             do {
-                            // ✅ [핵심 수정] 결과를 배열([MissionContentDTO])로 캐스팅합니다.
-                            // BaseViewModel이나 Service에서 이미 리턴 타입을 [MissionContentDTO]로 수정했다고 가정합니다.
-                            if let results = try await super.startMission() as? [MissionContentDTO] {
-                                
-                                // ✅ 배열에서 첫 번째 문제를 가져옵니다.
-                                if let firstProblem = results.first {
-                                    self.contentId = firstProblem.contentId
-                                    self.questionText = firstProblem.question ?? "문제 내용 없음"
-                                    print("✅ [API] 문제 로드 완료: \(self.questionText)")
-                                } else {
-                                    self.errorMessage = "도착한 문제가 없습니다."
-                                    self.questionText = "문제 오류"
-                                }
-                                
-                            } else {
-                                // 캐스팅 실패 시 (여전히 객체로 오거나 타입이 안 맞을 때)
-                                self.errorMessage = "데이터 형식이 올바르지 않습니다."
-                            }
+                print("🚀 [SERVER] 수학 미션 시작 요청...")
+                print("현재 요청 중인 Alarm ID: \(self.alarmId)")
+                if let results = try await super.startMission() {
+                    
+                    if let firstProblem = results.first {
+                        // 1. [성공] 서버 데이터 적용
+                        self.contentId = firstProblem.contentId
+                        self.questionText = firstProblem.question ?? "문제 내용 없음"
+                        
+                        print("🌐 [SERVER] 문제 로드 성공: \(self.questionText)")
+                    } else {
+                        // 배열은 왔는데 비어있음
+                        throw MissionError.serverError(message: "문제 데이터 없음")
+                    }
+                    
+                } else {
+                    // 캐스팅 실패 (데이터 형식이 안 맞음)
+                    throw MissionError.serverError(message: "데이터 형식이 올바르지 않습니다.")
+                }
+                
             } catch {
-                self.handleError(error)
+                // 2. [실패] 서버 에러 발생 시 로컬 모드로 전환 (Graceful Degradation)
+                print("❌ [SERVER] 문제 로드 실패: \(error)")
+                print("⚠️ 서버 연결 실패로 인해 '로컬(Mock) 모드'로 전환합니다.")
+                
+                // 3. 디버깅용: 서버 에러 메시지 확인 (MoyaError인 경우)
+                if let moyaError = error as? MoyaError, let response = moyaError.response {
+                    let errorBody = String(data: response.data, encoding: .utf8) ?? "데이터 없음"
+                    print("🔍 [DEBUG] 서버 에러 메시지: \(errorBody)")
+                }
+                
+                // 🚨 비상 착륙: 로컬 데이터 세팅
+                self.setupMockData()
             }
+            
             self.isLoading = false
         }
     }
@@ -133,26 +149,28 @@ class MathMissionViewModel: BaseMissionViewModel {
             
             // API 모드일 때는 BaseViewModel이 dismissAlarm을 이미 호출했을 것임.
             // Mock 모드일 때는 여기서 수동으로 완료 처리.
-            if isMockMode {
-                AsyncTask {
-                    try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
-                    self.isMissionCompleted = true
-                }
-            } else {
-                // API 모드에서도 사용자가 정답 피드백을 볼 시간을 줌 (Base가 isMissionCompleted를 true로 만들기 전이라고 가정하거나, UI 흐름에 따라 조정)
-                 // 보통 BaseViewModel에서 dismissAlarm 성공 후 isMissionCompleted = true로 설정하므로
-                 // 여기서는 별도 처리가 필요 없거나, 애니메이션을 위한 딜레이만 줄 수 있습니다.
-            }
-            
-        } else {
-            self.feedbackMessage = "틀렸어요!"
-            // 1.5초 후 피드백 숨기고 입력창 초기화
             AsyncTask {
-                try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
-                self.showFeedback = false
-                self.userAnswer = ""
-            }
-        }
+                        try? await AsyncTask.sleep(nanoseconds: 1_500_000_000) // 1.5초 딜레이 (피드백 감상 시간)
+                        
+                        // UI 업데이트는 메인 스레드에서
+                        await MainActor.run {
+                            print("🏁 [ViewModel] 정답 확인! 미션 완료 처리합니다.")
+                            self.isMissionCompleted = true
+                        }
+                    }
+                    
+                } else {
+                    // ❌ 오답일 때
+                    self.feedbackMessage = "틀렸어요!"
+                    AsyncTask {
+                        try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
+                        
+                        await MainActor.run {
+                            self.showFeedback = false
+                            self.userAnswer = ""
+                        }
+                    }
+                }
     }
     
     // 에러 처리

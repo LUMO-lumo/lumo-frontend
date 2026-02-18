@@ -53,6 +53,7 @@ struct AlarmDTO: Codable {
     let volume: Int
     let repeatDays: [String]
     let snoozeSetting: SnoozeSettingDTO?
+    let missionSetting: MissionSettingDTO?
 }
 
 struct SnoozeSettingDTO: Codable {
@@ -140,93 +141,32 @@ extension Alarm {
         
         // ⚠️ 주의: 현재는 서버에서 받아온 미션을 앱에 반영하는 로직이 없어서 'NONE'으로 고정되어 있습니다.
         // 추후 서버의 MissionSettingDTO를 해석해서 missionType을 설정하는 로직 추가가 필요합니다.
-        self.missionTitle = "미션 정보 없음"
-        self.missionType = "MATH"
+        if let settings = dto.missionSetting {
+                    // 1. 미션 타입 설정
+                    self.missionType = settings.missionType
+                    
+                    // 2. 미션 타이틀 생성 (서버 타입 -> 유저 친화적 텍스트)
+                    switch settings.missionType {
+                    case "MATH", "CALCULATION":
+                        self.missionTitle = "수학 문제 풀기"
+                    case "TYPING", "DICTATION":
+                        self.missionTitle = "명언 따라쓰기"
+                    case "DISTANCE", "WALK":
+                        let goal = settings.walkGoalMeter
+                        self.missionTitle = "목표 거리 걷기 (\(goal)m)"
+                    case "OX", "QUIZ":
+                        self.missionTitle = "시사 상식 퀴즈"
+                    default:
+                        self.missionTitle = "미션 없음"
+                    }
+                } else {
+                    // 설정이 없으면 기본값
+                    self.missionType = "NONE"
+                    self.missionTitle = "미션 없음"
+                }
     }
     
-    // 2. 앱 모델 -> 서버 DTO 변환 (POST/PUT)
-    // ✅ [수정 완료] 사용자가 선택한 미션 타입과 설정을 동적으로 반영
-    //    func toDictionary() -> [String: Any] {
-    //        let timeFormatter = DateFormatter()
-    //        timeFormatter.locale = Locale(identifier: "en_US_POSIX")
-    //        timeFormatter.dateFormat = "HH:mm" // 🚨 서버가 요구하는 "시:분" 포맷
-    //
-    //        // 1. 미션 타입 매핑 (한글 -> 서버 코드)
-    ////        let serverMissionType: String
-    ////        switch self.missionType {
-    ////        case "계산", "수학문제", "CALCULATION": serverMissionType = "CALCULATION"
-    ////        case "받아쓰기", "따라쓰기", "DICTATION": serverMissionType = "DICTATION"
-    ////        case "운동", "거리미션", "WALK": serverMissionType = "WALK"
-    ////        case "OX", "OX 퀴즈", "OX_QUIZ": serverMissionType = "OX"
-    ////        default: serverMissionType = "NONE"
-    ////        }
-    //
-    //        // 2. 미션별 세부 설정값 결정 (기본값 적용)
-    ////        let questionCount: Int
-    ////        let walkGoalMeter: Int
-    ////
-    ////        if serverMissionType == "CALCULATION" || serverMissionType == "OX" || serverMissionType == "DICTATION" {
-    ////            questionCount = 3
-    ////            walkGoalMeter = 0
-    ////        } else if serverMissionType == "WALK" {
-    ////            questionCount = 0
-    ////            walkGoalMeter = 50
-    ////        } else {
-    ////            questionCount = 0
-    ////            walkGoalMeter = 0
-    ////        }
-    //
-    //        // 3. 미션 설정 객체 생성
-    //        let missionSetting: [String: Any] = [
-    //            "missionType": serverMissionType,
-    //            "difficulty": "EASY",
-    //            "walkGoalMeter": walkGoalMeter,
-    //            "questionCount": questionCount
-    //        ]
-    //
-    //        // 4. 스누즈 설정
-    //        let snoozeSetting: [String: Any] = [
-    //            "isEnabled": true,
-    //            "intervalSec": 300,
-    //            "maxCount": 3
-    //        ]
-    //
-    //        // 5. 사운드 이름 처리 (서버 호환성용 안전장치)
-    //        // '기본음' 등의 한글 이름이 들어가면 서버 에러 가능성이 있어 테스트용 ID로 대체
-    //        let serverSoundType = (self.soundName == "기본음" || self.soundName.isEmpty) ? "scream14-6918" : self.soundName
-    //
-    //        // 6. 요일 안전 처리 (빈 배열 방지)
-    //        let dayStrings = Alarm.convertRepeatDaysToString(self.repeatDays)
-    //        let safeRepeatDays = dayStrings.isEmpty ? ["MON"] : dayStrings
-    //
-    //        // 7. 최종 딕셔너리 반환
-    //        return [
-    //            "alarmTime": timeFormatter.string(from: self.time),
-    //            "label": self.label.isEmpty ? "Alarm" : self.label,
-    //            "isEnabled": self.isEnabled,
-    //            "soundType": serverSoundType,
-    //            "vibration": true,
-    //            "volume": 100,
-    //            "repeatDays": safeRepeatDays,
-    //            "snoozeSetting": snoozeSetting,
-    //            "missionSetting": missionSetting
-    //        ]
-    //    }
-    //
-    //    static func convertRepeatDaysToInt(_ days: [String]) -> [Int] {
-    //        let dayMap: [String: Int] = [
-    //            "SUN": 0, "MON": 1, "TUE": 2, "WED": 3, "THU": 4, "FRI": 5, "SAT": 6
-    //        ]
-    //        return days.compactMap { dayMap[$0] }.sorted()
-    //    }
-    //
-    //    static func convertRepeatDaysToString(_ days: [Int]) -> [String] {
-    //        let dayMap: [Int: String] = [
-    //            0: "SUN", 1: "MON", 2: "TUE", 3: "WED", 4: "THU", 5: "FRI", 6: "SAT"
-    //        ]
-    //        return days.sorted().compactMap { dayMap[$0] }
-    //    }
-    //}
+    
     
     func toDictionary() -> [String: Any] {
         let timeFormatter = DateFormatter()
@@ -238,7 +178,7 @@ extension Alarm {
         var walkGoalMeter = 0
         
         switch self.missionType {
-            case "MATH", "수학", "계산", "CALCULATION":
+            case "MATH", "계산":
                 serverMissionType = "MATH"
                 questionCount = 1 // 기본값 (나중에 UI에서 설정 가능하게 변경 필요)
                 
@@ -246,16 +186,16 @@ extension Alarm {
                 serverMissionType = "TYPING"
                 questionCount = 1
                 
-            case "WALK", "건강", "걷기", "운동":
-                serverMissionType = "DISTANCE"
+            case "WALK", "걷기", "운동":
+                serverMissionType = "WALK"
                 walkGoalMeter = 50 // 기본 50걸음
                 
             case "OX", "퀴즈", "시사":
-                serverMissionType = "OX"
+                serverMissionType = "OX_QUIZ"
                 questionCount = 1
                 
             default:
-                serverMissionType = "NONE"
+                serverMissionType = "MATH"
             }
             
             print("📤 미션 변환: \(self.missionType) -> \(serverMissionType)")
