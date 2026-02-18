@@ -141,7 +141,10 @@ struct DistanceMissionView: View {
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
             if completed {
-                print("🏁 거리 미션 완료! 메인 화면으로 이동합니다.")
+                print("🏁 거리 미션 완료! 소리를 끄고 홈으로 이동합니다.")
+                // ✅ [추가] 소리 끄기
+                AlarmKitManager.shared.stopAlarmSound()
+                
                 withAnimation(.easeInOut(duration: 0.5)) {
                     appState.currentRoot = .main
                 }
@@ -149,8 +152,4 @@ struct DistanceMissionView: View {
             
         }
     }
-}
-
-#Preview {
-    DistanceMissionView(alarmId: 1, alarmLabel: "1교시 없는 날")
 }

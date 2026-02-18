@@ -149,7 +149,10 @@ struct TypingMissionView: View {
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
             if completed {
-                print("🏁 미션 완료! 뷰를 닫습니다.")
+                print("🏁 미션 완료! 소리를 끄고 홈으로 이동합니다.")
+                // ✅ [추가] 소리 끄기
+                AlarmKitManager.shared.stopAlarmSound()
+                
                 withAnimation {
                     appState.currentRoot = .main
                 }
@@ -166,8 +169,4 @@ struct TypingMissionView: View {
             Text(viewModel.errorMessage ?? "")
         }
     }
-}
-
-#Preview {
-    TypingMissionView(alarmId: 1, alarmLabel: "1교시 있는 날")
 }

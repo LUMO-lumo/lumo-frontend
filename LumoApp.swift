@@ -52,53 +52,65 @@ struct LumoContentView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.modelContext) private var modelContext // ✅ 여기서 접근 가능
     
+    // ✅ 알람 매니저 감지
+    @StateObject private var alarmManager = AlarmKitManager.shared
+    
     var body: some View {
-        Group {
-            // appState에 따라 루트 화면 교체
-            switch appState.currentRoot {
-            case .onboarding:
-                NavigationStack(path: .constant(onboardingViewModel.path)) {
-                    OnBoardingView()
-                        .navigationDestination(for: OnboardingStep.self) { step in
-                            switch step {
-                            case .initialSetup:
-                                InitialSetupContainerView()
-                            case .introMission:
-                                MissionIntroView()
-                            case .missionSelect:
-                                MissionContainerView()
-                            case .home:
-                                Color.clear
-                                    .onAppear {
-                                        isOnboardingFinished = true
-                                        withAnimation {
-                                            appState.currentRoot = .main
+        ZStack {
+            // [Layer 1] 메인 앱 콘텐츠
+            Group {
+                // appState에 따라 루트 화면 교체
+                switch appState.currentRoot {
+                case .onboarding:
+                    NavigationStack(path: .constant(onboardingViewModel.path)) {
+                        OnBoardingView()
+                            .navigationDestination(for: OnboardingStep.self) { step in
+                                switch step {
+                                case .initialSetup:
+                                    InitialSetupContainerView()
+                                case .introMission:
+                                    MissionIntroView()
+                                case .missionSelect:
+                                    MissionContainerView()
+                                case .home:
+                                    Color.clear
+                                        .onAppear {
+                                            isOnboardingFinished = true
+                                            withAnimation {
+                                                appState.currentRoot = .main
+                                            }
                                         }
-                                    }
+                                }
                             }
-                        }
+                    }
+                    
+                case .main:
+                    MainView()
+                    
+                // (아래 case들은 일반적인 네비게이션용 - 오버레이와는 별개로 유지)
+                case .mathMission(let alarmId, let label):
+                    MathMissionView(alarmId: alarmId, alarmLabel: label)
+                    
+                case .distanceMission(let alarmId, let label):
+                    DistanceMissionView(alarmId: alarmId, alarmLabel: label)
+                    
+                case .oxMission(let alarmID, let label):
+                    OXMissionView(alarmId: alarmID, alarmLabel: label)
+                    
+                case .typingMission(let alarmId, let label):
+                    TypingMissionView(alarmId: alarmId, alarmLabel: label)
                 }
-                
-            case .main:
-                MainView()
-                
-            case .mathMission(let alarmId, let label):
-                MathMissionView(alarmId: alarmId, alarmLabel: label)
-                
-            case .distanceMission(let alarmId, let label):
-                DistanceMissionView(alarmId: alarmId, alarmLabel: label)
-                
-            case .oxMission(let alarmID, let label):
-                OXMissionView(alarmId: alarmID, alarmLabel: label)
-                
-            case .typingMission(let alarmId, let label):
-                TypingMissionView(alarmId: alarmId, alarmLabel: label)
+            }
+            .environment(onboardingViewModel)
+            .preferredColorScheme(selectedScheme)
+            
+            // [Layer 2] 알람 발생 시 최상단 오버레이 (미션 화면)
+            if alarmManager.showMissionView {
+                AlarmPlayingOverlay()
+                    .transition(.opacity)
+                    .zIndex(9999) // 무조건 최상단
             }
         }
-        // ✅ 5. 공통 환경 설정 주입
-        .environment(onboardingViewModel)
-        .preferredColorScheme(selectedScheme)
-        
         // ✅ 6. 온보딩 상태 변경 감지
         .onChange(of: isOnboardingFinished) { _, newValue in
             if newValue && appState.currentRoot == .onboarding {

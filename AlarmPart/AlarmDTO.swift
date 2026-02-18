@@ -9,8 +9,9 @@ import Foundation
 import SwiftData
 
 // MARK: - Domain Model (App Internal Use)
-struct Alarm: Identifiable {
-    let id: UUID = UUID()
+// ✅ [필수] UserDefaults 저장을 위해 Codable 채택
+struct Alarm: Identifiable, Codable {
+    var id: UUID = UUID()
     var serverId: Int? = nil
     
     var time: Date
@@ -21,6 +22,19 @@ struct Alarm: Identifiable {
     var missionType: String
     
     var soundName: String = "기본음"
+    
+    // 기본 이니셜라이저 (기존 코드 호환)
+    init(id: UUID = UUID(), serverId: Int? = nil, time: Date, label: String, isEnabled: Bool, repeatDays: [Int], missionTitle: String, missionType: String, soundName: String) {
+        self.id = id
+        self.serverId = serverId
+        self.time = time
+        self.label = label
+        self.isEnabled = isEnabled
+        self.repeatDays = repeatDays
+        self.missionTitle = missionTitle
+        self.missionType = missionType
+        self.soundName = soundName
+    }
     
     var timeString: String {
         let formatter = DateFormatter()
@@ -53,6 +67,8 @@ struct AlarmDTO: Codable {
     let volume: Int
     let repeatDays: [String]
     let snoozeSetting: SnoozeSettingDTO?
+    // ✅ [수정] 서버 구조 변경 반영: 미션 설정 객체 추가
+    let missionSetting: MissionSettingDTO?
 }
 
 struct SnoozeSettingDTO: Codable {
@@ -118,7 +134,9 @@ struct AlarmSoundDTO: Codable {
 // MARK: - Extensions (Mapping Logic)
 extension Alarm {
     
+    // ✅ [수정] 서버 DTO -> 로컬 Alarm 변환 (알람 목록 조회 시 사용)
     init(from dto: AlarmDTO) {
+        self.id = UUID() // 로컬용 UUID 생성
         self.serverId = dto.alarmId
         self.label = dto.label ?? ""
         self.isEnabled = dto.isEnabled
@@ -130,51 +148,58 @@ extension Alarm {
         
         self.repeatDays = Alarm.convertRepeatDaysToInt(dto.repeatDays)
         
-        self.missionTitle = "미션 정보 없음"
-        self.missionType = "NONE"
+        // 미션 정보 매핑
+        if let missionDTO = dto.missionSetting {
+            switch missionDTO.missionType {
+            case "CALCULATION":
+                self.missionType = "계산"
+                self.missionTitle = "수학문제"
+            case "DICTATION":
+                self.missionType = "받아쓰기"
+                self.missionTitle = "따라쓰기"
+            case "WALK":
+                self.missionType = "운동"
+                self.missionTitle = "거리미션"
+            case "OX_QUIZ":
+                self.missionType = "OX"
+                self.missionTitle = "OX 퀴즈"
+            default:
+                self.missionType = "NONE"
+                self.missionTitle = "미션 없음"
+            }
+        } else {
+            self.missionTitle = "미션 정보 없음"
+            self.missionType = "NONE"
+        }
     }
     
-    // ✅ [핵심 수정] 요청하신 포맷과 완벽히 일치하도록 구성
+    // ✅ [수정] 로컬 Alarm -> 서버 요청 Dictionary 변환 (알람 생성/수정 시 사용)
     func toDictionary() -> [String: Any] {
         let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "HH:mm"
         
-        // 1. 미션 타입 매핑
-        // ✅ 요청하신 대로 미션 타입을 무조건 "NONE"으로 설정하여 전송
+        // 생성/수정 시에는 미션 정보를 보내지 않거나 NONE으로 보냄
         let serverMissionType = "NONE"
         
-        /* 기존 매핑 로직 주석 처리 (필요시 복구 가능)
-        switch self.missionType {
-        case "계산": serverMissionType = "CALCULATION"
-        case "받아쓰기": serverMissionType = "DICTATION"
-        case "운동": serverMissionType = "WALK"
-        case "OX": serverMissionType = "OX_QUIZ"
-        default: serverMissionType = "NONE"
-        }
-        */
-        
-        // 2. 미션 설정 (요청하신 예시: missionType -> difficulty -> walkGoalMeter:0 -> questionCount:0)
         let missionSetting: [String: Any] = [
-            "missionType": serverMissionType, // 항상 "NONE" 전송
+            "missionType": serverMissionType,
             "difficulty": "EASY",
-            "walkGoalMeter": 0,    // 요청값 0
-            "questionCount": 0     // 요청값 0
+            "walkGoalMeter": 0,
+            "questionCount": 0
         ]
         
-        // 3. 스누즈 설정 (요청하신 예시: isEnabled -> intervalSec:0 -> maxCount:0)
         let snoozeSetting: [String: Any] = [
             "isEnabled": true,
-            "intervalSec": 0,      // 요청값 0
-            "maxCount": 0          // 요청값 0
+            "intervalSec": 0,
+            "maxCount": 0
         ]
         
-        // 4. 전체 데이터 구조 (요청하신 순서 반영)
         return [
             "alarmTime": timeFormatter.string(from: self.time),
             "label": self.label,
-            "soundType": self.soundName, // 서버가 받는 String 값
+            "soundType": self.soundName,
             "vibration": true,
-            "volume": 100, // 요청값 100
+            "volume": 100,
             "repeatDays": Alarm.convertRepeatDaysToString(self.repeatDays),
             "snoozeSetting": snoozeSetting,
             "missionSetting": missionSetting

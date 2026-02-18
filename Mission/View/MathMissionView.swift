@@ -151,7 +151,10 @@ struct MathMissionView: View {
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
             if completed {
-                print("🏁 미션 완료! 뷰를 닫습니다.")
+                print("🏁 미션 완료! 소리를 끄고 홈으로 이동합니다.")
+                // ✅ [추가] 소리 끄기 (오버레이 닫힘)
+                AlarmKitManager.shared.stopAlarmSound()
+                
                 withAnimation {
                     appState.currentRoot = .main
                 }
@@ -169,8 +172,4 @@ struct MathMissionView: View {
             Text(viewModel.errorMessage ?? "")
         }
     }
-}
-
-#Preview {
-    MathMissionView(alarmId: 1, alarmLabel: "1교시 있는 날")
 }
