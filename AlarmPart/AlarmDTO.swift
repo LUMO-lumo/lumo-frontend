@@ -156,25 +156,29 @@ extension Alarm {
         // ⚠️ 주의: 현재는 서버에서 받아온 미션을 앱에 반영하는 로직이 없어서 'NONE'으로 고정되어 있습니다.
         // 추후 서버의 MissionSettingDTO를 해석해서 missionType을 설정하는 로직 추가가 필요합니다.
         if let settings = dto.missionSetting {
-                    // 1. 미션 타입 설정
-                    self.missionType = settings.missionType
-                    
-                    // 2. 미션 타이틀 생성 (서버 타입 -> 유저 친화적 텍스트)
                     switch settings.missionType {
                     case "MATH", "CALCULATION":
+                        self.missionType = "계산"
                         self.missionTitle = "수학 문제 풀기"
+                        
                     case "TYPING", "DICTATION":
+                        self.missionType = "받아쓰기"
                         self.missionTitle = "명언 따라쓰기"
-                    case "DISTANCE", "WALK":
+                        
+                    case "WALK", "DISTANCE":
+                        self.missionType = "운동"
                         let goal = settings.walkGoalMeter
                         self.missionTitle = "목표 거리 걷기 (\(goal)m)"
-                    case "OX", "QUIZ":
+                        
+                    case "OX", "OX_QUIZ", "QUIZ":
+                        self.missionType = "OX"
                         self.missionTitle = "시사 상식 퀴즈"
+                        
                     default:
-                        self.missionTitle = "미션 없음"
+                        self.missionType = "계산" // 기본값
+                        self.missionTitle = "수학 문제 풀기"
                     }
                 } else {
-                    // 설정이 없으면 기본값
                     self.missionType = "NONE"
                     self.missionTitle = "미션 없음"
                 }
