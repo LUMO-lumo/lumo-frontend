@@ -35,6 +35,9 @@ struct TypingMissionView: View {
     
     var body: some View {
         ZStack {
+            // ✅ 전체 화면 배경색 지정 (오버레이 시 투명 방지 & 다크모드 대응)
+            Color(uiColor: .systemBackground)
+                .ignoresSafeArea()
             
             // 메인 컨텐츠
             VStack {
@@ -42,11 +45,11 @@ struct TypingMissionView: View {
                 VStack(spacing: 8) {
                     Text(viewModel.alarmLabel)
                         .font(.pretendardMedium16)
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                     
                     Text(timeFormatter.string(from: currentTime))
                         .font(.pretendardSemiBold60)
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                         .onReceive(timer) { input in
                             currentTime = input
                         }
@@ -70,7 +73,7 @@ struct TypingMissionView: View {
                     HStack {
                         Text("\(viewModel.questionText)")
                             .font(.Subtitle2)
-                            .foregroundStyle(Color.primary)
+                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                         Spacer()
                     }
                     .padding(24)
@@ -83,6 +86,7 @@ struct TypingMissionView: View {
                     HStack {
                         TextField("여기에 문장을 작성해주세요", text: $viewModel.userAnswer)
                             .font(.Subtitle3)
+                            .foregroundStyle(.black) // ✅ [수정] 배경이 밝은 회색이므로 글자는 항상 검은색이어야 함
                             .keyboardType(.default)
                             .multilineTextAlignment(.center)
 
@@ -93,6 +97,7 @@ struct TypingMissionView: View {
                     .cornerRadius(16)
                     .padding(.top, 10)
                     .padding(.bottom, 34)
+                    .environment(\.colorScheme, .light)
                 }
                 
                 Spacer()
@@ -144,14 +149,18 @@ struct TypingMissionView: View {
                 .zIndex(1) // 맨 앞으로 가져오기
             }
         }
+        // ✅ [추가] 화면 터치 시 키보드 내리기
+        .onTapGesture {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
         .onAppear {
             viewModel.startTypingMission()
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
             if completed {
-                print("🏁 미션 완료! 소리를 끄고 홈으로 이동합니다.")
-                // ✅ [추가] 소리 끄기
-                AlarmKitManager.shared.stopAlarmSound()
+                print("🏁 미션 완료! 소리를 끄고 알림을 제거합니다.")
+                // 🔥 [핵심 수정] completeMission() 호출
+                AlarmKitManager.shared.completeMission()
                 
                 withAnimation {
                     appState.currentRoot = .main
@@ -169,4 +178,8 @@ struct TypingMissionView: View {
             Text(viewModel.errorMessage ?? "")
         }
     }
+}
+
+#Preview {
+    TypingMissionView(alarmId: 1, alarmLabel: "1교시 있는 날")
 }

@@ -37,12 +37,15 @@ final class AlarmKitManager: NSObject, ObservableObject {
     
     // 🔥 [추가] UI에 표시할 알람 제목 및 ID
     @Published var triggeredAlarmLabel: String = "알람"
-    @Published var triggeredAlarmId: Int? = nil // ✅ 미션 API 호출을 위해 필요
+    @Published var triggeredAlarmId: Int? = nil
     
-    // 🔥 [핵심 추가] 알람 취소를 위한 UUID 저장 (미션 완료 시 예약 취소용)
+    // 🔥 [핵심 추가] 알람 취소를 위한 UUID 저장
     @Published var triggeredAlarmUUID: String? = nil
     
-    // 🔥 [핵심 추가] 미션 완료 상태 플래그 (중복 알림 방지)
+    // 🔥 [추가] 방금 완료한 알람의 UUID (Ghost 감지용)
+    @Published var lastCompletedAlarmUUID: String? = nil
+    
+    // 🔥 [핵심 추가] 미션 완료 상태 플래그
     @Published var isMissionCompletedState: Bool = false
     
     // 🔥 화면 전환 트리거
@@ -91,9 +94,16 @@ final class AlarmKitManager: NSObject, ObservableObject {
         }
     }
     
-    // MARK: - 알람 스케줄링 (3중 안전장치)
+    // MARK: - 알람 스케줄링
     
     func scheduleAlarm(from alarm: Alarm) async throws {
+        // 🔥 [핵심 수정] 알람을 새로 예약한다는 건, 더 이상 '완료된 알람'이 아님 -> 차단 해제
+        if lastCompletedAlarmUUID == alarm.id.uuidString {
+            lastCompletedAlarmUUID = nil
+            isMissionCompletedState = false
+            print("🔓 [Unlock] 알람 재설정 감지 -> Ghost 차단 해제: \(alarm.id.uuidString)")
+        }
+        
         await removeAlarm(id: alarm.id)
         guard alarm.isEnabled else { return }
         
@@ -119,9 +129,8 @@ final class AlarmKitManager: NSObject, ObservableObject {
                 sound: .named("\(soundFileName).mp3")
             )
             try await AlarmManager.shared.schedule(id: alarm.id, configuration: config)
-            print("✅ [1단계] AlarmKit 등록 성공")
         } catch {
-            print("⚠️ [1단계] AlarmKit 등록 실패: \(error.localizedDescription)")
+            print("⚠️ [1단계] AlarmKit 실패 (무시 가능)")
         }
         
         // [Step 2] Live Activity
@@ -136,9 +145,8 @@ final class AlarmKitManager: NSObject, ObservableObject {
                     content: content,
                     pushType: nil
                 )
-                print("✅ [2단계] Live Activity 시작됨")
             } catch {
-                print("⚠️ [2단계] Live Activity 실패: \(error)")
+                print("⚠️ [2단계] Live Activity 실패 (무시 가능)")
             }
         }
         
@@ -146,7 +154,6 @@ final class AlarmKitManager: NSObject, ObservableObject {
         await scheduleRepeatedNotifications(for: alarm, at: nextAlarmDate, soundName: soundFileName)
     }
     
-    // 반복 알림 예약
     private func scheduleRepeatedNotifications(for alarm: Alarm, at date: Date, soundName: String) async {
         let content = UNMutableNotificationContent()
         content.title = "⏰ \(alarm.label.isEmpty ? "기상 시간" : alarm.label)"
@@ -156,7 +163,6 @@ final class AlarmKitManager: NSObject, ObservableObject {
         
         let sid = alarm.serverId ?? -1
         
-        // ✅ [수정] 취소를 위해 UUID String을 userInfo에 저장
         var userInfo: [String: Any] = [
             "soundFileName": soundName,
             "soundExtension": "mp3",
@@ -164,7 +170,7 @@ final class AlarmKitManager: NSObject, ObservableObject {
             "missionTitle": alarm.missionTitle,
             "alarmLabel": alarm.label,
             "alarmId": sid,
-            "alarmUUID": alarm.id.uuidString // 🔥 핵심: 취소용 UUID
+            "alarmUUID": alarm.id.uuidString
         ]
         
         if let ext = getFileExtension(for: soundName) {
@@ -185,7 +191,7 @@ final class AlarmKitManager: NSObject, ObservableObject {
             let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
             
             let request = UNNotificationRequest(
-                identifier: "\(baseId)_rep_\(i)", // 🔥 이 ID들을 나중에 지워야 함
+                identifier: "\(baseId)_rep_\(i)",
                 content: content,
                 trigger: trigger
             )
@@ -210,8 +216,7 @@ final class AlarmKitManager: NSObject, ObservableObject {
         }
     }
     
-    // 🔥 [추가] 로컬 알림 취소 헬퍼
-    private func cancelLocalNotifications(for uuidString: String) {
+    func cancelLocalNotifications(for uuidString: String) {
         let center = UNUserNotificationCenter.current()
         var identifiersToRemove: [String] = []
         identifiersToRemove.append(uuidString)
@@ -221,12 +226,11 @@ final class AlarmKitManager: NSObject, ObservableObject {
         }
         center.removePendingNotificationRequests(withIdentifiers: identifiersToRemove)
         center.removeDeliveredNotifications(withIdentifiers: identifiersToRemove)
-        print("🧹 [Cleanup] 예약된 반복 알림 삭제 완료: \(uuidString)")
+        print("🧹 [Cleanup] 반복 알림 삭제: \(uuidString)")
     }
     
     // MARK: - 사운드 제어
     func playAlarmSound(fileName: String, extension ext: String = "mp3") {
-        // 이미 울리고 있거나, 방금 미션을 깼다면 재생하지 않음
         guard !isAlarmPlaying && !isMissionCompletedState else { return }
         
         do { try AVAudioSession.sharedInstance().setActive(true) } catch {}
@@ -245,9 +249,7 @@ final class AlarmKitManager: NSObject, ObservableObject {
         } catch { print("❌ 재생 실패: \(error)") }
     }
     
-    // 단순히 소리만 끄는 함수 (슬라이드 중단 등)
     func stopAlarmSound() {
-        // 소리만 끄더라도 예약된 알림은 취소해야 안전함
         if let uuid = triggeredAlarmUUID {
             cancelLocalNotifications(for: uuid)
         }
@@ -266,31 +268,27 @@ final class AlarmKitManager: NSObject, ObservableObject {
             triggeredMissionType = nil
             triggeredAlarmId = nil
             triggeredAlarmUUID = nil
-            // 여기서 isMissionCompletedState는 초기화하지 않음 (다음 알람을 위해 별도 타이밍에 하거나, 새 알람 시작 시 초기화)
         }
         print("🔕 알람 소리 중단")
     }
     
-    // 🔥 [핵심 기능] 미션 완료 시 호출: 소리 끄고 + 남은 알림 폭파 + 상태 설정
     func completeMission() {
         print("🎉 [Success] 미션 성공! 모든 알림 및 소리 종료")
         
-        // 1. 중복 실행 방지 플래그 설정
         isMissionCompletedState = true
         
-        // 2. 예약된 잔여 알림(5초 뒤 올 것들) 즉시 삭제
         if let uuid = triggeredAlarmUUID {
+            lastCompletedAlarmUUID = uuid
             cancelLocalNotifications(for: uuid)
         }
         
-        // 3. 소리 끄기 및 UI 정리
         stopAlarmSound()
         
-        // 4. 상태 복구 예약 (다음 알람을 위해 1분 뒤 초기화)
-        // 바로 false로 만들면 취소 직전에 큐에 있던 알림이 뚫고 들어올 수 있음
-        DispatchQueue.main.asyncAfter(deadline: .now() + 60) {
+        // 2분간 차단 (재설정 시 해제됨)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 120) {
             self.isMissionCompletedState = false
-            print("🔄 [Reset] 미션 완료 상태 초기화 (다음 알람 대기)")
+            self.lastCompletedAlarmUUID = nil
+            print("🔄 [Reset] 미션 완료 상태 초기화")
         }
     }
     
@@ -333,18 +331,23 @@ extension AlarmKitManager: UNUserNotificationCenterDelegate {
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
-        // ✅ [수정] 컴파일러 에러 해결: nonisolated 함수 내부에 로컬 구조체를 정의하여 안전하게 감쌈
         struct CompletionWrapper: @unchecked Sendable {
             let handler: (UNNotificationPresentationOptions) -> Void
         }
         let safeHandler = CompletionWrapper(handler: completionHandler)
         
+        let incomingUUID = notification.request.content.userInfo["alarmUUID"] as? String
+        
         _Concurrency.Task { @MainActor in
-            // MainActor 상태(isMissionCompletedState) 확인
-            if AlarmKitManager.shared.isMissionCompletedState {
-                safeHandler.handler([]) // 알림 표시 안 함
+            // 🔥 [수정] 무조건 차단이 아니라, UUID가 '방금 완료한 그놈'일 때만 차단
+            if AlarmKitManager.shared.isMissionCompletedState,
+               let incoming = incomingUUID,
+               incoming == AlarmKitManager.shared.lastCompletedAlarmUUID {
+                
+                print("🛡 [Block] 완료된 알람(Ghost)의 배너 표시 차단")
+                safeHandler.handler([]) // 차단
             } else {
-                safeHandler.handler([.banner, .list, .sound]) // 알림 표시
+                safeHandler.handler([.banner, .list, .sound]) // 허용
             }
         }
         handleNotification(notification)
@@ -367,27 +370,37 @@ extension AlarmKitManager: UNUserNotificationCenterDelegate {
         let missionType = userInfo["missionType"] as? String
         let label = userInfo["alarmLabel"] as? String
         let alarmId = userInfo["alarmId"] as? Int
-        let alarmUUID = userInfo["alarmUUID"] as? String // ✅ UUID 추출
+        let alarmUUID = userInfo["alarmUUID"] as? String
         
         _Concurrency.Task { @MainActor in
-            // 🔥 [방어 로직] 이미 미션을 깼거나, 알람이 울리고 있다면 무시
-            if AlarmKitManager.shared.isMissionCompletedState || AlarmKitManager.shared.isAlarmPlaying {
-                print("🛡 [Guard] 이미 미션 완료 또는 알람 재생 중 -> 중복 실행 방지")
-                return
+            
+            // Case 1: 미션 완료 상태에서의 유입 체크
+            if AlarmKitManager.shared.isMissionCompletedState {
+                if let incomingUUID = alarmUUID, incomingUUID == AlarmKitManager.shared.lastCompletedAlarmUUID {
+                    print("🛡 [Guard] 완료된 알람의 잔여(Ghost) 유입 차단: \(incomingUUID)")
+                    AlarmKitManager.shared.cancelLocalNotifications(for: incomingUUID)
+                    return
+                }
+                print("🔓 [Pass] 미션 완료 상태지만 새로운 알림(UUID 불일치)이므로 실행")
             }
             
-            if let f = soundFileName, let e = soundExtension {
-                AlarmKitManager.shared.playAlarmSound(fileName: f, extension: e)
+            // Case 2: 알람 재생 중 (소리만 방어, 화면은 진행)
+            if AlarmKitManager.shared.isAlarmPlaying {
+                // 패스
             } else {
-                AlarmKitManager.shared.playAlarmSound(fileName: "scream14-6918", extension: "mp3")
+                if let f = soundFileName, let e = soundExtension {
+                    AlarmKitManager.shared.playAlarmSound(fileName: f, extension: e)
+                } else {
+                    AlarmKitManager.shared.playAlarmSound(fileName: "scream14-6918", extension: "mp3")
+                }
             }
             
             if let mission = missionType {
-                print("🎯 알림 탭 감지! 미션: \(mission), UUID: \(alarmUUID ?? "nil")")
+                print("🎯 알림 탭 감지! 미션: \(mission)")
                 
                 AlarmKitManager.shared.triggeredMissionType = mission
                 AlarmKitManager.shared.triggeredAlarmId = alarmId
-                AlarmKitManager.shared.triggeredAlarmUUID = alarmUUID // ✅ 저장
+                AlarmKitManager.shared.triggeredAlarmUUID = alarmUUID
                 
                 if let l = label {
                     AlarmKitManager.shared.triggeredAlarmLabel = l

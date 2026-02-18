@@ -35,6 +35,9 @@ struct MathMissionView: View {
     
     var body: some View {
         ZStack {
+            // ✅ 전체 화면 배경색 지정 (오버레이 시 투명 방지 & 다크모드 대응)
+            Color(uiColor: .systemBackground)
+                .ignoresSafeArea()
             
             // 메인 컨텐츠
             VStack {
@@ -42,11 +45,11 @@ struct MathMissionView: View {
                 VStack(spacing: 8) {
                     Text(viewModel.alarmLabel)
                         .font(.pretendardMedium16)
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응 (흰색/검은색 자동)
                     
                     Text(timeFormatter.string(from: currentTime))
-                        .font(.largeTitle)
-                        .foregroundStyle(Color.primary)
+                        .font(.pretendardSemiBold60)
+                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                         .onReceive(timer) { input in
                             currentTime = input
                         }
@@ -68,7 +71,7 @@ struct MathMissionView: View {
                     HStack {
                         Text("Q. \(viewModel.questionText)")
                             .font(.Subtitle2)
-                            .foregroundStyle(Color.primary)
+                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                         Spacer()
                     }
                     .padding(24)
@@ -82,28 +85,29 @@ struct MathMissionView: View {
                     HStack {
                         Text("A.")
                             .font(.Subtitle2)
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                         
                         TextField("답변을 입력해주세요.", text: $viewModel.userAnswer)
                             .font(.Subtitle3)
-                            .keyboardType(.numbersAndPunctuation)
+                            .foregroundStyle(.black) // ✅ [수정] 배경이 밝은 회색이므로 글자는 항상 검은색이어야 함
+                            .keyboardType(.numberPad)
                             .padding(.leading, 4)
                     }
                     .padding(.horizontal, 24)
                     .padding(.top, 24)
                     .padding(.bottom, 223)
-                    .background(Color.gray200)
+                    .background(Color.gray200) // 입력창 배경은 회색 유지
                     .cornerRadius(16)
                     .padding(.horizontal, 20)
                     .padding(.top, 10)
                     .padding(.bottom, 34)
+                    .environment(\.colorScheme, .light)
                 }
                 
                 Spacer()
                 
                 // 확인 버튼
                 Button(action: {
-                    // ✅ ViewModel 내부에서 비동기 처리하므로 await 불필요
                     viewModel.submitAnswer()
                 }) {
                     Text("확인")
@@ -113,11 +117,12 @@ struct MathMissionView: View {
                         .padding(.vertical, 19)
                         .background(Color.gray300, in: RoundedRectangle(cornerRadius: 999))
                 }
-                .disabled(viewModel.isLoading) // 로딩 중 버튼 비활성화
+                .disabled(viewModel.isLoading)
                 .padding(.bottom, 50)
             }
+            .blur(radius: viewModel.showFeedback || viewModel.isLoading ? 3 : 0)
             
-            // ✅ 로딩 인디케이터 추가
+            // 로딩 인디케이터
             if viewModel.isLoading {
                 ZStack {
                     Color.black.opacity(0.2).ignoresSafeArea()
@@ -127,7 +132,7 @@ struct MathMissionView: View {
                 }
             }
             
-            // 피드백 오버레이 (정답/오답 화면)
+            // 피드백 오버레이
             if viewModel.showFeedback {
                 Color.black.opacity(0.6).ignoresSafeArea()
                 
@@ -142,25 +147,27 @@ struct MathMissionView: View {
                         .foregroundStyle(viewModel.isCorrect ? Color.main100 : Color.main300)
                 }
                 .transition(.scale)
-                .zIndex(1) // 맨 앞으로 가져오기
+                .zIndex(1)
             }
         }
+        // ✅ [추가] 화면 터치 시 키보드 내리기
+        .onTapGesture {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
         .onAppear {
-            // ✅ ViewModel 내부에서 비동기 처리하므로 await 불필요
             viewModel.startMathMission()
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
             if completed {
-                print("🏁 미션 완료! 소리를 끄고 홈으로 이동합니다.")
-                // ✅ [추가] 소리 끄기 (오버레이 닫힘)
-                AlarmKitManager.shared.stopAlarmSound()
-                
+                print("🏁 미션 완료! 뷰를 닫습니다.")
+                // ✅ 완료 시 소리와 알림 모두 끄기
+                AlarmKitManager.shared.completeMission()
+
                 withAnimation {
                     appState.currentRoot = .main
                 }
             }
         }
-        // ✅ 에러 발생 시 알림 표시
         .alert("알림", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { _ in viewModel.errorMessage = nil }
@@ -172,4 +179,8 @@ struct MathMissionView: View {
             Text(viewModel.errorMessage ?? "")
         }
     }
+}
+
+#Preview {
+    MathMissionView(alarmId: 1, alarmLabel: "1교시 있는 날")
 }
