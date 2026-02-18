@@ -20,7 +20,7 @@ struct Alarm: Identifiable {
     var missionTitle: String
     var missionType: String
     
-    var soundName: String = "기본음"
+    var soundName: String? = "기본음"
     
     var timeString: String {
         let formatter = DateFormatter()
@@ -118,6 +118,7 @@ struct AlarmSoundDTO: Codable {
 // MARK: - Extensions (Mapping Logic)
 extension Alarm {
     
+    // 1. 서버 DTO -> 앱 모델 변환 (GET)
     init(from dto: AlarmDTO) {
         self.serverId = dto.alarmId
         self.label = dto.label ?? ""
@@ -125,73 +126,158 @@ extension Alarm {
         self.soundName = dto.soundType
         
         let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
+        formatter.dateFormat = "HH:mm" // 서버는 초 단위 없음
         self.time = formatter.date(from: dto.alarmTime) ?? Date()
         
         self.repeatDays = Alarm.convertRepeatDaysToInt(dto.repeatDays)
         
+        // ⚠️ 주의: 현재는 서버에서 받아온 미션을 앱에 반영하는 로직이 없어서 'NONE'으로 고정되어 있습니다.
+        // 추후 서버의 MissionSettingDTO를 해석해서 missionType을 설정하는 로직 추가가 필요합니다.
         self.missionTitle = "미션 정보 없음"
         self.missionType = "NONE"
     }
     
-    // ✅ [핵심 수정] 요청하신 포맷과 완벽히 일치하도록 구성
+    // 2. 앱 모델 -> 서버 DTO 변환 (POST/PUT)
+    // ✅ [수정 완료] 사용자가 선택한 미션 타입과 설정을 동적으로 반영
+    //    func toDictionary() -> [String: Any] {
+    //        let timeFormatter = DateFormatter()
+    //        timeFormatter.locale = Locale(identifier: "en_US_POSIX")
+    //        timeFormatter.dateFormat = "HH:mm" // 🚨 서버가 요구하는 "시:분" 포맷
+    //
+    //        // 1. 미션 타입 매핑 (한글 -> 서버 코드)
+    ////        let serverMissionType: String
+    ////        switch self.missionType {
+    ////        case "계산", "수학문제", "CALCULATION": serverMissionType = "CALCULATION"
+    ////        case "받아쓰기", "따라쓰기", "DICTATION": serverMissionType = "DICTATION"
+    ////        case "운동", "거리미션", "WALK": serverMissionType = "WALK"
+    ////        case "OX", "OX 퀴즈", "OX_QUIZ": serverMissionType = "OX"
+    ////        default: serverMissionType = "NONE"
+    ////        }
+    //
+    //        // 2. 미션별 세부 설정값 결정 (기본값 적용)
+    ////        let questionCount: Int
+    ////        let walkGoalMeter: Int
+    ////
+    ////        if serverMissionType == "CALCULATION" || serverMissionType == "OX" || serverMissionType == "DICTATION" {
+    ////            questionCount = 3
+    ////            walkGoalMeter = 0
+    ////        } else if serverMissionType == "WALK" {
+    ////            questionCount = 0
+    ////            walkGoalMeter = 50
+    ////        } else {
+    ////            questionCount = 0
+    ////            walkGoalMeter = 0
+    ////        }
+    //
+    //        // 3. 미션 설정 객체 생성
+    //        let missionSetting: [String: Any] = [
+    //            "missionType": serverMissionType,
+    //            "difficulty": "EASY",
+    //            "walkGoalMeter": walkGoalMeter,
+    //            "questionCount": questionCount
+    //        ]
+    //
+    //        // 4. 스누즈 설정
+    //        let snoozeSetting: [String: Any] = [
+    //            "isEnabled": true,
+    //            "intervalSec": 300,
+    //            "maxCount": 3
+    //        ]
+    //
+    //        // 5. 사운드 이름 처리 (서버 호환성용 안전장치)
+    //        // '기본음' 등의 한글 이름이 들어가면 서버 에러 가능성이 있어 테스트용 ID로 대체
+    //        let serverSoundType = (self.soundName == "기본음" || self.soundName.isEmpty) ? "scream14-6918" : self.soundName
+    //
+    //        // 6. 요일 안전 처리 (빈 배열 방지)
+    //        let dayStrings = Alarm.convertRepeatDaysToString(self.repeatDays)
+    //        let safeRepeatDays = dayStrings.isEmpty ? ["MON"] : dayStrings
+    //
+    //        // 7. 최종 딕셔너리 반환
+    //        return [
+    //            "alarmTime": timeFormatter.string(from: self.time),
+    //            "label": self.label.isEmpty ? "Alarm" : self.label,
+    //            "isEnabled": self.isEnabled,
+    //            "soundType": serverSoundType,
+    //            "vibration": true,
+    //            "volume": 100,
+    //            "repeatDays": safeRepeatDays,
+    //            "snoozeSetting": snoozeSetting,
+    //            "missionSetting": missionSetting
+    //        ]
+    //    }
+    //
+    //    static func convertRepeatDaysToInt(_ days: [String]) -> [Int] {
+    //        let dayMap: [String: Int] = [
+    //            "SUN": 0, "MON": 1, "TUE": 2, "WED": 3, "THU": 4, "FRI": 5, "SAT": 6
+    //        ]
+    //        return days.compactMap { dayMap[$0] }.sorted()
+    //    }
+    //
+    //    static func convertRepeatDaysToString(_ days: [Int]) -> [String] {
+    //        let dayMap: [Int: String] = [
+    //            0: "SUN", 1: "MON", 2: "TUE", 3: "WED", 4: "THU", 5: "FRI", 6: "SAT"
+    //        ]
+    //        return days.sorted().compactMap { dayMap[$0] }
+    //    }
+    //}
+    
     func toDictionary() -> [String: Any] {
         let timeFormatter = DateFormatter()
+        timeFormatter.locale = Locale(identifier: "en_US_POSIX")
         timeFormatter.dateFormat = "HH:mm"
         
-        // 1. 미션 타입 매핑
-        // ✅ 요청하신 대로 미션 타입을 무조건 "NONE"으로 설정하여 전송
+        // 1. 미션 설정 강제 고정 (NONE / 0 / 0)
         let serverMissionType = "NONE"
+        let questionCount = 0
+        let walkGoalMeter = 0
         
-        /* 기존 매핑 로직 주석 처리 (필요시 복구 가능)
-        switch self.missionType {
-        case "계산": serverMissionType = "CALCULATION"
-        case "받아쓰기": serverMissionType = "DICTATION"
-        case "운동": serverMissionType = "WALK"
-        case "OX": serverMissionType = "OX_QUIZ"
-        default: serverMissionType = "NONE"
-        }
-        */
-        
-        // 2. 미션 설정 (요청하신 예시: missionType -> difficulty -> walkGoalMeter:0 -> questionCount:0)
         let missionSetting: [String: Any] = [
-            "missionType": serverMissionType, // 항상 "NONE" 전송
+            "missionType": serverMissionType, // "NONE"
             "difficulty": "EASY",
-            "walkGoalMeter": 0,    // 요청값 0
-            "questionCount": 0     // 요청값 0
+            "walkGoalMeter": walkGoalMeter,   // 0
+            "questionCount": questionCount    // 0
         ]
         
-        // 3. 스누즈 설정 (요청하신 예시: isEnabled -> intervalSec:0 -> maxCount:0)
+        // 2. 스누즈 설정
         let snoozeSetting: [String: Any] = [
             "isEnabled": true,
-            "intervalSec": 0,      // 요청값 0
-            "maxCount": 0          // 요청값 0
+            "intervalSec": 300,
+            "maxCount": 3
         ]
         
-        // 4. 전체 데이터 구조 (요청하신 순서 반영)
+        // 3. 사운드 이름 처리
+        let currentSound = self.soundName ?? "기본음"
+        let serverSoundType = (currentSound == "기본음" || currentSound.isEmpty) ? "scream14-6918" : currentSound
+        
+        // 4. 요일 안전 처리
+        let dayStrings = Alarm.convertRepeatDaysToString(self.repeatDays)
+        let safeRepeatDays = dayStrings.isEmpty ? ["MON"] : dayStrings
+        
+        // 5. 최종 반환
         return [
             "alarmTime": timeFormatter.string(from: self.time),
-            "label": self.label,
-            "soundType": self.soundName, // 서버가 받는 String 값
+            "label": self.label.isEmpty ? "Alarm" : self.label,
+            "isEnabled": self.isEnabled,
+            "soundType": serverSoundType,
             "vibration": true,
-            "volume": 100, // 요청값 100
-            "repeatDays": Alarm.convertRepeatDaysToString(self.repeatDays),
+            "volume": 100,
+            "repeatDays": safeRepeatDays,
             "snoozeSetting": snoozeSetting,
             "missionSetting": missionSetting
         ]
     }
-    
     static func convertRepeatDaysToInt(_ days: [String]) -> [Int] {
-        let dayMap: [String: Int] = [
-            "SUN": 0, "MON": 1, "TUE": 2, "WED": 3, "THU": 4, "FRI": 5, "SAT": 6
-        ]
-        return days.compactMap { dayMap[$0] }.sorted()
-    }
+            let dayMap: [String: Int] = [
+                "SUN": 0, "MON": 1, "TUE": 2, "WED": 3, "THU": 4, "FRI": 5, "SAT": 6
+            ]
+            return days.compactMap { dayMap[$0] }.sorted()
+        }
+        
+        static func convertRepeatDaysToString(_ days: [Int]) -> [String] {
+            let dayMap: [Int: String] = [
+                0: "SUN", 1: "MON", 2: "TUE", 3: "WED", 4: "THU", 5: "FRI", 6: "SAT"
+            ]
+            return days.sorted().compactMap { dayMap[$0] }
+        }
     
-    static func convertRepeatDaysToString(_ days: [Int]) -> [String] {
-        let dayMap: [Int: String] = [
-            0: "SUN", 1: "MON", 2: "TUE", 3: "WED", 4: "THU", 5: "FRI", 6: "SAT"
-        ]
-        return days.sorted().compactMap { dayMap[$0] }
-    }
 }

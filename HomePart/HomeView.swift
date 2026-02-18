@@ -10,6 +10,7 @@ struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @State private var showToDoSheet = false
     @State private var navigateToDetail = false
+    @StateObject private var alarmViewModel = AlarmViewModel()
     
     var body: some View {
         NavigationStack {
@@ -36,9 +37,18 @@ struct HomeView: View {
                     HStack(spacing: 10) {
                         Button {
                             // 🚀 버튼을 누르면 탭뷰가 사라지고 수학 미션이 꽉 찬 화면으로 뜹니다.
-                            withAnimation {
-                                appState.currentRoot = .mathMission(alarmId: 999, label: "테스트 알람")
-                            }
+                            guard let targetAlarm = alarmViewModel.alarms.last, // last는 가장 최근에 추가된 알람일 가능성이 높음
+                                          let serverId = targetAlarm.serverId else {    // serverId(Int)가 있는지 확인
+                                        print("❌ 테스트할 알람이 없습니다! 알람 탭에서 알람을 먼저 만들어주세요.")
+                                        return
+                                    }
+
+                                    print("🚀 테스트 시작! 사용될 알람 ID: \(serverId)")
+
+                                    // 2. 실제 ID를 넣어서 이동
+                                    withAnimation {
+                                        appState.currentRoot = .mathMission(alarmId: serverId, label: targetAlarm.label)
+                                    }
                         } label: {
                             Text("수학 미션 테스트")
                                 .font(.headline)
@@ -50,9 +60,18 @@ struct HomeView: View {
                         }
                         
                         Button {
-                            withAnimation {
-                                appState.currentRoot = .distanceMission(alarmId: 999)
-                            }
+                            guard let targetAlarm = alarmViewModel.alarms.last, // last는 가장 최근에 추가된 알람일 가능성이 높음
+                                          let serverId = targetAlarm.serverId else {    // serverId(Int)가 있는지 확인
+                                        print("❌ 테스트할 알람이 없습니다! 알람 탭에서 알람을 먼저 만들어주세요.")
+                                        return
+                                    }
+
+                                    print("🚀 테스트 시작! 사용될 알람 ID: \(serverId)")
+
+                                    // 2. 실제 ID를 넣어서 이동
+                                    withAnimation {
+                                        appState.currentRoot = .distanceMission(alarmId: serverId)
+                                    }
                         } label: {
                             Text("거리 미션 테스트")
                                 .font(.headline)
@@ -63,9 +82,18 @@ struct HomeView: View {
                                 .cornerRadius(12)
                         }
                         Button {
-                            withAnimation {
-                                appState.currentRoot = .oxMission(alarmId: 999)
-                            }
+                            guard let targetAlarm = alarmViewModel.alarms.last, // last는 가장 최근에 추가된 알람일 가능성이 높음
+                                          let serverId = targetAlarm.serverId else {    // serverId(Int)가 있는지 확인
+                                        print("❌ 테스트할 알람이 없습니다! 알람 탭에서 알람을 먼저 만들어주세요.")
+                                        return
+                                    }
+
+                                    print("🚀 테스트 시작! 사용될 알람 ID: \(serverId)")
+
+                                    // 2. 실제 ID를 넣어서 이동
+                                    withAnimation {
+                                        appState.currentRoot = .oxMission(alarmId: serverId)
+                                    }
                         } label: {
                             Text("OX 미션 테스트")
                                 .font(.headline)
@@ -76,9 +104,18 @@ struct HomeView: View {
                                 .cornerRadius(12)
                         }
                         Button {
-                            withAnimation {
-                                appState.currentRoot = .typingMission(alarmId: 999, label: "테스트 알람")
-                            }
+                            guard let targetAlarm = alarmViewModel.alarms.last, // last는 가장 최근에 추가된 알람일 가능성이 높음
+                                          let serverId = targetAlarm.serverId else {    // serverId(Int)가 있는지 확인
+                                        print("❌ 테스트할 알람이 없습니다! 알람 탭에서 알람을 먼저 만들어주세요.")
+                                        return
+                                    }
+
+                                    print("🚀 테스트 시작! 사용될 알람 ID: \(serverId)")
+
+                                    // 2. 실제 ID를 넣어서 이동
+                                    withAnimation {
+                                        appState.currentRoot = .typingMission(alarmId: serverId, label: targetAlarm.label)
+                                    }
                         } label: {
                             Text("따라쓰기 미션 테스트")
                                 .font(.headline)

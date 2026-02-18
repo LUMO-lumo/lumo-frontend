@@ -58,28 +58,33 @@ final class AlarmKitManager: NSObject, ObservableObject {
     
     // MARK: - 알람 스케줄링 (핵심 로직)
     
+    // AlarmKitManager.swift 내부의 scheduleAlarm 함수
+
+    // AlarmKitManager.swift
+
     func scheduleAlarm(from alarm: Alarm) async throws {
         
         // 1. 기존 알람 제거
         await removeAlarm(id: alarm.id)
         
-        // 알람이 OFF 상태이면 스케줄링 중단
         guard alarm.isEnabled else { return }
         
-        // 2. 시간 및 날짜 계산
+        // 2. 날짜 계산
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: alarm.time)
         let minute = calendar.component(.minute, from: alarm.time)
-        // ✅ [수정] 초(Second) 단위까지 추출하여 정확도 향상
         let second = calendar.component(.second, from: alarm.time)
         
         let nextAlarmDate = calculateNextDate(hour: hour, minute: minute, second: second, repeatDays: alarm.repeatDays)
         
-        // 3. 사운드 파일명 준비
-        // SoundManager를 통해 한글 이름("비명 소리") -> 파일명("scream14-6918") 변환
-        let soundFileName = SoundManager.shared.getSoundFileName(named: alarm.soundName) ?? "scream14-6918"
+        // 3. 사운드 파일명 준비 (로컬 알림용)
+        let soundNameToCheck = alarm.soundName ?? ""
+        let mappedFileName = SoundManager.shared.getSoundFileName(named: soundNameToCheck) ?? "scream14-6918"
         
+        print("📢 알람 등록 예정: \(mappedFileName) / 시간: \(nextAlarmDate)")
+
         // --- [A] AlarmKit 등록 (시스템 UI용) ---
+        // 여기서 사운드 설정을 제거하여 에러를 원천 차단합니다.
         let schedule = FrameworkAlarm.Schedule.fixed(nextAlarmDate)
         let alert = AlarmPresentation.Alert(title: LocalizedStringResource(stringLiteral: alarm.label))
         let presentation = AlarmPresentation(alert: alert)
@@ -89,19 +94,18 @@ final class AlarmKitManager: NSObject, ObservableObject {
             tintColor: Color.orange
         )
         
-        // ✅ AlarmKit에도 사운드 파일명 전달
+        // 🚨 [수정] sound 파라미터를 아예 삭제했습니다. (기본음으로 설정됨)
         let config = AlarmManager.AlarmConfiguration<EmptyAlarmMetadata>.alarm(
             schedule: schedule,
-            attributes: attributes,
-            sound: .named("\(soundFileName).mp3") // 확장자 명시
+            attributes: attributes
         )
         
         _ = try await AlarmManager.shared.schedule(id: alarm.id, configuration: config)
         
-        // --- [B] 로컬 알림(UserNotifications) 등록 (앱 깨우기용) ---
-        await scheduleLocalNotification(for: alarm, hour: hour, minute: minute, second: second, soundName: soundFileName)
+        // --- [B] 로컬 알림(UserNotifications) 등록 (실제 소리 재생용) ---
+        // 여기서 우리가 원하는 파일("천둥 번개" 등)을 재생하도록 합니다.
+        await scheduleLocalNotification(for: alarm, hour: hour, minute: minute, second: second, soundName: mappedFileName)
     }
-    
     /// 알람 삭제
     func removeAlarm(id: UUID) async {
         try? AlarmManager.shared.cancel(id: id)

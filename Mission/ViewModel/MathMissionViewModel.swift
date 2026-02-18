@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Moya
 
 @MainActor
 class MathMissionViewModel: BaseMissionViewModel {
@@ -22,7 +23,7 @@ class MathMissionViewModel: BaseMissionViewModel {
     let alarmLabel: String
     
     // Mock Mode
-    private let isMockMode: Bool = true
+    private let isMockMode: Bool = false
     private var mockAnswer: String = "35"
     
     // MARK: - Initialization
@@ -116,16 +117,34 @@ class MathMissionViewModel: BaseMissionViewModel {
     
     // 에러 처리
     private func handleError(_ error: Error) {
-        if let missionError = error as? MissionError {
-            switch missionError {
-            case .serverError(let message):
-                self.errorMessage = message
+            // 1. UI용 기본 메시지 설정
+            if let missionError = error as? MissionError {
+                switch missionError {
+                case .serverError(let message):
+                    self.errorMessage = message
+                default:
+                    self.errorMessage = "미션 진행 중 오류가 발생했습니다."
+                }
+            } else {
+                self.errorMessage = "알 수 없는 오류가 발생했습니다."
             }
-        } else {
-            self.errorMessage = "오류가 발생했습니다."
+            
+            // 2. 디버깅용 상세 로그 (MoyaError 캐스팅)
+            print("\n❌ Error 발생: \(error)")
+            
+            // 일반 Error는 response 속성이 없으므로 MoyaError로 캐스팅해야 함
+            if let moyaError = error as? MoyaError, let response = moyaError.response {
+                print("🔢 상태 코드: \(response.statusCode)")
+                
+                // 📦 [숨겨진 112 bytes 확인하는 코드]
+                if let errorBody = String(data: response.data, encoding: .utf8) {
+                    print("\n📦 [서버 에러 메시지 디코딩]:")
+                    print("👉 \(errorBody)")
+                }
+            } else {
+                print("🌍 네트워크 오류이거나 응답이 없습니다.")
+            }
         }
-        print("❌ Error: \(error)")
-    }
     
     // MARK: - Mock Helpers
     private func setupMockData() {
