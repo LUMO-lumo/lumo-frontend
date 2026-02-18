@@ -1,5 +1,14 @@
+//
+//  AlarmView.swift
+//  LUMO_PersonalDev
+//
+//  Created by 육도연 on 1/6/26.
+//
+
 import SwiftUI
 import Foundation
+import Moya
+import CombineMoya
 import AlarmKit
 
 struct AlarmMenuView: View {
@@ -8,7 +17,7 @@ struct AlarmMenuView: View {
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottomTrailing) {
-
+                
                 VStack(alignment: .leading) {
                     Text("알람 목록")
                         .font(.system(size: 24, weight: .bold))
@@ -19,36 +28,37 @@ struct AlarmMenuView: View {
                     
                     ScrollView {
                         LazyVStack(spacing: 20) {
-                            // 🚨 [핵심 수정] Binding 충돌 방지 패턴
-                            // 1. 값(alarm)으로 먼저 반복문을 돌립니다.
-                            ForEach(viewModel.alarms, id: \.id) { alarm in
-                                // 1. 인덱스가 아니라 'ID'를 기반으로 안전한 바인딩을 만듭니다.
-                                let safeBinding = Binding<Alarm>(
+                            // [수정 1] $viewModel.alarms 대신 viewModel.alarms 사용 (값으로 순회)
+                            ForEach(viewModel.alarms) { alarm in
+                                
+                                // [수정 2] 안전한 커스텀 바인딩 생성
+                                // 배열의 인덱스가 바뀌거나 삭제되어도 안전하게 ID로 찾아서 연결해줍니다.
+                                let alarmBinding = Binding<Alarm>(
                                     get: {
-                                        // 현재 배열에서 이 ID를 가진 알람을 찾음 (없으면 껍데기 반환하여 크래시 방지)
+                                        // 현재 배열에서 이 ID를 가진 최신 알람을 찾아서 반환
+                                        // (만약 삭제되어서 없으면 현재 alarm 값을 그냥 반환해서 크래시 방지)
                                         guard let index = viewModel.alarms.firstIndex(where: { $0.id == alarm.id }) else {
                                             return alarm
                                         }
                                         return viewModel.alarms[index]
                                     },
-                                    set: { newValue in
-                                        // 값이 수정될 때도 ID로 다시 찾아서 업데이트
+                                    set: { newAlarm in
+                                        // 수정된 내용을 배열에 반영
                                         if let index = viewModel.alarms.firstIndex(where: { $0.id == alarm.id }) {
-                                            viewModel.alarms[index] = newValue
+                                            viewModel.alarms[index] = newAlarm
                                         }
                                     }
                                 )
-
-                                // 2. 위에서 만든 safeBinding을 뷰에 전달합니다.
+                                
                                 AlarmSettedView(
-                                    alarm: safeBinding,
+                                    alarm: alarmBinding, // 위에서 만든 안전한 바인딩 전달
                                     onDelete: {
                                         withAnimation {
-                                            viewModel.firstdeleteAlarm(id: alarm.id)
+                                            viewModel.deleteAlarm(id: alarm.id)
                                         }
                                     },
                                     onUpdate: { updatedAlarm in
-                                        viewModel.firstupdateAlarm(updatedAlarm)
+                                        viewModel.updateAlarm(updatedAlarm)
                                     },
                                     onToggle: { isOn in
                                         // 바인딩에서 인덱스를 찾기 어려울 수 있으니, 여기서도 ID로 안전하게 처리

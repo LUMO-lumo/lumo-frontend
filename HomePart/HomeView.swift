@@ -60,18 +60,9 @@ struct HomeView: View {
                         }
                         
                         Button {
-                            guard let targetAlarm = alarmViewModel.alarms.last, // last는 가장 최근에 추가된 알람일 가능성이 높음
-                                          let serverId = targetAlarm.serverId else {    // serverId(Int)가 있는지 확인
-                                        print("❌ 테스트할 알람이 없습니다! 알람 탭에서 알람을 먼저 만들어주세요.")
-                                        return
-                                    }
-
-                                    print("🚀 테스트 시작! 사용될 알람 ID: \(serverId)")
-
-                                    // 2. 실제 ID를 넣어서 이동
-                                    withAnimation {
-                                        appState.currentRoot = .distanceMission(alarmId: serverId)
-                                    }
+                            withAnimation {
+                                appState.currentRoot = .distanceMission(alarmId: 999, label: "1교시 없는 날")
+                            }
                         } label: {
                             Text("거리 미션 테스트")
                                 .font(.headline)
@@ -82,18 +73,9 @@ struct HomeView: View {
                                 .cornerRadius(12)
                         }
                         Button {
-                            guard let targetAlarm = alarmViewModel.alarms.last, // last는 가장 최근에 추가된 알람일 가능성이 높음
-                                          let serverId = targetAlarm.serverId else {    // serverId(Int)가 있는지 확인
-                                        print("❌ 테스트할 알람이 없습니다! 알람 탭에서 알람을 먼저 만들어주세요.")
-                                        return
-                                    }
-
-                                    print("🚀 테스트 시작! 사용될 알람 ID: \(serverId)")
-
-                                    // 2. 실제 ID를 넣어서 이동
-                                    withAnimation {
-                                        appState.currentRoot = .oxMission(alarmId: serverId)
-                                    }
+                            withAnimation {
+                                appState.currentRoot = .oxMission(alarmId: 999, label: "1교시 있는 날")
+                            }
                         } label: {
                             Text("OX 미션 테스트")
                                 .font(.headline)

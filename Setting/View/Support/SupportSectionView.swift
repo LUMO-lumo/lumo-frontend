@@ -11,7 +11,7 @@ struct SupportSectionView: View {
     var body: some View {
         HStack {
             
-            NavigationLink(destination: DistanceMissionView(alarmId: 1)) {
+            NavigationLink(destination: DistanceMissionView(alarmId: 1, alarmLabel: "1교시 없는 날")) {
                 Text("자주 묻는 질문")
                     .font(.Body1)
                     .padding(.vertical, 18)
@@ -23,7 +23,7 @@ struct SupportSectionView: View {
             
             Spacer()
             
-            NavigationLink(destination: OXMissionView(alarmId: 1)) {
+            NavigationLink(destination: OXMissionView(alarmId: 1, alarmLabel: "1교시 있는 날")) {
                 Text("BM")
                     .font(.Body1)
                     .padding(.vertical, 18)
