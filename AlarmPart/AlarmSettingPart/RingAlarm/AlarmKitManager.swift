@@ -117,7 +117,7 @@ final class AlarmKitManager: NSObject, ObservableObject {
         let minute = calendar.component(.minute, from: alarm.time)
         
         let nextAlarmDate = calculateNextDate(hour: hour, minute: minute, repeatDays: alarm.repeatDays)
-        let soundFileName = SoundManager.shared.getSoundFileName(named: alarm.soundName) ?? "scream14-6918"
+        let soundFileName = SoundManager.shared.getSoundFileName(named: alarm.soundName!) ?? "scream14-6918"
         
         print("🔔 [Schedule] 알람 예약: \(nextAlarmDate) (미션: \(alarm.missionType))")
         
