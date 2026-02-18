@@ -276,10 +276,10 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         AsyncTask {
             try? await AsyncTask.sleep(nanoseconds: 500_000_000)
             self.contentId = 888
-            self.targetDistance = 30.0
+            self.targetDistance = 20.0
             self.isLoading = false
             
-            self.simulateMockWalking()
+//            self.simulateMockWalking()
         }
     }
     
