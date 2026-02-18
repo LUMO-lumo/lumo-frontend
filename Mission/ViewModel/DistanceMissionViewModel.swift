@@ -34,17 +34,21 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     // MARK: - Internal Properties (Location)
     private let locationManager = CLLocationManager()
     private var previousLocation: CLLocation? // 이전 위치 저장용
-
+    
     
     // MARK: - Mock Mode (테스트용)
-    private let isMockMode: Bool = false
+    private var isMockMode: Bool
     
     // MARK: - Initialization
     init(alarmId: Int, alarmLabel: String) {
         self.alarmLabel = alarmLabel
+        
+        // ✅ [핵심] ID가 -1이면 테스트 모드(Mock)로 강제 설정
+        self.isMockMode = (alarmId == -1)
+        
         super.init(alarmId: alarmId)
     }
-
+    
     // 위치 권한 및 설정
     private func setupLocationManager() {
         locationManager.delegate = self
@@ -139,10 +143,10 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         }
         
         let request = MissionSubmitRequest(
-                    contentId: contentId,
-                    userAnswer: String(format: "%.1f", currentDistance), // 현재 거리를 문자열로 전송
-                    attemptCount: attemptCount
-                )
+            contentId: contentId,
+            userAnswer: String(format: "%.1f", currentDistance), // 현재 거리를 문자열로 전송
+            attemptCount: attemptCount
+        )
         
         AsyncTask {
             do {
@@ -196,7 +200,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     }
     
     // MARK: - CLLocationManagerDelegate
-
+    
     
     // 위치 업데이트 감지
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -230,7 +234,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
                     self.locationManager.stopUpdatingLocation()
                     
                     self.submit()
-
+                    
                 }
             }
         }
