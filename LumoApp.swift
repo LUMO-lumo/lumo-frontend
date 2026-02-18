@@ -38,7 +38,7 @@ struct LumoApp: App {
             )
             .environmentObject(appState)
             // ✅ 3. SwiftData 컨테이너 설정 (최상위)
-            .modelContainer(for: [UserModel.self, RoutineType.self, RoutineTask.self])
+            .modelContainer(for: [UserModel.self, RoutineType.self, RoutineTask.self, TodoEntity.self]) // TodoEntity 추가 확인
         }
     }
 }
@@ -54,6 +54,10 @@ struct LumoContentView: View {
     
     // ✅ 알람 매니저 감지
     @StateObject private var alarmManager = AlarmKitManager.shared
+    
+    // ✅ [NEW] 최상위 레벨에서 브리핑을 담당할 뷰모델
+    // 화면에 보이지 않아도 로직을 수행하기 위해 선언합니다.
+    @StateObject private var globalHomeViewModel = HomeViewModel()
     
     var body: some View {
         ZStack {
@@ -109,6 +113,23 @@ struct LumoContentView: View {
                 AlarmPlayingOverlay()
                     .transition(.opacity)
                     .zIndex(9999) // 무조건 최상단
+            }
+        }
+        // ✅ [NEW] 미션 완료 신호 감지 (앱 어디에 있든 작동)
+        .onChange(of: alarmManager.shouldPlayBriefing) { newValue in
+            if newValue {
+                print("📣 [Global] 미션 완료 감지 -> 브리핑 시작")
+                
+                // 1. (선택) 미션이 끝나면 홈 화면으로 이동시킬 것인가?
+                // 만약 사용자가 설정 탭에 있었더라도 홈으로 보내고 싶다면 아래 코드 활성화
+                if appState.currentRoot != .main {
+                     appState.currentRoot = .main
+                }
+                
+                // 2. 브리핑 실행 (오버레이가 닫히는 애니메이션 등을 고려해 약간 딜레이)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    globalHomeViewModel.checkAndPlayBriefing()
+                }
             }
         }
         // ✅ 6. 온보딩 상태 변경 감지

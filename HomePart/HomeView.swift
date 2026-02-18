@@ -12,6 +12,9 @@ struct HomeView: View {
     @State private var navigateToDetail = false
     @StateObject private var alarmViewModel = AlarmViewModel()
     
+    // ✅ AlarmKitManager는 LumoApp에서 전역으로 처리하므로 여기서 감지할 필요 없음
+    // @ObservedObject private var alarmKitManager = AlarmKitManager.shared (삭제 또는 주석)
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -33,111 +36,52 @@ struct HomeView: View {
                     missionStatSection
                     
                     Spacer().frame(height: 40)
-                    // MARK: - 미션 테스트 섹션 (차후 삭제)
+                    // MARK: - 미션 테스트 섹션
                     HStack(spacing: 10) {
                         Button {
-                            // 🚀 버튼을 누르면 탭뷰가 사라지고 수학 미션이 꽉 찬 화면으로 뜹니다.
-                            guard let targetAlarm = alarmViewModel.alarms.last, // last는 가장 최근에 추가된 알람일 가능성이 높음
-                                          let serverId = targetAlarm.serverId else {    // serverId(Int)가 있는지 확인
-                                        print("❌ 테스트할 알람이 없습니다! 알람 탭에서 알람을 먼저 만들어주세요.")
-                                        return
-                                    }
-
-                                    print("🚀 테스트 시작! 사용될 알람 ID: \(serverId)")
-
-                                    // 2. 실제 ID를 넣어서 이동
-                                    withAnimation {
-                                        appState.currentRoot = .mathMission(alarmId: serverId, label: targetAlarm.label)
-                                    }
+                            guard let targetAlarm = alarmViewModel.alarms.last,
+                                  let serverId = targetAlarm.serverId else { return }
+                            withAnimation {
+                                appState.currentRoot = .mathMission(alarmId: serverId, label: targetAlarm.label)
+                            }
                         } label: {
-                            Text("수학 미션 테스트")
-                                .font(.headline)
+                            Text("수학 미션")
+                                .font(.caption).bold()
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
-                                .padding()
+                                .padding(.vertical, 12)
                                 .background(Color.orange)
                                 .cornerRadius(12)
                         }
                         
                         Button {
-                            guard let targetAlarm = alarmViewModel.alarms.last, // last는 가장 최근에 추가된 알람일 가능성이 높음
-                                          let serverId = targetAlarm.serverId else {    // serverId(Int)가 있는지 확인
-                                        print("❌ 테스트할 알람이 없습니다! 알람 탭에서 알람을 먼저 만들어주세요.")
-                                        return
-                                    }
-
-                                    print("🚀 테스트 시작! 사용될 알람 ID: \(serverId)")
-
-                                    // 2. 실제 ID를 넣어서 이동
-                                    withAnimation {
-                                        appState.currentRoot = .distanceMission(alarmId: serverId, label: targetAlarm.label)
-                                    }
+                            guard let targetAlarm = alarmViewModel.alarms.last,
+                                  let serverId = targetAlarm.serverId else { return }
+                            withAnimation {
+                                appState.currentRoot = .distanceMission(alarmId: serverId, label: targetAlarm.label)
+                            }
                         } label: {
-                            Text("거리 미션 테스트")
-                                .font(.headline)
+                            Text("거리 미션")
+                                .font(.caption).bold()
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
-                                .padding()
+                                .padding(.vertical, 12)
                                 .background(Color.green)
-                                .cornerRadius(12)
-                        }
-                        Button {
-                            guard let targetAlarm = alarmViewModel.alarms.last, // last는 가장 최근에 추가된 알람일 가능성이 높음
-                                          let serverId = targetAlarm.serverId else {    // serverId(Int)가 있는지 확인
-                                        print("❌ 테스트할 알람이 없습니다! 알람 탭에서 알람을 먼저 만들어주세요.")
-                                        return
-                                    }
-
-                                    print("🚀 테스트 시작! 사용될 알람 ID: \(serverId)")
-
-                                    // 2. 실제 ID를 넣어서 이동
-                                    withAnimation {
-                                        appState.currentRoot = .oxMission(alarmId: serverId, label: targetAlarm.label)
-                                    }
-                        } label: {
-                            Text("OX 미션 테스트")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(12)
-                        }
-                        Button {
-                            guard let targetAlarm = alarmViewModel.alarms.last, // last는 가장 최근에 추가된 알람일 가능성이 높음
-                                          let serverId = targetAlarm.serverId else {    // serverId(Int)가 있는지 확인
-                                        print("❌ 테스트할 알람이 없습니다! 알람 탭에서 알람을 먼저 만들어주세요.")
-                                        return
-                                    }
-
-                                    print("🚀 테스트 시작! 사용될 알람 ID: \(serverId)")
-
-                                    // 2. 실제 ID를 넣어서 이동
-                                    withAnimation {
-                                        appState.currentRoot = .typingMission(alarmId: serverId, label: targetAlarm.label)
-                                    }
-                        } label: {
-                            Text("따라쓰기 미션 테스트")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.orange)
                                 .cornerRadius(12)
                         }
                     }
                     .padding(.top, 20)
-                    // ------------------------------------------
-                    
-                    Spacer().frame(height: 40)
-                    // MARK: - 미션 테스트 섹션
                 }
                 .padding(.horizontal, 24)
             }
             .toolbar(.hidden)
             .onAppear {
-                // 홈으로 돌아올 때 오늘 데이터를 다시 동기화
+                // 1. 데이터 로드 (화면 진입 시 갱신용)
                 viewModel.loadTasksForSpecificDate(date: Date())
+                
+                // ❌ [삭제] 여기서 브리핑 체크를 하지 않습니다.
+                // LumoApp.swift에서 전역으로 처리하므로 중복 실행을 막기 위해 제거합니다.
+                // viewModel.checkAndPlayBriefing()
             }
             .navigationDestination(isPresented: $navigateToDetail) {
                 TodoSettingView(viewModel: viewModel)

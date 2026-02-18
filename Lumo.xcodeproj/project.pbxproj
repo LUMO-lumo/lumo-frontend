@@ -44,6 +44,7 @@
 		34A4699E2F3C7A8700F0290D /* OXMissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A4699D2F3C7A8700F0290D /* OXMissionView.swift */; };
 		34A469A02F3C7A9200F0290D /* OXMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A4699F2F3C7A9200F0290D /* OXMissionViewModel.swift */; };
 		34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */; };
+		4154FEB12F4613D400570369 /* TTSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4154FEB02F4613D400570369 /* TTSManager.swift */; };
 		415910062F3DD5EE003C8FC1 /* Security.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 415910052F3DD5EE003C8FC1 /* Security.xcconfig */; };
 		4161A5632F3CEB1A0060D0B1 /* AlarmTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4161A5622F3CEB1A0060D0B1 /* AlarmTarget.swift */; };
 		4161A5842F3D231B0060D0B1 /* TodoLocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4161A5832F3D231B0060D0B1 /* TodoLocalService.swift */; };
@@ -139,6 +140,7 @@
 		34A4699F2F3C7A9200F0290D /* OXMissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OXMissionViewModel.swift; sourceTree = "<group>"; };
 		34A469A12F3DB05600F0290D /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBriefingViewModel.swift; sourceTree = "<group>"; };
+		4154FEB02F4613D400570369 /* TTSManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSManager.swift; sourceTree = "<group>"; };
 		415910052F3DD5EE003C8FC1 /* Security.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Security.xcconfig; sourceTree = "<group>"; };
 		4161A5622F3CEB1A0060D0B1 /* AlarmTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmTarget.swift; sourceTree = "<group>"; };
 		4161A5832F3D231B0060D0B1 /* TodoLocalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoLocalService.swift; sourceTree = "<group>"; };
@@ -254,6 +256,7 @@
 		3492C5912F3B419000958A4D /* HomePart */ = {
 			isa = PBXGroup;
 			children = (
+				4154FEB02F4613D400570369 /* TTSManager.swift */,
 				4161A5832F3D231B0060D0B1 /* TodoLocalService.swift */,
 				3492C5882F3B419000958A4D /* HomeViewAsset.xcassets */,
 				3492C58C2F3B419000958A4D /* TodoSetting */,
@@ -679,6 +682,7 @@
 				B4E2848A2F2C864300D8FD4D /* SupportSectionView.swift in Sources */,
 				B44CC1552F3A2A33004D19A6 /* APITargetType.swift in Sources */,
 				34A2B4F72F31C30D00F3B9A8 /* SettingModel.swift in Sources */,
+				4154FEB12F4613D400570369 /* TTSManager.swift in Sources */,
 				B4FD5F392F17E61C0022CF67 /* OnBoardingView.swift in Sources */,
 				B4F19E692F42AE7700F899AA /* TokenInterceptor.swift in Sources */,
 				B4FD5F3B2F17E61C0022CF67 /* OnBoardingModel.swift in Sources */,
@@ -904,7 +908,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo.sy;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -940,7 +944,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo.sy;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;

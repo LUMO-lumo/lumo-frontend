@@ -10,6 +10,9 @@ import AlarmKit
 import Combine
 
 struct AlarmPlayingOverlay: View {
+    // ✅ [추가] 홈 화면 이동을 위해 AppState 연결
+    @EnvironmentObject var appState: AppState
+    
     @StateObject private var alarmManager = AlarmKitManager.shared
     @State private var animateIcon = false
     
@@ -33,9 +36,29 @@ struct AlarmPlayingOverlay: View {
             }
         }
         .zIndex(9999)
+        // ✅ [핵심 기능] 미션 완료 신호가 오면 홈으로 강제 이동
+        .onChange(of: alarmManager.shouldPlayBriefing) { newValue in
+            if newValue {
+                print("🔄 [Overlay] 미션 완료 감지 -> 홈 화면으로 이동 요청")
+                
+                // 1. 미션 테스트 중이었다면 Root를 홈으로 복귀 (nil 또는 .home 등 프로젝트 규칙에 맞게 설정)
+                // 만약 AppState의 Root 초기화 값이 nil이라면:
+                // appState.currentRoot = nil
+                
+                // 2. 탭 뷰 구조라면 홈 탭으로 이동 (AppState에 selectedTab이 있다고 가정)
+                // appState.selectedTab = .home
+                
+                // 🚨 사용자 프로젝트의 AppState 구조를 정확히 모르므로,
+                // 이곳에서 '홈으로 가는 코드'를 확실하게 넣어주셔야 합니다.
+                // 예시:
+                // appState.goHome()
+                // 또는
+                // appState.currentRoot = .home
+            }
+        }
     }
     
-    // ✅ [수정] 미션 타입별 뷰 분기 처리 (SolvingMissionView 삭제 후 직접 연결)
+    // ✅ [수정] 미션 타입별 뷰 분기 처리
     @ViewBuilder
     private func missionContent(type: String, id: Int, label: String) -> some View {
         switch type {
@@ -59,7 +82,6 @@ struct AlarmPlayingOverlay: View {
             
             Image(systemName: "alarm.fill")
                 .font(.system(size: 100))
-                // ✅ 배경이 흰색일 수 있으므로 primary(자동) 색상 사용
                 .foregroundStyle(Color.primary)
                 .scaleEffect(animateIcon ? 1.2 : 1.0)
                 .animation(.easeInOut(duration: 0.5).repeatForever(autoreverses: true), value: animateIcon)
@@ -69,7 +91,7 @@ struct AlarmPlayingOverlay: View {
                 Text(alarmManager.triggeredAlarmLabel)
                     .font(.title)
                     .fontWeight(.bold)
-                    .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                    .foregroundStyle(Color.primary)
                 Text("일어나세요!")
                     .font(.body)
                     .foregroundStyle(Color.secondary)
