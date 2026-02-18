@@ -180,8 +180,6 @@ class MathMissionViewModel: BaseMissionViewModel {
                 switch missionError {
                 case .serverError(let message):
                     self.errorMessage = message
-                default:
-                    self.errorMessage = "미션 진행 중 오류가 발생했습니다."
                 }
             } else {
                 self.errorMessage = "알 수 없는 오류가 발생했습니다."

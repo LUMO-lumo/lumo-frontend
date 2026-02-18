@@ -180,6 +180,3 @@ struct AlarmSettedView: View {
     AlarmSettedView(alarm: .constant(Alarm.dummyData[0]), onDelete: {})
 }
 
-#Preview {
-    AlarmSettedView(alarm: .constant(Alarm.dummyData[0]), onDelete: {})
-}

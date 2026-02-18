@@ -52,13 +52,13 @@ struct CustomTabBar: View {
     @Binding var selectedTab: Int
     // 브랜드 컬러 (LUMO Pink/Red)
     let activeColor = Color.main300
-    let inactiveColor = Color.gray.opacity(0.8)
+    let inactiveColor = Color.primary.opacity(0.8)
     @Environment(\.colorScheme) var scheme
     var body: some View {
         HStack {
             // 탭 1: 홈
             TabBarButton(
-                icon: "home",
+                icon: "Home",
                 text: "홈",
                 isSelected: selectedTab == 0,
                 activeColor: activeColor,
@@ -101,6 +101,7 @@ struct CustomTabBar: View {
         .padding(.horizontal, 30) // 좌우 여백
         .padding(.top, 14) // 아이콘 위 여백
         .padding(.bottom, 10) // 아이콘 아래 여백 (SafeArea 고려 전)
+        .clipShape(RoundedRectangle(cornerRadius: 30))
         .background(
                     scheme == .dark ? Color(hex: "121212") : Color.white
                 )

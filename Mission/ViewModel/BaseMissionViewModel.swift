@@ -23,9 +23,7 @@ class BaseMissionViewModel: NSObject, ObservableObject {
     
     init(alarmId: Int) {
             self.alarmId = alarmId
-            
-            // ⭐️ [수정] 토큰을 클로저 내부에서 실시간으로 가져오도록 변경
-            // 이렇게 해야 토큰이 갱신되어도 새 토큰을 반영합니다.
+
             let authPlugin = AccessTokenPlugin { _ in
                 return UserDefaults.standard.string(forKey: "accessToken") ?? ""
             }
@@ -49,7 +47,6 @@ class BaseMissionViewModel: NSObject, ObservableObject {
                 
                 let decoded = try response.map(BaseResponse<[MissionContentDTO]>.self)
                 
-                // ✅ [수정] 괄호 짝 맞춤
                 if let data = decoded.result {
                     return data
                 } else {
@@ -73,7 +70,7 @@ class BaseMissionViewModel: NSObject, ObservableObject {
             if let data = decoded.result {
                 if data.isCorrect {
                     // 정답이면 알람 해제 자동 호출
-                    print("🎉 [Base] 정답입니다! 알람 해제를 요청합니다.")
+                    print("[Base] 정답입니다! 알람 해제를 요청합니다.")
                     await dismissAlarm()
                     return true
                 } else {

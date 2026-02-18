@@ -209,7 +209,7 @@ extension Alarm {
                 questionCount = 1
                 
             default:
-                serverMissionType = "MATH"
+                serverMissionType = "NONE"
             }
             
             print("📤 미션 변환: \(self.missionType) -> \(serverMissionType)")

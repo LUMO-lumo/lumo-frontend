@@ -37,7 +37,7 @@ struct RoutineView: View {
                 
                 Text("\(viewModel?.selectedType?.title ?? "") 루틴")
                     .font(.Subtitle1)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.primary)
                     .padding(.bottom, 19)
                 
                 // 루틴 리스트

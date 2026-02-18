@@ -75,20 +75,19 @@ struct DistanceMissionView: View {
                         Spacer().frame(width:10)
                         Text("\(Int(viewModel.targetDistance))m")
                             .font(.Subtitle1)
-                            .foregroundStyle(.primary) // ✅ 다크모드 대응
+                            .foregroundStyle(.black) // ✅ 다크모드 대응
                     }
                     
                     Text(String(format: "%.2fm", viewModel.currentDistance))
                         .font(.pretendardBold60)
                         .padding(.bottom, 30)
-                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                        .foregroundStyle(Color.black) // ✅ 다크모드 대응
                     
                     Spacer().frame(height: 12)
                     
                     Text("움직였어요")
                         .font(.Subtitle3)
-                        // ✅ [수정] Color.black -> Color.primary (다크모드에서 흰색으로 보임)
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color.black)
                     
                 }
                 .frame(maxWidth: .infinity)
@@ -109,7 +108,7 @@ struct DistanceMissionView: View {
                     .font(.Subtitle2)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 20)
-                    .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                    .foregroundStyle(Color.black) // ✅ 다크모드 대응
                     .background(Color.gray300, in: Capsule()
                     )
                 
