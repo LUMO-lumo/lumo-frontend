@@ -9,8 +9,9 @@ import Foundation
 import SwiftData
 
 // MARK: - Domain Model (App Internal Use)
-struct Alarm: Identifiable {
-    let id: UUID = UUID()
+// ✅ [필수] UserDefaults 저장을 위해 Codable 채택
+struct Alarm: Identifiable, Codable {
+    var id: UUID = UUID()
     var serverId: Int? = nil
     
     var time: Date
@@ -21,6 +22,19 @@ struct Alarm: Identifiable {
     var missionType: String
     
     var soundName: String? = "기본음"
+    
+    // 기본 이니셜라이저 (기존 코드 호환)
+    init(id: UUID = UUID(), serverId: Int? = nil, time: Date, label: String, isEnabled: Bool, repeatDays: [Int], missionTitle: String, missionType: String, soundName: String) {
+        self.id = id
+        self.serverId = serverId
+        self.time = time
+        self.label = label
+        self.isEnabled = isEnabled
+        self.repeatDays = repeatDays
+        self.missionTitle = missionTitle
+        self.missionType = missionType
+        self.soundName = soundName
+    }
     
     var timeString: String {
         let formatter = DateFormatter()
@@ -125,9 +139,8 @@ struct AlarmSoundDTO: Codable {
 
 // MARK: - Extensions (Mapping Logic)
 extension Alarm {
-    
-    // 1. 서버 DTO -> 앱 모델 변환 (GET)
     init(from dto: AlarmDTO) {
+        self.id = UUID() // 로컬용 UUID 생성
         self.serverId = dto.alarmId
         self.label = dto.label ?? ""
         self.isEnabled = dto.isEnabled
@@ -139,6 +152,7 @@ extension Alarm {
         
         self.repeatDays = Alarm.convertRepeatDaysToInt(dto.repeatDays)
         
+
         // ⚠️ 주의: 현재는 서버에서 받아온 미션을 앱에 반영하는 로직이 없어서 'NONE'으로 고정되어 있습니다.
         // 추후 서버의 MissionSettingDTO를 해석해서 missionType을 설정하는 로직 추가가 필요합니다.
         if let settings = dto.missionSetting {
@@ -167,7 +181,7 @@ extension Alarm {
     }
     
     
-    
+   
     func toDictionary() -> [String: Any] {
         let timeFormatter = DateFormatter()
         timeFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -178,15 +192,15 @@ extension Alarm {
         var walkGoalMeter = 0
         
         switch self.missionType {
-            case "MATH", "계산":
+            case "계산":
                 serverMissionType = "MATH"
                 questionCount = 1 // 기본값 (나중에 UI에서 설정 가능하게 변경 필요)
                 
-            case "DICTATION", "받아쓰기", "명언":
+            case "받아쓰기":
                 serverMissionType = "TYPING"
                 questionCount = 1
                 
-            case "WALK", "걷기", "운동":
+            case "운동":
                 serverMissionType = "WALK"
                 walkGoalMeter = 50 // 기본 50걸음
                 

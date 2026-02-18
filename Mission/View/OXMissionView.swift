@@ -35,6 +35,9 @@ struct OXMissionView: View {
     
     var body: some View {
         ZStack {
+            // ✅ [추가] 전체 화면 배경색 지정 (오버레이 시 투명 방지 & 다크모드 대응)
+            Color(uiColor: .systemBackground)
+                .ignoresSafeArea()
             
             // 메인 컨텐츠
             VStack {
@@ -42,11 +45,11 @@ struct OXMissionView: View {
                 VStack(spacing: 8) {
                     Text(viewModel.alarmLabel)
                         .font(.pretendardMedium16)
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                     
                     Text(timeFormatter.string(from: currentTime))
                         .font(.pretendardSemiBold60)
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                         .onReceive(timer) { input in
                             currentTime = input
                         }
@@ -68,7 +71,7 @@ struct OXMissionView: View {
                     HStack {
                         Text("Q. \(viewModel.questionText)")
                             .font(.Subtitle2)
-                            .foregroundStyle(Color.primary)
+                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                         Spacer()
                     }
                     .padding(24)
@@ -87,7 +90,7 @@ struct OXMissionView: View {
                         }) {
                             Text("O")
                                 .font(.Subtitle1)
-                                .foregroundStyle(Color.primary)
+                                .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 176)
                                 .background(Color(hex: "E9F2FF"))
@@ -105,7 +108,7 @@ struct OXMissionView: View {
                         }) {
                             Text("X")
                                 .font(.Subtitle1)
-                                .foregroundStyle(Color.primary)
+                                .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 176)
                                 .background(Color(hex: "FFE9E6"))
@@ -159,7 +162,10 @@ struct OXMissionView: View {
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
             if completed {
-                print("🏁 미션 완료! 뷰를 닫습니다.")
+                print("🏁 미션 완료! 소리를 끄고 알림을 제거합니다.")
+                // 🔥 [핵심 수정] completeMission() 호출
+                AlarmKitManager.shared.completeMission()
+                
                 withAnimation {
                     appState.currentRoot = .main
                 }
