@@ -24,7 +24,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     
     // MARK: - Properties (UI Binding)
     @Published var currentDistance: Double = 0.0
-    @Published var targetDistance: Double = 20.0 // 기본 목표값
+    @Published var targetDistance: Double = 0.0
     @Published var feedbackMessage: String = ""
     @Published var showFeedback: Bool = false
     @Published var isCorrect: Bool = false
@@ -58,6 +58,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         print("🚀 [Distance] 미션 시작 요청: GPS 엔진 가동")
         
         // 1. 초기화 및 GPS 우선 가동 (네트워크 늦어도 측정 시작)
+        self.setupLocationManager()
         self.currentDistance = 0.0
         self.previousLocation = nil
         self.locationManager.startUpdatingLocation()
@@ -70,26 +71,52 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         
         // [Real 모드]
         AsyncTask {
+            self.isLoading = true
             do {
-                // 2. 부모 API 호출
-                // startMission이 [MissionStartResult] 배열을 반환한다고 가정 (Incoming 코드 기반)
-                // 만약 단일 객체라면 타입에 맞게 조정 필요
-                if let result = try await super.startMission() {
-                    print("🌐 [SERVER] 응답 성공: \(result)")
+                // 2. 서버에서 목표 거리 요청
+                if let results = try await super.startMission() {
                     
-                    self.contentId = result.contentId
-                    
-                    // 서버에서 온 질문("50")을 숫자로 변환, 실패 시 기본값 유지
-                    if let serverDistance = Double(result.question) {
-                        self.targetDistance = serverDistance
-                        print("🎯 목표 거리 설정: \(serverDistance)m")
+                    if let firstProblem = results.first {
+                        self.contentId = firstProblem.contentId
+                        
+                        // 🔍 [DEBUG] 서버 데이터 확인 (로그를 꼭 확인하세요!)
+                        let rawQuestion = firstProblem.question ?? "nil"
+                        let rawAnswer = firstProblem.answer ?? "nil"
+                        print("📦 [SERVER DATA] ID: \(firstProblem.contentId), Question: '\(rawQuestion)', Answer: '\(rawAnswer)'")
+                        
+                        // 3. 목표 거리 파싱 (숫자만 추출)
+                        // question이 우선, 없으면 answer 필드 확인
+                        let targetString = firstProblem.question ?? firstProblem.answer ?? "20"
+                        
+                        // "50m", "50.0" 등에서 숫자와 점(.)만 남기고 제거
+                        let numberString = targetString.filter { "0123456789.".contains($0) }
+                        
+                        if let goal = Double(numberString), goal > 0 {
+                            self.targetDistance = goal
+                            print("🎯 [SERVER] 목표 거리 설정 완료: \(self.targetDistance)m")
+                        } else {
+                            print("⚠️ [SERVER] 목표 거리 파싱 실패 (원본: \(targetString)). 기본값 20m 사용")
+                            self.targetDistance = 20.0
+                        }
+                        
+                    } else {
+                        throw MissionError.serverError(message: "문제 데이터 없음")
                     }
+                    
+                } else {
+                    throw MissionError.serverError(message: "데이터 로드 실패")
                 }
+                
             } catch {
-                print("⚠️ [SERVER] 시작 실패 (오프라인 모드 동작): \(error)")
-                self.errorMessage = "네트워크 연결 실패 (오프라인 모드로 진행)"
-                // 에러가 나도 GPS는 이미 켜져 있으므로 미션 진행 가능
+                print("⚠️ [SERVER] 시작 실패: \(error)")
+                print("⚠️ 네트워크/서버 오류로 인해 기본 목표(20m)로 진행합니다.")
+                
+                // 🚨 비상 착륙: 서버 연결 실패해도 GPS 미션은 진행
+                self.contentId = 888 // 로컬 처리를 위한 가상 ID
+                self.targetDistance = 50.0
             }
+            
+            self.isLoading = false
         }
     }
     
@@ -112,10 +139,10 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         }
         
         let request = MissionSubmitRequest(
-            contentId: contentId,
-            userAnswer: String(currentDistance),
-            attemptCount: attemptCount
-        )
+                    contentId: contentId,
+                    userAnswer: String(format: "%.1f", currentDistance), // 현재 거리를 문자열로 전송
+                    attemptCount: attemptCount
+                )
         
         AsyncTask {
             do {

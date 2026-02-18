@@ -96,6 +96,10 @@ final class AlarmKitManager: NSObject, ObservableObject {
     
     // MARK: - 알람 스케줄링
     
+    // AlarmKitManager.swift 내부의 scheduleAlarm 함수
+
+    // AlarmKitManager.swift
+
     func scheduleAlarm(from alarm: Alarm) async throws {
         // 🔥 [핵심 수정] 알람을 새로 예약한다는 건, 더 이상 '완료된 알람'이 아님 -> 차단 해제
         if lastCompletedAlarmUUID == alarm.id.uuidString {
@@ -105,6 +109,7 @@ final class AlarmKitManager: NSObject, ObservableObject {
         }
         
         await removeAlarm(id: alarm.id)
+
         guard alarm.isEnabled else { return }
         
         let calendar = Calendar.current

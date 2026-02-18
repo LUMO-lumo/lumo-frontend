@@ -22,38 +22,44 @@ class BaseMissionViewModel: NSObject, ObservableObject {
     @Published var errorMessage: String? = nil
     
     init(alarmId: Int) {
-        self.alarmId = alarmId
-        
-        // ⭐️ 토큰 설정 (403 에러 방지)
-        let token = UserDefaults.standard.string(forKey: "accessToken") ?? ""
-        // 키체인 사용 시: let token = KeychainManager.standard.loadSession(for: "userSession")?.accessToken ?? ""
-        
-        let authPlugin = AccessTokenPlugin { _ in token }
-        self.provider = MoyaProvider<MissionTarget>(plugins: [authPlugin])
-    }
+            self.alarmId = alarmId
+            
+            // ⭐️ [수정] 토큰을 클로저 내부에서 실시간으로 가져오도록 변경
+            // 이렇게 해야 토큰이 갱신되어도 새 토큰을 반영합니다.
+            let authPlugin = AccessTokenPlugin { _ in
+                return UserDefaults.standard.string(forKey: "accessToken") ?? ""
+            }
+            
+            self.provider = MoyaProvider<MissionTarget>(plugins: [authPlugin])
+        }
     
     // MARK: - 공통 API 1: 미션 시작
-    func startMission() async throws -> MissionStartResult? {
-        isLoading = true
-        defer { isLoading = false }
-        
-        let result = await provider.asyncRequest(.startMission(alarmId: alarmId))
-        
-        switch result {
-        case .success(let response):
-            let decoded = try response.map(BaseResponse<MissionStartResult>.self)
+    func startMission() async throws -> [MissionContentDTO]? {
+            isLoading = true
+            defer { isLoading = false }
             
-            if let data = decoded.result {
-                // 🚨 [수정] 모델 정의에 맞춰 'missionContentId' -> 'contentId'로 변경
-                self.contentId = data.contentId
-                return data
-            } else {
-                throw MissionError.serverError(message: decoded.message)
+            let result = await provider.asyncRequest(.startMission(alarmId: alarmId))
+            
+            switch result {
+            case .success(let response):
+                // 404 등 에러 코드 체크를 위해 status code 확인
+                guard response.statusCode >= 200 && response.statusCode < 300 else {
+                    throw MissionError.serverError(message: "서버 오류 (Code: \(response.statusCode))")
+                }
+                
+                let decoded = try response.map(BaseResponse<[MissionContentDTO]>.self)
+                
+                // ✅ [수정] 괄호 짝 맞춤
+                if let data = decoded.result {
+                    return data
+                } else {
+                    throw MissionError.serverError(message: decoded.message)
+                }
+                
+            case .failure(let error):
+                throw error
             }
-        case .failure(let error):
-            throw error
         }
-    }
     
     // MARK: - 공통 API 2: 답안 제출
     // 구체적인 타입(MissionSubmitRequest)을 사용하여 복잡한 제네릭 에러 방지

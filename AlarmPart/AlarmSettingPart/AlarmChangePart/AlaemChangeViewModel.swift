@@ -35,7 +35,7 @@ class AlarmChangeViewModel: ObservableObject {
             self.selectedDays = Set(alarm.repeatDays.map { ($0 + 6) % 7 })
             
             // [추가됨] 저장된 사운드 불러오기
-            self.alarmSound = alarm.soundName
+            self.alarmSound = alarm.soundName ?? ""
             
             switch alarm.missionType {
             case "계산": self.selectedMission = "수학문제"

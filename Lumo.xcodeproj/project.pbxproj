@@ -43,7 +43,6 @@
 		34A4699A2F3C369400F0290D /* DistanceMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469992F3C369400F0290D /* DistanceMissionViewModel.swift */; };
 		34A4699E2F3C7A8700F0290D /* OXMissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A4699D2F3C7A8700F0290D /* OXMissionView.swift */; };
 		34A469A02F3C7A9200F0290D /* OXMissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A4699F2F3C7A9200F0290D /* OXMissionViewModel.swift */; };
-		34A469A22F3DB05600F0290D /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A469A12F3DB05600F0290D /* AppState.swift */; };
 		34B4E7072F3A31AF00E27205 /* SmartBriefingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B4E7062F3A31AF00E27205 /* SmartBriefingViewModel.swift */; };
 		415910062F3DD5EE003C8FC1 /* Security.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 415910052F3DD5EE003C8FC1 /* Security.xcconfig */; };
 		4161A5632F3CEB1A0060D0B1 /* AlarmTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4161A5622F3CEB1A0060D0B1 /* AlarmTarget.swift */; };
@@ -730,7 +729,6 @@
 				34A2B4622F3193F200F3B9A8 /* MissionAlarmSettingViewModel.swift in Sources */,
 				348C8B622F345FF000C384BC /* BriefingVoiceViewModel.swift in Sources */,
 				34A469982F3C325200F0290D /* BaseMissionViewModel.swift in Sources */,
-				34A469A22F3DB05600F0290D /* AppState.swift in Sources */,
 				34A469802F3C1CD100F0290D /* OnboardingViewModel.swift in Sources */,
 				B400C7762F3BA9A500DBDC08 /* MissionTarget.swift in Sources */,
 				34A2B4F92F31C38B00F3B9A8 /* ScreenThemeSettingView.swift in Sources */,
@@ -906,7 +904,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo.sy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -942,7 +940,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ant.Lumo.sy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
