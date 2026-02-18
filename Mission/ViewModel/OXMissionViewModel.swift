@@ -98,6 +98,8 @@ class OXMissionViewModel: BaseMissionViewModel {
                 print("❌ [SERVER] 문제 로드 실패: \(error)")
                 print("⚠️ 서버 연결 실패로 인해 '로컬(Mock) 모드'로 전환합니다.")
                 
+                self.isMockMode = true
+                
                 // 3. 디버깅용: 서버 에러 메시지 확인 (MoyaError인 경우)
                 if let moyaError = error as? MoyaError, let response = moyaError.response {
                     let errorBody = String(data: response.data, encoding: .utf8) ?? "데이터 없음"

@@ -37,7 +37,7 @@ struct AlarmPlayingOverlay: View {
         }
         .zIndex(9999)
         // ✅ [핵심 기능] 미션 완료 신호가 오면 홈으로 강제 이동
-        .onChange(of: alarmManager.shouldPlayBriefing) { newValue in
+        .onChange(of: alarmManager.shouldPlayBriefing) { oldaValue, newValue in
             if newValue {
                 print("🔄 [Overlay] 미션 완료 감지 -> 홈 화면으로 이동 요청")
                 

@@ -116,7 +116,7 @@ struct LumoContentView: View {
             }
         }
         // ✅ [NEW] 미션 완료 신호 감지 (앱 어디에 있든 작동)
-        .onChange(of: alarmManager.shouldPlayBriefing) { newValue in
+        .onChange(of: alarmManager.shouldPlayBriefing) { oldValue, newValue in
             if newValue {
                 print("📣 [Global] 미션 완료 감지 -> 브리핑 시작")
                 
