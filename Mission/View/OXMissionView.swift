@@ -90,7 +90,7 @@ struct OXMissionView: View {
                         }) {
                             Text("O")
                                 .font(.Subtitle1)
-                                .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                                .foregroundStyle(Color.black) // ✅ 다크모드 대응
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 176)
                                 .background(Color(hex: "E9F2FF"))
@@ -108,7 +108,7 @@ struct OXMissionView: View {
                         }) {
                             Text("X")
                                 .font(.Subtitle1)
-                                .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                                .foregroundStyle(Color.black) // ✅ 다크모드 대응
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 176)
                                 .background(Color(hex: "FFE9E6"))
