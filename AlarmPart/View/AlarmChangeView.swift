@@ -5,14 +5,16 @@
 //  Created by 육도연 on 1/27/26.
 //
 
-import SwiftUI
-import Foundation
 import Combine
+import Foundation
+import SwiftUI
+
 import AlarmKit
 import Moya
 
 // MARK: - View
 struct AlarmChangeView: View {
+    
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: AlarmChangeViewModel
     
@@ -34,7 +36,7 @@ struct AlarmChangeView: View {
                 Spacer()
                 Text("알람 수정")
                     .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                    .foregroundStyle(Color.primary)
                 Spacer()
                 Image(systemName: "chevron.left")
                     .font(.system(size: 20))
@@ -42,7 +44,7 @@ struct AlarmChangeView: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 15)
-            .background(Color(uiColor: .systemBackground)) // ✅ 다크모드 대응
+            .background(Color(uiColor: .systemBackground))
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 30) {
@@ -51,9 +53,9 @@ struct AlarmChangeView: View {
                         ZStack(alignment: .trailing) {
                             TextField("알람 이름을 입력해주세요", text: $viewModel.alarmTitle)
                                 .padding()
-                                .background(Color(uiColor: .secondarySystemBackground)) // ✅ 다크모드 대응
+                                .background(Color(uiColor: .secondarySystemBackground))
                                 .cornerRadius(10)
-                                .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                                .foregroundStyle(Color.primary)
                             Image(systemName: "pencil")
                                 .foregroundStyle(.gray)
                                 .padding(.trailing, 15)
@@ -64,7 +66,7 @@ struct AlarmChangeView: View {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("미션 선택")
                             .font(.system(size: 14))
-                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                            .foregroundStyle(Color.primary)
                             .padding(.horizontal, 20)
                         HStack(spacing: 15) {
                             ForEach(AlarmChangeModel.missions, id: \.0) { mission in
@@ -84,7 +86,7 @@ struct AlarmChangeView: View {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("요일 선택")
                             .font(.system(size: 14))
-                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                            .foregroundStyle(Color.primary)
                             .padding(.horizontal, 20)
                         HStack(spacing: 0) {
                             ForEach(0..<AlarmChangeModel.days.count, id: \.self) { index in
@@ -98,7 +100,9 @@ struct AlarmChangeView: View {
                                         viewModel.selectedDays.insert(index)
                                     }
                                 }
-                                if index != 6 { Spacer() }
+                                if index != 6 {
+                                    Spacer()
+                                }
                             }
                         }
                         .padding(.horizontal, 20)
@@ -107,18 +111,22 @@ struct AlarmChangeView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("시간 설정")
                             .font(.system(size: 14))
-                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                            .foregroundStyle(Color.primary)
                             .padding(.horizontal, 20)
                         
                         ZStack {
-                            Color(uiColor: .secondarySystemGroupedBackground) // ✅ 다크모드 대응 (Card like bg)
+                            Color(uiColor: .secondarySystemGroupedBackground)
                                 .cornerRadius(20)
                             
-                            DatePicker("", selection: $viewModel.selectedTime, displayedComponents: .hourAndMinute)
-                                .datePickerStyle(.wheel)
-                                .labelsHidden()
-                                .frame(height: 200)
-                                .background(Color.clear)
+                            DatePicker(
+                                "",
+                                selection: $viewModel.selectedTime,
+                                displayedComponents: .hourAndMinute
+                            )
+                            .datePickerStyle(.wheel)
+                            .labelsHidden()
+                            .frame(height: 200)
+                            .background(Color.clear)
                         }
                         .frame(height: 200)
                         .padding(.horizontal, 20)
@@ -128,7 +136,7 @@ struct AlarmChangeView: View {
                         HStack {
                             Text("레이블")
                                 .font(.system(size: 14))
-                                .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                                .foregroundStyle(Color.primary)
                             Spacer()
                             Text("1교시 있는 날")
                                 .font(.system(size: 14))
@@ -138,12 +146,14 @@ struct AlarmChangeView: View {
                         
                         Divider()
                         
-                        // ✅ [수정 완료] NavigationLink로 감싸서 클릭 시 SoundSettingView로 이동하도록 수정
-                        NavigationLink(destination: SoundSettingView(alarmSound: $viewModel.alarmSound)) {
+                        // NavigationLink로 감싸서 클릭 시 SoundSettingView로 이동하도록 수정
+                        NavigationLink(
+                            destination: SoundSettingView(alarmSound: $viewModel.alarmSound)
+                        ) {
                             HStack {
                                 Text("사운드")
                                     .font(.system(size: 14))
-                                    .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                                    .foregroundStyle(Color.primary)
                                 Spacer()
                                 HStack(spacing: 5) {
                                     Text(viewModel.alarmSound)
@@ -159,13 +169,12 @@ struct AlarmChangeView: View {
                     }
                     .padding(.horizontal, 20)
                     
-                    // [수정 핵심] 로컬 알람 업데이트 제거 (서버 성공 후 처리하도록 변경)
+                    // 로컬 알람 업데이트 제거 (서버 성공 후 처리하도록 변경)
                     Button(action: {
                         let updatedAlarm = viewModel.getUpdatedAlarm()
                         
-                        // 🚨 [수정] 여기서 직접 AlarmKitManager를 호출하지 않습니다.
+                        // 여기서 직접 AlarmKitManager를 호출하지 않습니다.
                         // 부모 뷰(AlarmMenuView)의 onUpdate가 서버 통신 성공 후 로컬 알람을 갱신합니다.
-                        
                         onSave?(updatedAlarm)
                         dismiss()
                     }) {
@@ -185,7 +194,7 @@ struct AlarmChangeView: View {
             }
         }
         .navigationBarHidden(true)
-        .background(Color(uiColor: .systemBackground)) // ✅ 다크모드 대응
+        .background(Color(uiColor: .systemBackground))
         .onAppear {
             viewModel.requestNotificationPermission()
         }
@@ -196,12 +205,17 @@ struct AlarmChangeView: View {
         let imageName: String
         let isSelected: Bool
         let action: () -> Void
+        
         var body: some View {
             Button(action: action) {
                 VStack(spacing: 8) {
                     ZStack {
                         Circle()
-                            .fill(isSelected ? Color(hex: "FF8C68").opacity(0.1) : Color.gray.opacity(0.1))
+                            .fill(
+                                isSelected
+                                    ? Color(hex: "FF8C68").opacity(0.1)
+                                    : Color.gray.opacity(0.1)
+                            )
                             .frame(width: 50, height: 50)
                         Image(imageName)
                             .resizable()
@@ -211,7 +225,7 @@ struct AlarmChangeView: View {
                     }
                     Text(title)
                         .font(.system(size: 12))
-                        .foregroundStyle(isSelected ? Color.primary : .gray) // ✅ 다크모드 대응 (선택시 primary)
+                        .foregroundStyle(isSelected ? Color.primary : .gray)
                 }
             }
         }
@@ -221,20 +235,24 @@ struct AlarmChangeView: View {
         let text: String
         let isSelected: Bool
         let action: () -> Void
+        
         var body: some View {
             Button(action: action) {
                 Text(text)
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(isSelected ? .white : .gray)
                     .frame(width: 36, height: 36)
-
-                    // ✅ 다크모드 대응: 비활성 배경을 시스템 컬러로
-                    .background(isSelected ? Color(hex: "F55641") : Color(uiColor: .secondarySystemBackground))
+                    .background(
+                        isSelected
+                            ? Color(hex: "F55641")
+                            : Color(uiColor: .secondarySystemBackground)
+                    )
                     .clipShape(Circle())
             }
         }
     }
 }
+
 #Preview {
     AlarmChangeView(alarm: Alarm.dummyData[0])
 }

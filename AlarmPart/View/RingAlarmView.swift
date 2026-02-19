@@ -5,12 +5,14 @@
 //  Created by 육도연 on 2/15/26.
 //
 
-import SwiftUI
-import AlarmKit
 import Combine
+import SwiftUI
+
+import AlarmKit
 
 struct AlarmPlayingOverlay: View {
-    // ✅ [추가] 홈 화면 이동을 위해 AppState 연결
+    
+    // 홈 화면 이동을 위해 AppState 연결
     @EnvironmentObject var appState: AppState
     
     @StateObject private var alarmManager = AlarmKitManager.shared
@@ -18,7 +20,7 @@ struct AlarmPlayingOverlay: View {
     
     var body: some View {
         ZStack {
-            // ✅ 배경: 시스템 배경색 사용 (라이트: 흰색, 다크: 검은색)
+
             Color(uiColor: .systemBackground)
                 .ignoresSafeArea()
             
@@ -26,7 +28,11 @@ struct AlarmPlayingOverlay: View {
             if let missionType = alarmManager.triggeredMissionType, missionType != "NONE" {
                 // alarmId가 있어야 API 호출 가능. 없으면(로컬/에러) 기본 화면.
                 if let alarmId = alarmManager.triggeredAlarmId {
-                    missionContent(type: missionType, id: alarmId, label: alarmManager.triggeredAlarmLabel)
+                    missionContent(
+                        type: missionType,
+                        id: alarmId,
+                        label: alarmManager.triggeredAlarmLabel
+                    )
                 } else {
                     // ID가 없으면 그냥 기본 끄기 화면 보여주거나, 임시 ID로 진행
                     defaultAlarmView
@@ -36,7 +42,7 @@ struct AlarmPlayingOverlay: View {
             }
         }
         .zIndex(9999)
-        // ✅ [핵심 기능] 미션 완료 신호가 오면 홈으로 강제 이동
+        // [핵심 기능] 미션 완료 신호가 오면 홈으로 강제 이동
         .onChange(of: alarmManager.shouldPlayBriefing) { oldaValue, newValue in
             if newValue {
                 print("🔄 [Overlay] 미션 완료 감지 -> 홈 화면으로 이동 요청")
@@ -58,9 +64,13 @@ struct AlarmPlayingOverlay: View {
         }
     }
     
-    // ✅ [수정] 미션 타입별 뷰 분기 처리
+    // 미션 타입별 뷰 분기 처리
     @ViewBuilder
-    private func missionContent(type: String, id: Int, label: String) -> some View {
+    private func missionContent(
+        type: String,
+        id: Int,
+        label: String
+    ) -> some View {
         switch type {
         case "계산", "MATH":
             MathMissionView(alarmId: id, alarmLabel: label)
@@ -76,6 +86,7 @@ struct AlarmPlayingOverlay: View {
     }
     
     // MARK: - 기본 알람 화면 (미션 없을 때, 혹은 에러 시)
+    
     private var defaultAlarmView: some View {
         VStack(spacing: 40) {
             Spacer()
@@ -84,8 +95,13 @@ struct AlarmPlayingOverlay: View {
                 .font(.system(size: 100))
                 .foregroundStyle(Color.primary)
                 .scaleEffect(animateIcon ? 1.2 : 1.0)
-                .animation(.easeInOut(duration: 0.5).repeatForever(autoreverses: true), value: animateIcon)
-                .onAppear { animateIcon = true }
+                .animation(
+                    .easeInOut(duration: 0.5).repeatForever(autoreverses: true),
+                    value: animateIcon
+                )
+                .onAppear {
+                    animateIcon = true
+                }
             
             VStack(spacing: 16) {
                 Text(alarmManager.triggeredAlarmLabel)

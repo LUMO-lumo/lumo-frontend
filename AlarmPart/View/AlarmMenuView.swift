@@ -5,13 +5,15 @@
 //  Created by 육도연 on 1/6/26.
 //
 
-import SwiftUI
 import Foundation
-import Moya
-import CombineMoya
+import SwiftUI
+
 import AlarmKit
+import CombineMoya
+import Moya
 
 struct AlarmMenuView: View {
+    
     @StateObject private var viewModel = AlarmViewModel()
     
     var body: some View {
@@ -63,27 +65,34 @@ struct AlarmMenuView: View {
                                     onToggle: { isOn in
                                         // 바인딩에서 인덱스를 찾기 어려울 수 있으니, 여기서도 ID로 안전하게 처리
                                         if let index = viewModel.alarms.firstIndex(where: { $0.id == alarm.id }) {
-                                            viewModel.toggleAlarmState(alarm: viewModel.alarms[index], isOn: isOn)
+                                            viewModel.toggleAlarmState(
+                                                alarm: viewModel.alarms[index],
+                                                isOn: isOn
+                                            )
                                         }
                                     }
                                 )
                                 .padding(.horizontal, 20)
                             }
-                                }
+                        }
                         .padding(.top, 10)
                         .padding(.bottom, 150)
                     }
                 }
                 
                 // 알람 생성 버튼
-                NavigationLink(destination: AlarmCreateView(onCreate: { newAlarm in
-                    // 생성 시 에러 방지를 위한 딜레이 추가
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        withAnimation {
-                            viewModel.addAlarm(newAlarm)
+                NavigationLink(
+                    destination: AlarmCreateView(
+                        onCreate: { newAlarm in
+                            // 생성 시 에러 방지를 위한 딜레이 추가
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                withAnimation {
+                                    viewModel.addAlarm(newAlarm)
+                                }
+                            }
                         }
-                    }
-                })) {
+                    )
+                ) {
                     ZStack {
                         Circle()
                             .fill(Color(hex: "FF8C68"))

@@ -5,15 +5,16 @@
 //  Created by 육도연 on 2/3/26.
 //
 
-import SwiftUI
-import Foundation
 import Combine
+import Foundation
+import SwiftUI
+
 import AlarmKit
 import Moya
 
-
-// AlarmChange 화면에서 사용하는 특정 데이터나 상수를 정의합니다.
+/// AlarmChange 화면에서 사용하는 특정 데이터나 상수를 정의합니다.
 struct AlarmChangeModel {
+    
     // 미션 목록 데이터 (Title, ImageName)
     static let missions: [(title: String, imageName: String)] = [
         ("수학문제", "MathMission"),

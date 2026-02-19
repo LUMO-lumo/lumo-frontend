@@ -33,24 +33,29 @@ enum UserTarget {
     case changePassword(request: ChangePasswordRequest)
 }
 
-extension UserTarget: @MainActor APITarget{
-    
+extension UserTarget: @MainActor APITarget {
     
     // 각 API의 경로
     var path: String {
         switch self {
         case .checkEmailDuplicate:
             return "/api/member/email-duplicate"
+            
         case .requestVerificationCode:
             return "/api/member/request-code"
+            
         case .verifyCode:
             return "/api/member/verify-code"
+            
         case .signUp:
             return "/api/member/signin"
+            
         case .login:
             return "/api/member/login"
+            
         case .findEmailForReset:
             return "/api/member/find-email"
+            
         case .changePassword:
             return "/api/member/change-pw"
         }
@@ -73,14 +78,14 @@ extension UserTarget: @MainActor APITarget{
     // 데이터 전송 방식 (QueryString vs JSON Body)
     var task: Moya.Task {
         switch self {
-            // GET 방식 - 쿼리 파라미터
+        // GET 방식 - 쿼리 파라미터
         case .checkEmailDuplicate(let email):
             return .requestParameters(
                 parameters: ["email": email],
                 encoding: URLEncoding.queryString
             )
             
-            // POST 방식 - 쿼리 파라미터
+        // POST 방식 - 쿼리 파라미터
         case .requestVerificationCode(let email):
             return .requestParameters(
                 parameters: ["email": email],
@@ -111,7 +116,7 @@ extension UserTarget: @MainActor APITarget{
                 encoding: URLEncoding.queryString
             )
             
-            // POST 방식 - 일반적인 JSON Body 전송
+        // POST 방식 - 일반적인 JSON Body 전송
         case .signUp(let request):
             return .requestJSONEncodable(request)
             

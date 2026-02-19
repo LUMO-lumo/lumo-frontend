@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 import Alamofire
 import Moya
 
@@ -22,7 +23,7 @@ extension FeedbackTarget: TargetType {
     var path: String {
         switch self {
         case .sendFeedback:
-            return "/api/feedbacks" // 🔥 실제 API 경로 확인 필요
+            return "/api/feedbacks" 
         }
     }
     
@@ -41,7 +42,7 @@ extension FeedbackTarget: TargetType {
         }
     }
     
-    var headers: [String : String]? {
+    var headers: [String: String]? {
         // 1. 기본 헤더 설정
         var header = ["Content-Type": "application/json"]
         

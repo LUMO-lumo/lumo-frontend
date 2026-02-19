@@ -5,10 +5,10 @@
 //  Created by 김승겸 on 2/13/26.
 //
 
-import Foundation
 import Combine
-import SwiftUI
+import Foundation
 import Moya
+import SwiftUI
 
 // 로컬 테스트용 문제 모델
 struct LocalTypingProblem {
@@ -20,7 +20,7 @@ struct LocalTypingProblem {
 class TypingMissionViewModel: BaseMissionViewModel {
     
     // MARK: - Configuration
-    // ⭐️ 이 값을 false로 바꾸면 API 모드로 작동합니다.
+    // 이 값을 false로 바꾸면 API 모드로 작동합니다.
     private var isMockMode: Bool
     
     // MARK: - UI Properties
@@ -116,7 +116,7 @@ class TypingMissionViewModel: BaseMissionViewModel {
     
     // MARK: - 2. 제출 (버튼 클릭 시)
     func submitAnswer(_ answer: String) {
-        // View에서 인자로 넘어오는 answer를 self.userAnswer에 반영 (혹은 View가 이미 바인딩으로 업데이트했다면 생략 가능하지만 안전하게)
+        // View에서 인자로 넘어오는 answer를 self.userAnswer에 반영
         self.userAnswer = answer
         guard !userAnswer.isEmpty else { return }
         
@@ -163,7 +163,7 @@ class TypingMissionViewModel: BaseMissionViewModel {
             self.feedbackMessage = "잘했어요!"
             
             AsyncTask {
-                try? await AsyncTask.sleep(nanoseconds: 1_500_000_000) // 1.5초 딜레이 (피드백 감상 시간)
+                try? await AsyncTask.sleep(nanoseconds: 1_500_000_000) // 1.5초 딜레이
                 
                 // UI 업데이트는 메인 스레드에서
                 await MainActor.run {
@@ -218,7 +218,7 @@ class TypingMissionViewModel: BaseMissionViewModel {
     }
     
     private func checkMockAnswer() {
-        // 공백 제거 등 전처리 (타이핑 미션이므로 띄어쓰기 중요하면 trimming만)
+        // 공백 제거 등 전처리
         let cleanAnswer = userAnswer.trimmingCharacters(in: .whitespacesAndNewlines)
         let cleanCorrect = localCorrectAnswer.trimmingCharacters(in: .whitespacesAndNewlines)
         

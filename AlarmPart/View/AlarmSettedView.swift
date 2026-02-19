@@ -7,20 +7,22 @@
 
 // 알람 설정한 거 보이는 상자 (개별 Row View)
 
-import SwiftUI
 import Foundation
+import SwiftUI
+
 import AlarmKit
 
 struct AlarmSettedView: View {
+    
     @Binding var alarm: Alarm
     var onDelete: () -> Void
     var onUpdate: ((Alarm) -> Void)?
     
-    // ✅ [추가] 토글 전용 클로저
     var onToggle: ((Bool) -> Void)?
     
     @State private var offset: CGFloat = 0
     @State private var isSwiped: Bool = false
+    
     let deleteButtonWidth: CGFloat = 80
     let days = ["일", "월", "화", "수", "목", "금", "토"]
     
@@ -30,13 +32,20 @@ struct AlarmSettedView: View {
             HStack {
                 Spacer()
                 Button(action: {
-                    withAnimation { onDelete() }
+                    withAnimation {
+                        onDelete()
+                    }
                 }) {
                     ZStack {
                         Circle()
                             .fill(Color(hex: "F55641"))
                             .frame(width: 56, height: 56)
-                            .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
+                            .shadow(
+                                color: .black.opacity(0.1),
+                                radius: 5,
+                                x: 0,
+                                y: 2
+                            )
                         
                         Image(systemName: "trash.fill")
                             .font(.system(size: 22))
@@ -53,14 +62,13 @@ struct AlarmSettedView: View {
                 HStack(alignment: .center) {
                     Text(alarm.timeString)
                         .font(.system(size: 32, weight: .bold))
-                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                        .foregroundStyle(Color.primary)
                     Spacer()
                     
                     Toggle("", isOn: $alarm.isEnabled)
                         .labelsHidden()
                         .tint(Color(hex: "F55641"))
                         .onChange(of: alarm.isEnabled) { oldValue, newValue in
-                            // ✅ [수정] 전체 업데이트가 아닌 전용 토글 이벤트 호출
                             onToggle?(newValue)
                         }
                 }
@@ -79,12 +87,20 @@ struct AlarmSettedView: View {
                         }) {
                             ZStack {
                                 Circle()
-                                    .fill(alarm.repeatDays.contains(index) ? Color(hex: "F55641") : Color(uiColor: .systemGray5))
+                                    .fill(
+                                        alarm.repeatDays.contains(index)
+                                            ? Color(hex: "F55641")
+                                            : Color(uiColor: .systemGray5)
+                                    )
                                     .frame(width: 30, height: 30)
                                 
                                 Text(days[index])
                                     .font(.system(size: 12, weight: .medium))
-                                    .foregroundStyle(alarm.repeatDays.contains(index) ? .white : .gray)
+                                    .foregroundStyle(
+                                        alarm.repeatDays.contains(index)
+                                            ? .white
+                                            : .gray
+                                    )
                             }
                         }
                     }
@@ -102,20 +118,24 @@ struct AlarmSettedView: View {
                         
                         Text(alarm.missionTitle)
                             .font(.system(size: 13))
-                            .foregroundStyle(Color.primary.opacity(0.8)) // ✅ 다크모드 대응
+                            .foregroundStyle(Color.primary.opacity(0.8))
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
-                    // ✅ 다크모드 대응: 배경 투명도 조절 혹은 시스템 컬러 사용
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(12)
                     
                     Spacer()
                     
-                    NavigationLink(destination: AlarmChangeView(alarm: alarm, onSave: { updatedAlarm in
-                        self.alarm = updatedAlarm
-                        firstupdateAlarmOnServer()
-                    })) {
+                    NavigationLink(
+                        destination: AlarmChangeView(
+                            alarm: alarm,
+                            onSave: { updatedAlarm in
+                                self.alarm = updatedAlarm
+                                firstupdateAlarmOnServer()
+                            }
+                        )
+                    ) {
                         Image(systemName: "ellipsis")
                             .foregroundStyle(.gray)
                             .rotationEffect(.degrees(90))
@@ -124,7 +144,6 @@ struct AlarmSettedView: View {
                 }
             }
             .padding(20)
-            // ✅ 다크모드 대응: 카드 배경색 (라이트: 연회색 / 다크: 짙은 회색)
             .background(Color(uiColor: .secondarySystemBackground))
             .cornerRadius(20)
             .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
@@ -161,6 +180,8 @@ struct AlarmSettedView: View {
         }
     }
     
+    // MARK: - Action Functions
+    
     private func toggleDay(_ index: Int) {
         if let existingIndex = alarm.repeatDays.firstIndex(of: index) {
             alarm.repeatDays.remove(at: existingIndex)
@@ -176,7 +197,11 @@ struct AlarmSettedView: View {
     }
 }
 
-#Preview {
-    AlarmSettedView(alarm: .constant(Alarm.dummyData[0]), onDelete: {})
-}
+// MARK: - Previews
 
+#Preview {
+    AlarmSettedView(
+        alarm: .constant(Alarm.dummyData[0]),
+        onDelete: {}
+    )
+}

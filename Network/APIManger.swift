@@ -6,10 +6,12 @@
 //
 
 import Foundation
-import Moya
+
 import Alamofire
+import Moya
 
 class APIManager: @unchecked Sendable {
+    
     static let shared = APIManager()
     
     // 1. 토큰 관리 객체들
@@ -40,7 +42,9 @@ class APIManager: @unchecked Sendable {
         )
         
         // D. 로거 플러그인 설정
-        self.loggerPlugin = NetworkLoggerPlugin(configuration: .init(logOptions: .verbose))
+        self.loggerPlugin = NetworkLoggerPlugin(
+            configuration: .init(logOptions: .verbose)
+        )
     }
     
     /// 실제 API 요청용 MoyaProvider

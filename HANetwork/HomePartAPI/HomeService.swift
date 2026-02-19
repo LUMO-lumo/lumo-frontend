@@ -8,9 +8,13 @@
 import Foundation
 
 class HomeService {
+    
     private let client = MainAPIClient<HomeEndpoint>()
-
-    func fetchHomeData(today: String, completion: @escaping (Result<HomeDTO, MainAPIError>) -> Void) {
+    
+    func fetchHomeData(
+        today: String,
+        completion: @escaping (Result<HomeDTO, MainAPIError>) -> Void
+    ) {
         // Endpoint에 today 전달
         client.request(.getHomeInfo(today: today), completion: completion)
     }

@@ -5,14 +5,16 @@
 //  Created by 육도연 on 1/27/26.
 //
 
-import Moya
 import Combine
-import SwiftUI
 import Foundation
+import SwiftUI
 import UserNotifications
+
 import AlarmKit
+import Moya
 
 struct AlarmCreateView: View {
+    
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = AlarmCreateViewModel()
     
@@ -38,7 +40,7 @@ struct AlarmCreateView: View {
                 Spacer()
                 Text("알람 생성")
                     .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                    .foregroundStyle(Color.primary)
                 Spacer()
                 Image(systemName: "chevron.left")
                     .font(.system(size: 20))
@@ -46,7 +48,7 @@ struct AlarmCreateView: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 15)
-            .background(Color(uiColor: .systemBackground)) // ✅ 다크모드 대응
+            .background(Color(uiColor: .systemBackground))
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 30) {
@@ -55,9 +57,9 @@ struct AlarmCreateView: View {
                         ZStack(alignment: .trailing) {
                             TextField("알람 이름을 입력해주세요", text: $viewModel.alarmTitle)
                                 .padding()
-                                .background(Color(uiColor: .secondarySystemBackground)) // ✅ 다크모드 대응
+                                .background(Color(uiColor: .secondarySystemBackground))
                                 .cornerRadius(10)
-                                .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                                .foregroundStyle(Color.primary)
                             Image(systemName: "pencil")
                                 .foregroundStyle(.gray)
                                 .padding(.trailing, 15)
@@ -68,7 +70,7 @@ struct AlarmCreateView: View {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("미션 선택")
                             .font(.system(size: 14))
-                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                            .foregroundStyle(Color.primary)
                             .padding(.horizontal, 20)
                         HStack(spacing: 15) {
                             ForEach(missions, id: \.0) { mission in
@@ -88,7 +90,7 @@ struct AlarmCreateView: View {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("요일 선택")
                             .font(.system(size: 14))
-                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                            .foregroundStyle(Color.primary)
                             .padding(.horizontal, 20)
                         HStack(spacing: 0) {
                             ForEach(0..<7) { index in
@@ -102,7 +104,9 @@ struct AlarmCreateView: View {
                                         viewModel.selectedDays.insert(index)
                                     }
                                 }
-                                if index != 6 { Spacer() }
+                                if index != 6 {
+                                    Spacer()
+                                }
                             }
                         }
                         .padding(.horizontal, 20)
@@ -111,18 +115,22 @@ struct AlarmCreateView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("시간 설정")
                             .font(.system(size: 14))
-                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                            .foregroundStyle(Color.primary)
                             .padding(.horizontal, 20)
                         
                         ZStack {
-                            Color(uiColor: .secondarySystemGroupedBackground) // ✅ 다크모드 대응
+                            Color(uiColor: .secondarySystemGroupedBackground)
                                 .cornerRadius(20)
                             
-                            DatePicker("", selection: $viewModel.selectedTime, displayedComponents: .hourAndMinute)
-                                .datePickerStyle(.wheel)
-                                .labelsHidden()
-                                .frame(height: 200)
-                                .background(Color.clear)
+                            DatePicker(
+                                "",
+                                selection: $viewModel.selectedTime,
+                                displayedComponents: .hourAndMinute
+                            )
+                            .datePickerStyle(.wheel)
+                            .labelsHidden()
+                            .frame(height: 200)
+                            .background(Color.clear)
                         }
                         .frame(height: 200)
                         .padding(.horizontal, 20)
@@ -132,7 +140,7 @@ struct AlarmCreateView: View {
                         HStack {
                             Text("레이블")
                                 .font(.system(size: 14))
-                                .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                                .foregroundStyle(Color.primary)
                             Spacer()
                             Text("1교시 있는 날")
                                 .font(.system(size: 14))
@@ -142,11 +150,13 @@ struct AlarmCreateView: View {
                         Divider()
                         
                         // [연결] SoundSettingView로 이동 (Binding 전달)
-                        NavigationLink(destination: SoundSettingView(alarmSound: $viewModel.alarmSound)) {
+                        NavigationLink(
+                            destination: SoundSettingView(alarmSound: $viewModel.alarmSound)
+                        ) {
                             HStack {
                                 Text("사운드")
                                     .font(.system(size: 14))
-                                    .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                                    .foregroundStyle(Color.primary)
                                 Spacer()
                                 HStack(spacing: 5) {
                                     Text(viewModel.alarmSound)
@@ -163,7 +173,7 @@ struct AlarmCreateView: View {
                     .padding(.horizontal, 20)
                     
                     Button(action: {
-                        // ✅ [수정] 오프라인 퍼스트 적용
+                        // 오프라인 퍼스트 적용
                         // 1. 로컬 객체를 즉시 생성하여 onCreate 호출
                         let newAlarm = viewModel.createNewAlarm()
                         onCreate?(newAlarm)
@@ -187,7 +197,7 @@ struct AlarmCreateView: View {
             }
         }
         .navigationBarHidden(true)
-        .background(Color(uiColor: .systemBackground)) // ✅ 다크모드 대응
+        .background(Color(uiColor: .systemBackground))
     }
 }
 
@@ -196,12 +206,17 @@ private struct CreateMissionButton: View {
     let imageName: String
     let isSelected: Bool
     let action: () -> Void
+    
     var body: some View {
         Button(action: action) {
             VStack(spacing: 8) {
                 ZStack {
                     Circle()
-                        .fill(isSelected ? Color(hex: "FF8C68").opacity(0.1) : Color.gray.opacity(0.1))
+                        .fill(
+                            isSelected
+                                ? Color(hex: "FF8C68").opacity(0.1)
+                                : Color.gray.opacity(0.1)
+                        )
                         .frame(width: 50, height: 50)
                     Image(imageName)
                         .resizable()
@@ -211,7 +226,7 @@ private struct CreateMissionButton: View {
                 }
                 Text(title)
                     .font(.system(size: 12))
-                    .foregroundStyle(isSelected ? Color.primary : .gray) // ✅ 다크모드 대응
+                    .foregroundStyle(isSelected ? Color.primary : .gray)
             }
         }
     }
@@ -221,14 +236,18 @@ private struct CreateDayButton: View {
     let text: String
     let isSelected: Bool
     let action: () -> Void
+    
     var body: some View {
         Button(action: action) {
             Text(text)
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(isSelected ? .white : .gray)
                 .frame(width: 36, height: 36)
-                // ✅ 다크모드 대응
-                .background(isSelected ? Color(hex: "F55641") : Color(uiColor: .secondarySystemBackground))
+                .background(
+                    isSelected
+                        ? Color(hex: "F55641")
+                        : Color(uiColor: .secondarySystemBackground)
+                )
                 .clipShape(Circle())
         }
     }

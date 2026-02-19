@@ -35,7 +35,7 @@ struct NoticeView: View {
                 }
                 .padding(.horizontal, 16) // 내부 좌우 여백
                 .padding(.vertical, 12)   // 내부 상하 여백
-                .background(Color.gray.opacity(0.1)) // 🔥 3. 전체 회색 배경 설정
+                .background(Color.gray.opacity(0.1)) // 3. 전체 회색 배경 설정
                 .cornerRadius(12) // 4. 모서리 둥글게
                 .padding(.horizontal)
                 // 로딩 중일 때

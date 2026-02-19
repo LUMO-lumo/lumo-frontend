@@ -4,8 +4,9 @@
 //
 //  Created by 김승겸 on 1/5/26.
 //
-import SwiftUI
+
 import Combine
+import SwiftUI
 
 struct DistanceMissionView: View {
     @EnvironmentObject var appState: AppState
@@ -30,8 +31,8 @@ struct DistanceMissionView: View {
     }
     
     var body: some View {
-        ZStack{
-            // ✅ [추가] 전체 화면 배경색 지정 (오버레이 시 투명 방지 & 다크모드 대응)
+        ZStack {
+            // 전체 화면 배경색 지정
             Color(uiColor: .systemBackground)
                 .ignoresSafeArea()
             
@@ -40,17 +41,18 @@ struct DistanceMissionView: View {
                 VStack(spacing: 8) {
                     Text(viewModel.alarmLabel)
                         .font(.pretendardMedium16)
-                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응 (흰색/검은색 자동)
+                        .foregroundStyle(Color.primary)
                     
                     Text(timeFormatter.string(from: currentTime))
                         .font(.pretendardSemiBold60)
-                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                        .foregroundStyle(Color.primary)
                         .onReceive(timer) { input in
                             currentTime = input
                         }
                 }
                 .padding(.top, 72)
                 
+                // 미션 안내 배지
                 Text("거리 미션을 수행해 주세요!")
                     .font(.Body1)
                     .padding(.horizontal, 14)
@@ -59,10 +61,11 @@ struct DistanceMissionView: View {
                     .background(Color.main300, in: RoundedRectangle(cornerRadius: 6))
                     .padding(.top, 74)
                 
-                Spacer().frame(height:14)
+                Spacer().frame(height: 14)
                 
+                // 거리 측정 대시보드
                 VStack {
-                    HStack{
+                    HStack {
                         Text("목표")
                             .font(.Body1)
                             .padding(.horizontal, 10)
@@ -72,23 +75,24 @@ struct DistanceMissionView: View {
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(Color.gray500, lineWidth: 1)
                             )
-                        Spacer().frame(width:10)
+                        
+                        Spacer().frame(width: 10)
+                        
                         Text("\(Int(viewModel.targetDistance))m")
                             .font(.Subtitle1)
-                            .foregroundStyle(.black) // ✅ 다크모드 대응
+                            .foregroundStyle(.black)
                     }
                     
                     Text(String(format: "%.2fm", viewModel.currentDistance))
                         .font(.pretendardBold60)
                         .padding(.bottom, 30)
-                        .foregroundStyle(Color.black) // ✅ 다크모드 대응
+                        .foregroundStyle(Color.black)
                     
                     Spacer().frame(height: 12)
                     
                     Text("움직였어요")
                         .font(.Subtitle3)
                         .foregroundStyle(Color.black)
-                    
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 24)
@@ -96,39 +100,39 @@ struct DistanceMissionView: View {
                 .background(Color.gray200)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 
-                Spacer().frame(height:74)
+                Spacer().frame(height: 74)
                 
-                Button(action:{
+                // SNOOZE 버튼
+                Button(action: {
                     withAnimation {
                         viewModel.showFeedback = true
                         viewModel.isMissionCompleted = true
-                        
                     }
-                }) {Text("SNOOZE")}
-                    .font(.Subtitle2)
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 20)
-                    .foregroundStyle(Color.black) // ✅ 다크모드 대응
-                    .background(Color.gray300, in: Capsule()
-                    )
+                }) {
+                    Text("SNOOZE")
+                        .font(.Subtitle2)
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 20)
+                        .foregroundStyle(Color.black)
+                        .background(Color.gray300, in: Capsule())
+                }
                 
-                Spacer().frame(height:85)
-                
-            } .padding(.horizontal, 24)
-                .blur(radius: viewModel.showFeedback ? 5 : 0)
+                Spacer().frame(height: 85)
+            }
+            .padding(.horizontal, 24)
+            .blur(radius: viewModel.showFeedback ? 5 : 0)
             
+            // 피드백 오버레이
             if viewModel.showFeedback {
-                ZStack{
-                    // 배경 (회색/검은색 반투명)
+                ZStack {
                     Color.black.opacity(0.8)
                         .ignoresSafeArea()
-                        .transition(.opacity) // 부드럽게 등장
+                        .transition(.opacity)
                     
-                    // 내용 (이모티콘 + 멘트)
                     VStack(spacing: 20) {
                         Image(.correct)
                             .resizable()
-                            .frame(width: 180,height: 180)
+                            .frame(width: 180, height: 180)
                         
                         Text(viewModel.feedbackMessage)
                             .font(.Headline1)
@@ -146,18 +150,16 @@ struct DistanceMissionView: View {
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
             if completed {
                 print("🏁 거리 미션 완료! 소리를 끄고 알림을 제거합니다.")
-                // 🔥 [핵심 수정] completeMission() 호출
                 AlarmKitManager.shared.completeMission()
                 
                 withAnimation(.easeInOut(duration: 0.5)) {
                     appState.currentRoot = .main
                 }
             }
-            
         }
     }
 }
 
 #Preview {
-    DistanceMissionView(alarmId: 1, alarmLabel: "1교시 없는 날")
+    DistanceMissionView(alarmId: 1, alarmLabel: "1교시 있는 날")
 }

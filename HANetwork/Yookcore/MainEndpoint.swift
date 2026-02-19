@@ -6,11 +6,18 @@
 //
 
 import Foundation
+
 import Moya
 
-protocol MainEndpoint: TargetType { }
+protocol MainEndpoint: TargetType {}
 
 extension MainEndpoint {
-    var baseURL: URL { return URL(string: AppConfig.baseURL)! }
-    var headers: [String: String]? { ["Content-Type": "application/json"]}
+    
+    var baseURL: URL {
+        return URL(string: AppConfig.baseURL)!
+    }
+    
+    var headers: [String: String]? {
+        return ["Content-Type": "application/json"]
+    }
 }

@@ -22,7 +22,7 @@ class PasswordResetViewModel: ObservableObject {
     
     // MARK: - Properties
     
-    // ✅ 화면 상태 관리 (이 변수가 바뀌면 View의 switch문이 반응함)
+    // 화면 상태 관리 (이 변수가 바뀌면 View의 switch문이 반응함)
     @Published var step: ResetStep = .inputEmail
     
     // 입력 데이터

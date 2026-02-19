@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 import Alamofire
 import Moya
 
@@ -14,17 +15,15 @@ enum MissionTarget {
     case startMission(alarmId: Int)
     
     /// 2. 미션 답안 제출 (POST / Path + JSON Body)
-    /// 주의: Encodable 프로토콜을 직접 사용하는 경우, Swift 버전에 따라 'any Encodable'로 명시해야 할 수도 있습니다.
     case submitMission(alarmId: Int, request: Encodable)
     
     /// 3. 알람 해제 (POST / Path + JSON Body)
     case dismissAlarm(alarmId: Int, request: DismissAlarmRequest)
 }
 
-extension MissionTarget: @MainActor APITarget{
+extension MissionTarget: @MainActor APITarget {
     
     var baseURL: URL {
-        // AppConfig.baseURL이 확실하다고 가정합니다.
         return URL(string: AppConfig.baseURL)!
     }
     
@@ -62,7 +61,7 @@ extension MissionTarget: @MainActor APITarget{
         }
     }
     
-    var headers: [String : String]? {
+    var headers: [String: String]? {
         // 1. 기본 헤더 설정
         var header = ["Content-Type": "application/json"]
         
@@ -83,7 +82,7 @@ extension MissionTarget: @MainActor APITarget{
             
         } catch {
             // 4. 에러 발생 시 (로그인이 안 되어 있거나 키체인 오류)
-            // 401 Unauthorized 발생 시 로그인 화면으로 이동하는 로직은 보통 API 호출부에서 처리합니다.
+            // 401 Unauthorized 발생 시 로그인 화면으로 이동하는 로직은 보통 API 호출부에서 처리
             print("ℹ️ [MissionTarget] 토큰 로드 실패 (비로그인 상태): \(error)")
         }
         

@@ -14,7 +14,7 @@ struct FeedbackView: View {
     var body: some View {
         VStack(spacing: 20) {
             
-            // 1. 입력 폼 영역
+            // 입력 폼 영역
             ScrollView {
                 VStack(spacing: 10) {
                     

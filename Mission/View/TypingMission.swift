@@ -35,7 +35,7 @@ struct TypingMissionView: View {
     
     var body: some View {
         ZStack {
-            // ✅ 전체 화면 배경색 지정 (오버레이 시 투명 방지 & 다크모드 대응)
+            // 전체 화면 배경색 지정
             Color(uiColor: .systemBackground)
                 .ignoresSafeArea()
             
@@ -45,11 +45,11 @@ struct TypingMissionView: View {
                 VStack(spacing: 8) {
                     Text(viewModel.alarmLabel)
                         .font(.pretendardMedium16)
-                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                        .foregroundStyle(Color.primary)
                     
                     Text(timeFormatter.string(from: currentTime))
                         .font(.pretendardSemiBold60)
-                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                        .foregroundStyle(Color.primary)
                         .onReceive(timer) { input in
                             currentTime = input
                         }
@@ -59,7 +59,7 @@ struct TypingMissionView: View {
                 Spacer()
                 
                 // 따라쓰기 미션 컨테이너
-                VStack(spacing: 10){
+                VStack(spacing: 10) {
                     // 미션 타이틀 배지
                     Text("따라쓰기 미션을 수행해주세요!")
                         .font(.Body1)
@@ -73,7 +73,7 @@ struct TypingMissionView: View {
                     HStack {
                         Text("\(viewModel.questionText)")
                             .font(.Subtitle2)
-                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                            .foregroundStyle(Color.primary)
                         Spacer()
                     }
                     .padding(24)
@@ -82,14 +82,13 @@ struct TypingMissionView: View {
                             .stroke(Color.gray300, lineWidth: 2)
                     }
                     
-                    // 정답 입력 영역 (A.)
+                    // 정답 입력 영역
                     HStack {
                         TextField("여기에 문장을 작성해주세요", text: $viewModel.userAnswer)
                             .font(.Subtitle3)
-                            .foregroundStyle(.black) // ✅ [수정] 배경이 밝은 회색이므로 글자는 항상 검은색이어야 함
+                            .foregroundStyle(.black)
                             .keyboardType(.default)
                             .multilineTextAlignment(.center)
-
                     }
                     .padding(.horizontal, 24)
                     .padding(.vertical, 80)
@@ -104,7 +103,6 @@ struct TypingMissionView: View {
                 
                 // 확인 버튼
                 Button(action: {
-                    // ✅ ViewModel 내부에서 비동기 처리하므로 await 불필요
                     viewModel.submitAnswer(viewModel.userAnswer)
                 }) {
                     Text("확인")
@@ -114,14 +112,14 @@ struct TypingMissionView: View {
                         .padding(.vertical, 19)
                         .background(Color.gray300, in: RoundedRectangle(cornerRadius: 999))
                 }
-                .disabled(viewModel.isLoading) // 로딩 중 버튼 비활성화
+                .disabled(viewModel.isLoading)
                 .padding(.bottom, 50)
                 
                 Spacer()
             }
             .padding(.horizontal, 24)
             
-            // ✅ 로딩 인디케이터 추가
+            // 로딩 인디케이터
             if viewModel.isLoading {
                 ZStack {
                     Color.black.opacity(0.2).ignoresSafeArea()
@@ -146,12 +144,17 @@ struct TypingMissionView: View {
                         .foregroundStyle(viewModel.isCorrect ? Color.main100 : Color.main300)
                 }
                 .transition(.scale)
-                .zIndex(1) // 맨 앞으로 가져오기
+                .zIndex(1)
             }
         }
-        // ✅ [추가] 화면 터치 시 키보드 내리기
+        // 화면 터치 시 키보드 내리기
         .onTapGesture {
-            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            UIApplication.shared.sendAction(
+                #selector(UIResponder.resignFirstResponder),
+                to: nil,
+                from: nil,
+                for: nil
+            )
         }
         .onAppear {
             viewModel.startTypingMission()
@@ -159,7 +162,6 @@ struct TypingMissionView: View {
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
             if completed {
                 print("🏁 미션 완료! 소리를 끄고 알림을 제거합니다.")
-                // 🔥 [핵심 수정] completeMission() 호출
                 AlarmKitManager.shared.completeMission()
                 
                 withAnimation {

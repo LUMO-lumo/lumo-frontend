@@ -5,8 +5,8 @@
 //  Created by 정승윤 on 2/11/26.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct OXMissionView: View {
     @EnvironmentObject var appState: AppState
@@ -35,7 +35,7 @@ struct OXMissionView: View {
     
     var body: some View {
         ZStack {
-            // ✅ [추가] 전체 화면 배경색 지정 (오버레이 시 투명 방지 & 다크모드 대응)
+            // 전체 화면 배경색 지정
             Color(uiColor: .systemBackground)
                 .ignoresSafeArea()
             
@@ -45,11 +45,11 @@ struct OXMissionView: View {
                 VStack(spacing: 8) {
                     Text(viewModel.alarmLabel)
                         .font(.pretendardMedium16)
-                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                        .foregroundStyle(Color.primary)
                     
                     Text(timeFormatter.string(from: currentTime))
                         .font(.pretendardSemiBold60)
-                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                        .foregroundStyle(Color.primary)
                         .onReceive(timer) { input in
                             currentTime = input
                         }
@@ -71,7 +71,7 @@ struct OXMissionView: View {
                     HStack {
                         Text("Q. \(viewModel.questionText)")
                             .font(.Subtitle2)
-                            .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                            .foregroundStyle(Color.primary)
                         Spacer()
                     }
                     .padding(24)
@@ -90,7 +90,7 @@ struct OXMissionView: View {
                         }) {
                             Text("O")
                                 .font(.Subtitle1)
-                                .foregroundStyle(Color.black) // ✅ 다크모드 대응
+                                .foregroundStyle(Color.black)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 176)
                                 .background(Color(hex: "E9F2FF"))
@@ -100,7 +100,7 @@ struct OXMissionView: View {
                                 )
                                 .cornerRadius(16)
                         }
-                        .disabled(viewModel.isLoading || viewModel.showFeedback) // 로딩/피드백 중 클릭 방지
+                        .disabled(viewModel.isLoading || viewModel.showFeedback)
                         
                         // X 버튼
                         Button(action: {
@@ -108,7 +108,7 @@ struct OXMissionView: View {
                         }) {
                             Text("X")
                                 .font(.Subtitle1)
-                                .foregroundStyle(Color.black) // ✅ 다크모드 대응
+                                .foregroundStyle(Color.black)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 176)
                                 .background(Color(hex: "FFE9E6"))
@@ -118,7 +118,7 @@ struct OXMissionView: View {
                                 )
                                 .cornerRadius(16)
                         }
-                        .disabled(viewModel.isLoading || viewModel.showFeedback) // 로딩/피드백 중 클릭 방지
+                        .disabled(viewModel.isLoading || viewModel.showFeedback)
                     }
                 }
                 .padding(.top, 100)
@@ -127,9 +127,9 @@ struct OXMissionView: View {
                 Spacer()
             }
             .padding(.horizontal, 24)
-            .blur(radius: viewModel.showFeedback || viewModel.isLoading ? 3 : 0) // 피드백/로딩 시 배경 블러
+            .blur(radius: viewModel.showFeedback || viewModel.isLoading ? 3 : 0)
             
-            // ✅ 로딩 인디케이터 (TypingMissionView와 동일한 로직)
+            // 로딩 인디케이터
             if viewModel.isLoading {
                 ZStack {
                     Color.black.opacity(0.2).ignoresSafeArea()
@@ -139,7 +139,7 @@ struct OXMissionView: View {
                 }
             }
             
-            // ✅ 피드백 오버레이 (TypingMissionView와 동일한 로직)
+            // 피드백 오버레이
             if viewModel.showFeedback {
                 Color.black.opacity(0.6).ignoresSafeArea()
                 
@@ -163,7 +163,6 @@ struct OXMissionView: View {
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
             if completed {
                 print("🏁 미션 완료! 소리를 끄고 알림을 제거합니다.")
-                // 🔥 [핵심 수정] completeMission() 호출
                 AlarmKitManager.shared.completeMission()
                 
                 withAnimation {

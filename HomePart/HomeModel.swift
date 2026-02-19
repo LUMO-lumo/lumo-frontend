@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 // ==========================================
-// MARK: - [Domain] 앱 내부 사용 모델 (View에서 사용)
+// MARK: - [Domain] 앱 내부 사용 모델 (View/Logic용)
 // ==========================================
 
 struct Task: Identifiable, Codable {
@@ -27,31 +27,6 @@ struct Task: Identifiable, Codable {
     }
 }
 
-// [추가] SwiftData 저장을 위한 로컬 DB 엔티티
-@Model
-class TodoEntity {
-    @Attribute(.unique) var id: UUID // 로컬 고유 ID
-    var apiId: Int?                  // 서버 DB ID (nil이면 아직 서버에 안 올라간 데이터)
-    var title: String
-    var isCompleted: Bool
-    var date: Date
-    var createdAt: Date              // 정렬용
-
-    init(id: UUID = UUID(), apiId: Int? = nil, title: String, isCompleted: Bool = false, date: Date) {
-        self.id = id
-        self.apiId = apiId
-        self.title = title
-        self.isCompleted = isCompleted
-        self.date = date
-        self.createdAt = Date()
-    }
-    
-    // Task 구조체로 변환하는 헬퍼
-    func toTask() -> Task {
-        return Task(id: self.id, apiId: self.apiId, title: self.title, isCompleted: self.isCompleted, date: self.date)
-    }
-}
-
 struct MissionStat {
     var consecutiveDays: Int
     var monthlyAchievementRate: Double
@@ -62,7 +37,47 @@ struct MissionStat {
 }
 
 // ==========================================
-// MARK: - [Network] 서버 통신용 DTO (명세서 기준)
+// MARK: - [Database] SwiftData 엔티티
+// ==========================================
+
+@Model
+class TodoEntity {
+    @Attribute(.unique) var id: UUID // 로컬 고유 ID
+    var apiId: Int?                  // 서버 DB ID (nil이면 아직 서버 동기화 전)
+    var title: String
+    var isCompleted: Bool
+    var date: Date
+    var createdAt: Date              // 정렬용
+
+    init(
+        id: UUID = UUID(),
+        apiId: Int? = nil,
+        title: String,
+        isCompleted: Bool = false,
+        date: Date
+    ) {
+        self.id = id
+        self.apiId = apiId
+        self.title = title
+        self.isCompleted = isCompleted
+        self.date = date
+        self.createdAt = Date()
+    }
+    
+    /// Task 구조체로 변환하는 헬퍼 메서드
+    func toTask() -> Task {
+        return Task(
+            id: self.id,
+            apiId: self.apiId,
+            title: self.title,
+            isCompleted: self.isCompleted,
+            date: self.date
+        )
+    }
+}
+
+// ==========================================
+// MARK: - [Network] 서버 통신용 DTO (API 명세 기준)
 // ==========================================
 
 struct TodoDTO: Codable {

@@ -35,7 +35,7 @@ struct MathMissionView: View {
     
     var body: some View {
         ZStack {
-            // ✅ 전체 화면 배경색 지정 (오버레이 시 투명 방지 & 다크모드 대응)
+            // 전체 화면 배경색 지정
             Color(uiColor: .systemBackground)
                 .ignoresSafeArea()
             
@@ -45,11 +45,11 @@ struct MathMissionView: View {
                 VStack(spacing: 8) {
                     Text(viewModel.alarmLabel)
                         .font(.pretendardMedium16)
-                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응 (흰색/검은색 자동)
+                        .foregroundStyle(Color.primary)
                     
                     Text(timeFormatter.string(from: currentTime))
                         .font(.pretendardSemiBold60)
-                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                        .foregroundStyle(Color.primary)
                         .onReceive(timer) { input in
                             currentTime = input
                         }
@@ -150,7 +150,7 @@ struct MathMissionView: View {
                 .zIndex(1)
             }
         }
-        // ✅ [추가] 화면 터치 시 키보드 내리기
+        // 화면 터치 시 키보드 내리기
         .onTapGesture {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
@@ -160,7 +160,7 @@ struct MathMissionView: View {
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
             if completed {
                 print("🏁 미션 완료! 뷰를 닫습니다.")
-                // ✅ 완료 시 소리와 알림 모두 끄기
+                // 완료 시 소리와 알림 모두 끄기
                 AlarmKitManager.shared.completeMission()
 
                 withAnimation {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-// [수정] 컴파일 에러 해결을 위해 디코더 초기화 구문 수정
+// 컴파일 에러 해결을 위해 디코더 초기화 구문 수정
 enum APICode: String, Codable {
     case success = "SUCCESS"
     case invalidToken = "AUTH-001"

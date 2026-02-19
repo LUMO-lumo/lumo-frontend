@@ -10,7 +10,6 @@ import SwiftData
 import UserNotifications
 import Combine
 
-// ✅ 1. Notification 이름 정의 (다른 파일에 없다면 여기에 포함)
 extension Notification.Name {
     static let forceLogout = Notification.Name("ForceLogoutNotification")
 }
@@ -25,25 +24,25 @@ struct LumoApp: App {
     @StateObject private var appState = AppState()
     @State private var onboardingViewModel = OnboardingViewModel()
     
-    // ✅ [추가] 알람 매니저 상태 감지 (알람이 울리는지 확인하기 위해 추가)
+    // 알람 매니저 상태 감지 (알람이 울리는지 확인하기 위해 추가)
     @StateObject private var alarmManager = AlarmKitManager.shared
     
     var body: some Scene {
         WindowGroup {
-            // ✅ 2. modelContext 접근을 위해 내부 뷰로 분리
+            // modelContext 접근을 위해 내부 뷰로 분리
             LumoContentView(
                 isOnboardingFinished: $isOnboardingFinished,
                 userTheme: userTheme,
                 onboardingViewModel: onboardingViewModel
             )
             .environmentObject(appState)
-            // ✅ 3. SwiftData 컨테이너 설정 (최상위)
+            // SwiftData 컨테이너 설정 (최상위)
             .modelContainer(for: [UserModel.self, RoutineType.self, RoutineTask.self, TodoEntity.self]) // TodoEntity 추가 확인
         }
     }
 }
 
-/// ✅ 4. 실제 콘텐츠 뷰 (Environment 접근 가능)
+/// 실제 콘텐츠 뷰 (Environment 접근 가능)
 struct LumoContentView: View {
     @Binding var isOnboardingFinished: Bool
     let userTheme: String
@@ -52,16 +51,16 @@ struct LumoContentView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.modelContext) private var modelContext // ✅ 여기서 접근 가능
     
-    // ✅ 알람 매니저 감지
+    // 알람 매니저 감지
     @StateObject private var alarmManager = AlarmKitManager.shared
     
-    // ✅ [NEW] 최상위 레벨에서 브리핑을 담당할 뷰모델
+    // 최상위 레벨에서 브리핑을 담당할 뷰모델
     // 화면에 보이지 않아도 로직을 수행하기 위해 선언합니다.
     @StateObject private var globalHomeViewModel = HomeViewModel()
     
     var body: some View {
         ZStack {
-            // [Layer 1] 메인 앱 콘텐츠
+            // 메인 앱 콘텐츠
             Group {
                 // appState에 따라 루트 화면 교체
                 switch appState.currentRoot {
@@ -115,7 +114,7 @@ struct LumoContentView: View {
                     .zIndex(9999) // 무조건 최상단
             }
         }
-        // ✅ [NEW] 미션 완료 신호 감지 (앱 어디에 있든 작동)
+        // 미션 완료 신호 감지 (앱 어디에 있든 작동)
         .onChange(of: alarmManager.shouldPlayBriefing) { oldValue, newValue in
             if newValue {
                 print("📣 [Global] 미션 완료 감지 -> 브리핑 시작")
@@ -132,7 +131,7 @@ struct LumoContentView: View {
                 }
             }
         }
-        // ✅ 6. 온보딩 상태 변경 감지
+        // 온보딩 상태 변경 감지
         .onChange(of: isOnboardingFinished) { _, newValue in
             if newValue && appState.currentRoot == .onboarding {
                 appState.currentRoot = .main
@@ -141,7 +140,7 @@ struct LumoContentView: View {
             }
         }
         
-        // ✅ 7. [핵심] 강제 로그아웃 신호 감지 및 처리
+        // 강제 로그아웃 신호 감지 및 처리
         .onReceive(NotificationCenter.default.publisher(for: .forceLogout)) { _ in
             performForceLogout()
         }
@@ -156,7 +155,7 @@ struct LumoContentView: View {
         }
     }
     
-    /// ✅ 8. 강제 로그아웃 실행 로직
+    /// 강제 로그아웃 실행 로직
     private func performForceLogout() {
         print("🧹 [LumoApp] 강제 로그아웃 신호 수신 -> 데이터 삭제 시작")
         

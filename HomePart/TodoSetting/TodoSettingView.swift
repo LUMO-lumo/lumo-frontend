@@ -4,6 +4,7 @@
 //
 //  Created by 육도연 on 1/6/26.
 //
+
 import SwiftUI
 import Foundation
 
@@ -11,17 +12,17 @@ struct TodoSettingView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: HomeViewModel
     @StateObject private var vm = TodoSettingViewModel()
+    
     let themeColor = Color(hex: "E86457")
     
     var body: some View {
         VStack(spacing: 0) {
-            // 헤더
+            // MARK: - Header
             HStack {
-                Button(action: {
-                    dismiss()
-                }) {
+                Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
-                    .foregroundStyle(.gray) }
+                        .foregroundStyle(.gray)
+                }
                 Spacer()
                 Text("오늘의 할 일")
                     .font(.headline)
@@ -34,6 +35,7 @@ struct TodoSettingView: View {
             .padding(.top, 10)
             .padding(.bottom, 15)
             
+            // MARK: - Content
             VStack(alignment: .leading, spacing: 0) {
                 Text(vm.monthTitle)
                     .font(.title3)
@@ -42,23 +44,32 @@ struct TodoSettingView: View {
                     .padding(.bottom, 20)
                 
                 calendarView
+                
                 listView
                 
-                Button(action: { withAnimation { vm.startCreatingTask() } }) {
+                // 작성하기 버튼
+                Button(action: {
+                    withAnimation { vm.startCreatingTask() }
+                }) {
                     Text("작성하기")
                         .font(.headline)
-                        .bold().foregroundStyle(.white)
+                        .bold()
+                        .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
                         .background(Color(hex: "F55641"))
                         .cornerRadius(12)
                 }
-                .padding(.horizontal, 24).padding(.vertical, 20)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 20)
             }
             Spacer()
         }
         .navigationBarBackButtonHidden(true)
-        .onTapGesture { vm.cancelNewTask(); vm.editingTaskId = nil }
+        .onTapGesture {
+            vm.cancelNewTask()
+            vm.editingTaskId = nil
+        }
         .onAppear {
             // 진입 시점에 현재 선택된 날짜의 데이터 로드
             viewModel.loadTasksForSpecificDate(date: vm.resolvedSelectedDate)
@@ -69,21 +80,26 @@ struct TodoSettingView: View {
         }
     }
     
+    // MARK: - Calendar View
     private var calendarView: some View {
         VStack(spacing: 0) {
+            // 요일 표시
             HStack(spacing: 0) {
-                ForEach(vm.days, id: \.self) {
-                    Text($0)
+                ForEach(vm.days, id: \.self) { day in
+                    Text(day)
                         .font(.caption)
                         .foregroundStyle(.gray)
                         .frame(maxWidth: .infinity)
                 }
-            }.padding(.vertical, 10)
+            }
+            .padding(.vertical, 10)
             
+            // 날짜 그리드
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 20) {
                 ForEach(Array(vm.calendarDays.enumerated()), id: \.offset) { _, day in
-                    if day.isEmpty { Spacer().frame(width: 32, height: 32) }
-                    else {
+                    if day.isEmpty {
+                        Spacer().frame(width: 32, height: 32)
+                    } else {
                         let isSelected = (day == vm.selectedDay)
                         Text(day)
                             .font(.system(size: 16))
@@ -98,9 +114,12 @@ struct TodoSettingView: View {
                     }
                 }
             }
-        }.padding(.horizontal, 24).padding(.bottom, 20)
+        }
+        .padding(.horizontal, 24)
+        .padding(.bottom, 20)
     }
     
+    // MARK: - List View
     private var listView: some View {
         ScrollViewReader { proxy in
             ScrollView {
@@ -112,37 +131,51 @@ struct TodoSettingView: View {
                             .padding(.top, 20)
                     } else {
                         ForEach($viewModel.tasks) { $task in
-                            TaskRow(task: $task, themeColor: themeColor,
-                                    isEditing: vm.editingTaskId == task.id,
-                                    startEditing: { vm.cancelNewTask(); vm.editingTaskId = task.id },
-                                    finishEditing: { vm.editingTaskId = nil },
-                                    deleteAction: { viewModel.deleteTask(id: task.id) })
+                            TaskRow(
+                                task: $task,
+                                themeColor: themeColor,
+                                isEditing: vm.editingTaskId == task.id,
+                                startEditing: {
+                                    vm.cancelNewTask()
+                                    vm.editingTaskId = task.id
+                                },
+                                finishEditing: { vm.editingTaskId = nil },
+                                deleteAction: { viewModel.deleteTask(id: task.id) }
+                            )
                         }
                     }
                     
                     if vm.isCreatingNewTask {
-                        NewTaskRow(taskTitle: $vm.newTaskTitle, themeColor: themeColor,
-                                   onConfirm: {
-                                       if let title = vm.handleTaskSubmission() {
-                                           // 선택된 날짜 정보를 넘겨서 저장
-                                           viewModel.addTask(title: title, date: vm.resolvedSelectedDate)
-                                       }
-                                   },
-                                   onCancel: { vm.cancelNewTask() }).id("newTaskRow")
+                        NewTaskRow(
+                            taskTitle: $vm.newTaskTitle,
+                            themeColor: themeColor,
+                            onConfirm: {
+                                if let title = vm.handleTaskSubmission() {
+                                    viewModel.addTask(title: title, date: vm.resolvedSelectedDate)
+                                }
+                            },
+                            onCancel: { vm.cancelNewTask() }
+                        )
+                        .id("newTaskRow")
                     }
-                }.padding(.horizontal, 24)
+                }
+                .padding(.horizontal, 24)
             }
             .frame(height: 220)
             .onChange(of: vm.isCreatingNewTask) { _, newValue in
                 if newValue {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        withAnimation { proxy.scrollTo("newTaskRow", anchor: .bottom) }
+                        withAnimation {
+                            proxy.scrollTo("newTaskRow", anchor: .bottom)
+                        }
                     }
                 }
             }
         }
     }
 }
+
+// MARK: - SubViews (Row 컴포넌트)
 
 struct TaskRow: View {
     @Binding var task: Task
@@ -151,18 +184,30 @@ struct TaskRow: View {
     let startEditing: () -> Void
     let finishEditing: () -> Void
     let deleteAction: () -> Void
+    
     var body: some View {
         HStack {
-            if isEditing { TextField("수정", text: $task.title).font(.subheadline).onSubmit { finishEditing() } }
-            else { Text(task.title).font(.subheadline).foregroundStyle(.primary) }
+            if isEditing {
+                TextField("수정", text: $task.title)
+                    .font(.subheadline)
+                    .onSubmit { finishEditing() }
+            } else {
+                Text(task.title)
+                    .font(.subheadline)
+                    .foregroundStyle(.primary)
+            }
+            
             Spacer()
-            Button(action: {
-                isEditing ? finishEditing() : startEditing()
-            }) {
+            
+            Button(action: { isEditing ? finishEditing() : startEditing() }) {
                 Image(systemName: "square.and.pencil")
                     .foregroundStyle(isEditing ? themeColor : .gray)
             }
-            Button(action: deleteAction) { Image(systemName: "trash").foregroundStyle(themeColor) }
+            
+            Button(action: deleteAction) {
+                Image(systemName: "trash")
+                    .foregroundStyle(themeColor)
+            }
         }
         .padding(16)
         .background(Color(UIColor.secondarySystemBackground))
@@ -176,23 +221,32 @@ struct NewTaskRow: View {
     let onConfirm: () -> Void
     let onCancel: () -> Void
     @FocusState private var isFocused: Bool
+    
     var body: some View {
         HStack {
             TextField("할 일을 입력하세요", text: $taskTitle)
                 .font(.subheadline)
                 .focused($isFocused)
                 .onSubmit { onConfirm() }
+            
             Spacer()
-            Button(action:
-                    onConfirm) { Image(systemName: "checkmark.square.fill").foregroundStyle(themeColor) }
-            Button(action: onCancel) { Image(systemName: "trash").foregroundStyle(themeColor) }
+            
+            Button(action: onConfirm) {
+                Image(systemName: "checkmark.square.fill")
+                    .foregroundStyle(themeColor)
+            }
+            
+            Button(action: onCancel) {
+                Image(systemName: "trash")
+                    .foregroundStyle(themeColor)
+            }
         }
         .padding(16)
         .background(Color(UIColor.secondarySystemBackground))
-        .cornerRadius(12).onAppear { isFocused = true }
+        .cornerRadius(12)
+        .onAppear { isFocused = true }
     }
 }
-
 
 #Preview {
     TodoSettingView(viewModel: HomeViewModel())

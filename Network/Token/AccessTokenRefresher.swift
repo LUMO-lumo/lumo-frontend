@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 import Alamofire
 
 class AccessTokenRefresher: @unchecked Sendable, @preconcurrency RequestInterceptor {
@@ -42,9 +43,14 @@ class AccessTokenRefresher: @unchecked Sendable, @preconcurrency RequestIntercep
     }
     
     // MARK: - RequestRetrier
+    
     @MainActor
-    func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-        
+    func retry(
+        _ request: Request,
+        for session: Session,
+        dueTo error: Error,
+        completion: @escaping (RetryResult) -> Void
+    ) {
         guard let response = request.task?.response as? HTTPURLResponse else {
             completion(.doNotRetryWithError(error))
             return

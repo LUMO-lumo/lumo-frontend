@@ -6,8 +6,9 @@
 //
 
 import Foundation
-import Moya
+
 import Alamofire
+import Moya
 
 enum SettingTarget {
     case updateSeconds(second: Int)
@@ -17,35 +18,41 @@ enum SettingTarget {
     case updateMissionLevel(level: String)
 }
 
-// ✅ [수정 1] @MainActor 추가: 메인 스레드 격리 문제 해결
-extension SettingTarget: @MainActor APITarget{
+extension SettingTarget: @MainActor APITarget {
     
-    var path: String { return "/api/setting" }
+    var path: String {
+        return "/api/setting"
+    }
     
-    var method: Moya.Method { return .patch }
+    var method: Moya.Method {
+        return .patch
+    }
 
-    // ✅ [수정 2] Moya.Task 명시: Swift Task와 이름 충돌 방지
     var task: Moya.Task {
         switch self {
         case .updateSeconds(let second):
             let params: [String: Any] = ["alarmOffMissionDefaultDuration": second]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
+            
         case .updateTheme(let theme):
             let params: [String: Any] = ["theme": theme]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
+            
         case .updateVoice(let voice):
             let params: [String: Any] = ["briefingVoiceDefaultType": voice]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
+            
         case .smartVoice(let smartvoice):
             let params: [String: Any] = ["smartBriefing": smartvoice]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
+            
         case .updateMissionLevel(let level):
             let params: [String: Any] = ["alarmOffMissionDefaultLevel": level]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
         }
     }
     
-    var headers: [String : String]? {
+    var headers: [String: String]? {
         // 1. 기본 헤더 설정
         var header = ["Content-Type": "application/json"]
         

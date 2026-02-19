@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 // MARK: - Domain Model (App Internal Use)
-// ✅ [필수] UserDefaults 저장을 위해 Codable 채택
+
 struct Alarm: Identifiable, Codable {
     var id: UUID = UUID()
     var serverId: Int? = nil
@@ -23,8 +23,17 @@ struct Alarm: Identifiable, Codable {
     
     var soundName: String? = "기본음"
     
-    // 기본 이니셜라이저 (기존 코드 호환)
-    init(id: UUID = UUID(), serverId: Int? = nil, time: Date, label: String, isEnabled: Bool, repeatDays: [Int], missionTitle: String, missionType: String, soundName: String) {
+    init(
+        id: UUID = UUID(),
+        serverId: Int? = nil,
+        time: Date,
+        label: String,
+        isEnabled: Bool,
+        repeatDays: [Int],
+        missionTitle: String,
+        missionType: String,
+        soundName: String
+    ) {
         self.id = id
         self.serverId = serverId
         self.time = time
@@ -138,10 +147,8 @@ struct AlarmSoundDTO: Codable {
 }
 
 // MARK: - Extensions (Mapping Logic)
+
 extension Alarm {
-    
-    // ✅ [추가] 사운드 이름(한글) <-> 파일명(영어) 매핑 딕셔너리
-    // SoundManager가 있지만 Model 내에서도 안전하게 변환하기 위해 정의
     private static let soundMapping: [String: String] = [
         "비명 소리": "scream14-6918",
         "천둥 번개": "big-thunder-34626",
@@ -160,12 +167,12 @@ extension Alarm {
         "런어웨이": "runaway-loop-373063"
     ]
     
-    // ✅ 한글 이름 -> 파일명 (서버 전송용)
+    // 한글 이름 -> 파일명 (서버 전송용)
     static func toServerSoundName(_ displayName: String) -> String {
         return soundMapping[displayName] ?? "scream14-6918" // 기본값: 비명소리
     }
     
-    // ✅ 파일명 -> 한글 이름 (UI 표시용)
+    // 파일명 -> 한글 이름 (UI 표시용)
     static func fromServerSoundName(_ fileName: String) -> String {
         // 1. 정확한 매칭
         if let key = soundMapping.first(where: { $0.value == fileName })?.key {
@@ -188,7 +195,7 @@ extension Alarm {
         self.label = dto.label ?? ""
         self.isEnabled = dto.isEnabled
         
-        // ✅ [수정] 서버의 파일명(영어)을 한글 이름으로 변환하여 UI에 저장
+        // 서버의 파일명(영어)을 한글 이름으로 변환하여 UI에 저장
         self.soundName = Alarm.fromServerSoundName(dto.soundType)
         
         let formatter = DateFormatter()
@@ -197,9 +204,6 @@ extension Alarm {
         
         self.repeatDays = Alarm.convertRepeatDaysToInt(dto.repeatDays)
         
-        
-        // ⚠️ 주의: 현재는 서버에서 받아온 미션을 앱에 반영하는 로직이 없어서 'NONE'으로 고정되어 있습니다.
-        // 추후 서버의 MissionSettingDTO를 해석해서 missionType을 설정하는 로직 추가가 필요합니다.
         if let settings = dto.missionSetting {
             switch settings.missionType {
             case "MATH", "CALCULATION":
@@ -229,8 +233,6 @@ extension Alarm {
         }
     }
     
-    
-    
     func toDictionary() -> [String: Any] {
         let timeFormatter = DateFormatter()
         timeFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -240,18 +242,19 @@ extension Alarm {
         var questionCount = 0
         var walkGoalMeter = 0
         
-        // ✅ [추가] 저장된 난이도 불러오기 (없으면 MEDIUM 기본값)
-        // 저장된 값: LOW, MEDIUM, HIGH -> 서버 전송 값: EASY, NORMAL, HARD (매핑 필요 시)
-        // 만약 서버가 LOW/MEDIUM/HIGH를 그대로 받는다면 그대로 사용, 변환 필요하면 switch문 사용
+        // 저장된 난이도 불러오기 (없으면 MEDIUM 기본값)
         let savedDifficulty = UserDefaults.standard.string(forKey: "MISSION_DIFFICULTY") ?? "MEDIUM"
         var serverDifficulty = "MEDIUM"
         
-        // ✅ [수정 1] HIGH를 HARD로 변환 (서버 규격 맞춤)
         switch savedDifficulty {
-        case "LOW": serverDifficulty = "EASY"
-        case "MEDIUM": serverDifficulty = "MEDIUM"
-        case "HIGH": serverDifficulty = "HARD"
-        default: serverDifficulty = "MEDIUM"
+        case "LOW":
+            serverDifficulty = "EASY"
+        case "MEDIUM":
+            serverDifficulty = "MEDIUM"
+        case "HIGH":
+            serverDifficulty = "HARD"
+        default:
+            serverDifficulty = "MEDIUM"
         }
         
         switch self.missionType {
@@ -274,6 +277,7 @@ extension Alarm {
         default:
             serverMissionType = "MATH"
         }
+        
         if (serverMissionType == "OX_QUIZ" || serverMissionType == "TYPING") && serverDifficulty == "HARD" {
             print("⚠️ [Warning] \(serverMissionType)는 HARD 난이도가 없어 MEDIUM으로 하향 조정합니다.")
             serverDifficulty = "MEDIUM"
@@ -296,7 +300,7 @@ extension Alarm {
         ]
         
         // 3. 사운드 이름 처리
-        // ✅ [수정] 한글 이름(UI)을 파일명(Server)으로 변환
+        // 한글 이름(UI)을 파일명(Server)으로 변환
         let currentDisplaySound = self.soundName ?? "기본음"
         let serverSoundType = Alarm.toServerSoundName(currentDisplaySound)
         
@@ -309,7 +313,7 @@ extension Alarm {
             "alarmTime": timeFormatter.string(from: self.time),
             "label": self.label.isEmpty ? "Alarm" : self.label,
             "isEnabled": self.isEnabled,
-            "soundType": serverSoundType, // ✅ 중요: 파일명(영어)만 전송. soundId/soundName 등 불필요한 키 제거.
+            "soundType": serverSoundType, //파일명(영어)만 전송. soundId/soundName 등 불필요한 키 제거.
             "vibration": true,
             "volume": 100,
             "repeatDays": safeRepeatDays,
@@ -317,6 +321,7 @@ extension Alarm {
             "missionSetting": missionSetting
         ]
     }
+    
     static func convertRepeatDaysToInt(_ days: [String]) -> [Int] {
         let dayMap: [String: Int] = [
             "SUN": 0, "MON": 1, "TUE": 2, "WED": 3, "THU": 4, "FRI": 5, "SAT": 6
@@ -330,5 +335,4 @@ extension Alarm {
         ]
         return days.sorted().compactMap { dayMap[$0] }
     }
-    
 }

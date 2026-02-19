@@ -1,5 +1,13 @@
-import Foundation
+//
+//  BaseMissionViewModel.swift
+//  Lumo
+//
+//  Created by 육도연 on 2/19/26.
+//
+
 import Combine
+import Foundation
+
 import Moya
 import _Concurrency
 
@@ -22,50 +30,57 @@ class BaseMissionViewModel: NSObject, ObservableObject {
     @Published var errorMessage: String? = nil
     
     init(alarmId: Int) {
-            self.alarmId = alarmId
-
-            let authPlugin = AccessTokenPlugin { _ in
-                return UserDefaults.standard.string(forKey: "accessToken") ?? ""
-            }
-            
-            self.provider = MoyaProvider<MissionTarget>(plugins: [authPlugin])
+        self.alarmId = alarmId
+        
+        let authPlugin = AccessTokenPlugin { _ in
+            return UserDefaults.standard.string(forKey: "accessToken") ?? ""
         }
+        
+        self.provider = MoyaProvider<MissionTarget>(plugins: [authPlugin])
+    }
     
     // MARK: - 공통 API 1: 미션 시작
     func startMission() async throws -> [MissionContentDTO]? {
-            isLoading = true
-            defer { isLoading = false }
-            
-            let result = await provider.asyncRequest(.startMission(alarmId: alarmId))
-            
-            switch result {
-            case .success(let response):
-                // 404 등 에러 코드 체크를 위해 status code 확인
-                guard response.statusCode >= 200 && response.statusCode < 300 else {
-                    throw MissionError.serverError(message: "서버 오류 (Code: \(response.statusCode))")
-                }
-                
-                let decoded = try response.map(BaseResponse<[MissionContentDTO]>.self)
-                
-                if let data = decoded.result {
-                    return data
-                } else {
-                    throw MissionError.serverError(message: decoded.message)
-                }
-                
-            case .failure(let error):
-                throw error
+        isLoading = true
+        defer { isLoading = false }
+        
+        let result = await provider.asyncRequest(.startMission(alarmId: alarmId))
+        
+        switch result {
+        case .success(let response):
+            // 404 등 에러 코드 체크를 위해 status code 확인
+            guard response.statusCode >= 200 && response.statusCode < 300 else {
+                throw MissionError.serverError(
+                    message: "서버 오류 (Code: \(response.statusCode))"
+                )
             }
+            
+            let decoded = try response.map(BaseResponse<[MissionContentDTO]>.self)
+            
+            if let data = decoded.result {
+                return data
+            } else {
+                throw MissionError.serverError(message: decoded.message)
+            }
+            
+        case .failure(let error):
+            throw error
         }
+    }
     
     // MARK: - 공통 API 2: 답안 제출
     // 구체적인 타입(MissionSubmitRequest)을 사용하여 복잡한 제네릭 에러 방지
     func submitMission(request: MissionSubmitRequest) async throws -> Bool {
-        let result = await provider.asyncRequest(.submitMission(alarmId: alarmId, request: request))
+        let result = await provider.asyncRequest(
+            .submitMission(alarmId: alarmId, request: request)
+        )
         
         switch result {
         case .success(let response):
-            let decoded = try response.map(BaseResponse<MissionSubmitResult>.self, using: JSONDecoder())
+            let decoded = try response.map(
+                BaseResponse<MissionSubmitResult>.self,
+                using: JSONDecoder()
+            )
             
             if let data = decoded.result {
                 if data.isCorrect {
@@ -92,7 +107,9 @@ class BaseMissionViewModel: NSObject, ObservableObject {
             snoozeCount: 0
         )
         
-        let result = await provider.asyncRequest(.dismissAlarm(alarmId: alarmId, request: requestBody))
+        let result = await provider.asyncRequest(
+            .dismissAlarm(alarmId: alarmId, request: requestBody)
+        )
         
         if case .success(let response) = result {
             // 성공 여부만 간단히 체크 (200번대 상태코드)
@@ -111,6 +128,7 @@ extension Moya.Response: @unchecked @retroactive Sendable {}
 
 // MARK: - Moya Async 확장 (필수)
 extension MoyaProvider {
+    
     func asyncRequest(_ target: Target) async -> Result<Response, MoyaError> {
         return await withCheckedContinuation { continuation in
             self.request(target) { result in
@@ -122,6 +140,7 @@ extension MoyaProvider {
         }
     }
 }
+
 // 에러 타입
 enum MissionError: Error {
     case serverError(message: String)

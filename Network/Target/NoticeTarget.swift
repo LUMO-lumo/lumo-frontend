@@ -6,8 +6,9 @@
 //
 
 import Foundation
-import Moya
+
 import Alamofire
+import Moya
 
 enum NoticeTarget {
     case createNotice(type: String, title: String, content: String)
@@ -18,6 +19,7 @@ enum NoticeTarget {
 }
 
 extension NoticeTarget: TargetType {
+    
     var baseURL: URL {
         return URL(string: AppConfig.baseURL)!
     }
@@ -45,11 +47,15 @@ extension NoticeTarget: TargetType {
         switch self {
         case .createNotice:
             return .post
+            
         case .deleteNotice:
             return .delete
+            
         case .updateNotice:
             return .patch
-        case .showNotice, .showNoticeDetail:
+            
+        case .showNotice,
+            .showNoticeDetail:
             return .get
         }
     }
@@ -62,7 +68,10 @@ extension NoticeTarget: TargetType {
                 "title": title,
                 "content": content
             ]
-            return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
+            return .requestParameters(
+                parameters: parameters,
+                encoding: JSONEncoding.default
+            )
             
         case .deleteNotice:
             return .requestPlain
@@ -73,11 +82,17 @@ extension NoticeTarget: TargetType {
                 "title": title,
                 "content": content
             ]
-            return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
+            return .requestParameters(
+                parameters: parameters,
+                encoding: JSONEncoding.default
+            )
             
         case .showNotice(let keyword):
             if let keyword = keyword, !keyword.isEmpty {
-                return .requestParameters(parameters: ["search": keyword], encoding: URLEncoding.queryString)
+                return .requestParameters(
+                    parameters: ["search": keyword],
+                    encoding: URLEncoding.queryString
+                )
             } else {
                 return .requestPlain
             }
@@ -87,7 +102,7 @@ extension NoticeTarget: TargetType {
         }
     }
     
-    var headers: [String : String]? {
+    var headers: [String: String]? {
         // 1. 기본 헤더 설정
         var header = ["Content-Type": "application/json"]
         

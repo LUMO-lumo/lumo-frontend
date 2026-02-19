@@ -5,9 +5,10 @@
 //  Created by 정승윤 on 2/11/26.
 //
 
-import Foundation
-import CoreLocation
 import Combine
+import CoreLocation
+import Foundation
+
 import _Concurrency
 
 // 제출용 데이터 구조체
@@ -16,7 +17,6 @@ struct DistanceMissionSubmitRequest: Codable {
     let currentDistance: Double
     let attemptCount: Int
 }
-
 
 // CoreLocation은 Main Thread에서 UI와 상호작용하므로 MainActor 권장
 @MainActor
@@ -35,7 +35,6 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     private let locationManager = CLLocationManager()
     private var previousLocation: CLLocation? // 이전 위치 저장용
     
-    
     // MARK: - Mock Mode (테스트용)
     private var isMockMode: Bool
     
@@ -43,7 +42,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     init(alarmId: Int, alarmLabel: String) {
         self.alarmLabel = alarmLabel
         
-        // ✅ [핵심] ID가 -1이면 테스트 모드(Mock)로 강제 설정
+        // ID가 -1이면 테스트 모드(Mock)로 강제 설정
         self.isMockMode = (alarmId == -1)
         
         super.init(alarmId: alarmId)
@@ -83,13 +82,12 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
                     if let firstProblem = results.first {
                         self.contentId = firstProblem.contentId
                         
-                        // 🔍 [DEBUG] 서버 데이터 확인 (로그를 꼭 확인하세요!)
+                        // 🔍 [DEBUG] 서버 데이터 확인
                         let rawQuestion = firstProblem.question ?? "nil"
                         let rawAnswer = firstProblem.answer ?? "nil"
                         print("📦 [SERVER DATA] ID: \(firstProblem.contentId), Question: '\(rawQuestion)', Answer: '\(rawAnswer)'")
                         
                         // 3. 목표 거리 파싱 (숫자만 추출)
-                        // question이 우선, 없으면 answer 필드 확인
                         let targetString = firstProblem.question ?? firstProblem.answer ?? "20"
                         
                         // "50m", "50.0" 등에서 숫자와 점(.)만 남기고 제거
@@ -117,7 +115,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
                 
                 self.isMockMode = true
                 
-                // 🚨 비상 착륙: 서버 연결 실패해도 GPS 미션은 진행
+                // 서버 연결 실패해도 GPS 미션은 진행
                 self.contentId = 888 // 로컬 처리를 위한 가상 ID
                 self.targetDistance = 50.0
             }
@@ -154,8 +152,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
             do {
                 self.isLoading = true
                 
-                // 1. 서버에 제출 시도 (BaseViewModel의 리턴 타입에 따라 조정)
-                // 성공 여부(Bool)를 반환한다고 가정
+                // 1. 서버에 제출 시도
                 let _ = try await super.submitMission(request: request)
                 self.isLoading = false
                 
@@ -166,8 +163,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
                 self.isLoading = false
                 print("❌ 서버 제출 실패(403 등): \(error)")
                 
-                // ✅ [핵심 수정] 서버가 에러를 뱉더라도, 여기까지 왔다는 건
-                // 사용자가 목표 거리를 걸었다는 뜻이므로 '성공'으로 처리합니다.
+                // 서버가 에러를 뱉더라도 목표 거리를 걸었으므로 성공 처리
                 print("⚠️ 오프라인/에러 모드: 로컬에서 강제 성공 처리합니다.")
                 self.handleSubmissionResult(isCorrect: true)
             }
@@ -203,9 +199,11 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     
     // MARK: - CLLocationManagerDelegate
     
-    
     // 위치 업데이트 감지
-    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    nonisolated func locationManager(
+        _ manager: CLLocationManager,
+        didUpdateLocations locations: [CLLocation]
+    ) {
         // UI 및 로직 업데이트를 위해 MainActor로 진입
         AsyncTask { @MainActor in
             guard let location = locations.last else { return }
@@ -214,7 +212,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
             if let previous = previousLocation {
                 let distanceInMeters = location.distance(from: previous)
                 
-                // ⭐️ 0.5m 이상 움직였을 때만 누적 (GPS 튐 방지)
+                // 0.5m 이상 움직였을 때만 누적 (GPS 튐 방지)
                 if distanceInMeters > 0.5 {
                     currentDistance += distanceInMeters
                     print("🚶 이동: +\(String(format: "%.1f", distanceInMeters))m | 누적: \(String(format: "%.1f", currentDistance))m / \(targetDistance)m")
@@ -232,11 +230,8 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
                 if !isMissionCompleted && !isLoading && !showFeedback {
                     print("🏁 목표 달성! GPS 끄고 제출합니다.")
                     
-                    // ✅ 여기서 먼저 끕니다
                     self.locationManager.stopUpdatingLocation()
-                    
                     self.submit()
-                    
                 }
             }
         }
@@ -278,8 +273,6 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
             self.contentId = 888
             self.targetDistance = 20.0
             self.isLoading = false
-            
-//            self.simulateMockWalking()
         }
     }
     

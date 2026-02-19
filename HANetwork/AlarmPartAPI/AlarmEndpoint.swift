@@ -6,8 +6,9 @@
 //
 
 import Foundation
-import Moya
+
 import Alamofire
+import Moya
 
 enum AlarmEndpoint: @MainActor MainEndpoint {
     
@@ -43,78 +44,119 @@ enum AlarmEndpoint: @MainActor MainEndpoint {
     case fetchMyAlarmHistory
     case fetchMyMissionHistory
     case fetchAlarmSounds
-
+    
     // MARK: - Moya Path
+    
     var path: String {
         switch self {
-        case .fetchAlarmDetail(let id), .updateAlarm(let id, _), .deleteAlarm(let id):
+        case .fetchAlarmDetail(let id),
+            .updateAlarm(let id, _),
+            .deleteAlarm(let id):
             return "/api/alarms/\(id)"
-        case .fetchMyAlarms, .createAlarm:
+            
+        case .fetchMyAlarms,
+            .createAlarm:
             return "/api/alarms"
+            
         case .toggleAlarm(let id):
             return "/api/alarms/\(id)/toggle"
+            
         case .recordAlarmTrigger(let id):
             return "/api/alarms/\(id)/trigger"
-        case .fetchSnoozeSettings(let id), .updateSnoozeSettings(let id, _):
+            
+        case .fetchSnoozeSettings(let id),
+            .updateSnoozeSettings(let id, _):
             return "/api/alarms/\(id)/snooze"
+            
         case .toggleSnooze(let id):
             return "/api/alarms/\(id)/snooze/toggle"
-        case .fetchRepeatDays(let id), .updateRepeatDays(let id, _):
+            
+        case .fetchRepeatDays(let id),
+            .updateRepeatDays(let id, _):
             return "/api/alarms/\(id)/repeat-days"
-        case .fetchMissionSettings(let id), .updateMissionSettings(let id, _):
+            
+        case .fetchMissionSettings(let id),
+            .updateMissionSettings(let id, _):
             return "/api/alarms/\(id)/mission"
+            
         case .startMission(let id):
             return "/api/alarms/\(id)/missions/start"
+            
         case .updateWalkMissionDistance(let id, _):
             return "/api/alarms/\(id)/missions/walk"
+            
         case .submitMissionAnswer(let id, _):
             return "/api/alarms/\(id)/missions/submit"
+            
         case .fetchAlarmLogs(let id):
             return "/api/alarms/\(id)/logs"
+            
         case .fetchMyAlarmHistory:
             return "/api/alarms/members/me/alarm-logs"
+            
         case .fetchMyMissionHistory:
             return "/api/alarms/members/me/mission-history"
+            
         case .fetchAlarmSounds:
             return "/api/alarms/sounds"
         }
     }
-
+    
     // MARK: - Moya Method 각각의 메서드별로 연결
+    
     var method: Moya.Method {
         switch self {
-        case .fetchAlarmDetail, .fetchMyAlarms, .fetchSnoozeSettings, .fetchRepeatDays,
-             .fetchMissionSettings, .fetchAlarmLogs, .fetchMyAlarmHistory, .fetchMyMissionHistory, .fetchAlarmSounds:
+        case .fetchAlarmDetail,
+            .fetchMyAlarms,
+            .fetchSnoozeSettings,
+            .fetchRepeatDays,
+            .fetchMissionSettings,
+            .fetchAlarmLogs,
+            .fetchMyAlarmHistory,
+            .fetchMyMissionHistory,
+            .fetchAlarmSounds:
             return .get
-        case .updateAlarm, .updateSnoozeSettings, .updateRepeatDays, .updateMissionSettings:
+            
+        case .updateAlarm,
+            .updateSnoozeSettings,
+            .updateRepeatDays,
+            .updateMissionSettings:
             return .put
-        case .createAlarm, .recordAlarmTrigger, .startMission, .updateWalkMissionDistance, .submitMissionAnswer:
+            
+        case .createAlarm,
+            .recordAlarmTrigger,
+            .startMission,
+            .updateWalkMissionDistance,
+            .submitMissionAnswer:
             return .post
+            
         case .deleteAlarm:
             return .delete
-        case .toggleAlarm, .toggleSnooze:
+            
+        case .toggleAlarm,
+            .toggleSnooze:
             return .patch
         }
     }
     
-    // ✅ [추가] Headers를 명시적으로 지정하여 Content-Type 누락 방지
-    var headers: [String : String]? {
+    // Headers를 명시적으로 지정하여 Content-Type 누락 방지
+    var headers: [String: String]? {
         return ["Content-Type": "application/json"]
     }
-
+    
     // MARK: - Moya Task (인코딩 방식 변경)
+    
     var task: Moya.Task {
         switch self {
-        
-        // 🚨 [수정] JSONEncoding.default 대신 직접 Data로 변환하여 전송 (.requestData)
+        // SONEncoding.default 대신 직접 Data로 변환하여 전송 (.requestData)
         // 이렇게 하면 Alamofire가 중간에서 데이터를 건드리지 않고, 우리가 만든 JSON 그대로 서버에 날아갑니다.
         case .createAlarm(let body),
-             .updateAlarm(_, let body),
-             .updateSnoozeSettings(_, let body),
-             .updateRepeatDays(_, let body),
-             .updateMissionSettings(_, let body),
-             .updateWalkMissionDistance(_, let body),
-             .submitMissionAnswer(_, let body):
+            .updateAlarm(_, let body),
+            .updateSnoozeSettings(_, let body),
+            .updateRepeatDays(_, let body),
+            .updateMissionSettings(_, let body),
+            .updateWalkMissionDistance(_, let body),
+            .submitMissionAnswer(_, let body):
             
             // 🚨 [추가] 서버 전송 전 데이터 클렌징 (Data Sanitization)
             var cleanBody = body
@@ -132,7 +174,10 @@ enum AlarmEndpoint: @MainActor MainEndpoint {
             // 딕셔너리를 JSON 데이터로 직접 변환
             do {
                 // 수정된 cleanBody를 사용하여 JSON 생성
-                let jsonData = try JSONSerialization.data(withJSONObject: cleanBody, options: [])
+                let jsonData = try JSONSerialization.data(
+                    withJSONObject: cleanBody,
+                    options: []
+                )
                 // 디버깅용: 실제로 전송되는 데이터 확인
                 if let jsonString = String(data: jsonData, encoding: .utf8) {
                     print("📦 [Client Encoding] Final JSON: \(jsonString)")
@@ -141,7 +186,10 @@ enum AlarmEndpoint: @MainActor MainEndpoint {
             } catch {
                 print("❌ JSON Encoding Failed: \(error)")
                 // 실패 시 백업으로 기존 방식 사용
-                return .requestParameters(parameters: body, encoding: JSONEncoding.default)
+                return .requestParameters(
+                    parameters: body,
+                    encoding: JSONEncoding.default
+                )
             }
             
         default:

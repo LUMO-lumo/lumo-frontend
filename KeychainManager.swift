@@ -17,11 +17,11 @@ struct UserInfo: Codable {
 
 // 에러 정의 (새로 추가됨)
 enum KeychainError: Error {
-    case itemNotFound       // 저장된 데이터가 없음
-    case duplicateItem      // 중복된 아이템 (발생할 일은 적음)
-    case invalidItemFormat  // 데이터 형식이 올바르지 않음 (디코딩 실패 등)
-    case unexpectedStatus(OSStatus) // 알 수 없는 키체인 오류
-    case encodingFailed     // 데이터 인코딩 실패
+    case itemNotFound            // 저장된 데이터가 없음
+    case duplicateItem            // 중복된 아이템 (발생할 일은 적음)
+    case invalidItemFormat        // 데이터 형식이 올바르지 않음 (디코딩 실패 등)
+    case unexpectedStatus(OSStatus)    // 알 수 없는 키체인 오류
+    case encodingFailed            // 데이터 인코딩 실패
 }
 
 final class KeychainManager: @unchecked Sendable {
@@ -52,7 +52,10 @@ final class KeychainManager: @unchecked Sendable {
         let data = try load(key: key)
         
         do {
-            let session = try JSONDecoder().decode(UserInfo.self, from: data)
+            let session = try JSONDecoder().decode(
+                UserInfo.self,
+                from: data
+            )
             return session
         } catch {
             throw KeychainError.invalidItemFormat // 디코딩 실패 시 에러 처리
@@ -68,39 +71,44 @@ final class KeychainManager: @unchecked Sendable {
     // MARK: - Private Raw Keychain Operations (키체인 저수준 로직)
     
     private func save(_ data: Data, for key: String) throws {
-            let query: [CFString: Any] = [
-                kSecClass: kSecClassGenericPassword,
-                kSecAttrAccount: key
-            ]
-            
-            // 1. 업데이트 시도
-            let attributesToUpdate: [CFString: Any] = [
-                kSecValueData: data
-            ]
-            
-            let status = SecItemUpdate(query as CFDictionary, attributesToUpdate as CFDictionary)
-            
-            // 2. 업데이트 성공 시 종료
-            if status == errSecSuccess { return }
-            
-            // 3. 아이템이 없으면(.errSecItemNotFound) 새로 추가
-            if status == errSecItemNotFound {
-                let newQuery: [CFString: Any] = [
-                    kSecClass: kSecClassGenericPassword,
-                    kSecAttrAccount: key,
-                    kSecValueData: data,
-                    kSecAttrAccessible: kSecAttrAccessibleWhenUnlocked
-                ]
-                
-                let addStatus = SecItemAdd(newQuery as CFDictionary, nil)
-                if addStatus != errSecSuccess {
-                    throw KeychainError.unexpectedStatus(addStatus)
-                }
-            } else {
-                // 그 외 에러는 투척
-                throw KeychainError.unexpectedStatus(status)
-            }
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: key
+        ]
+        
+        // 1. 업데이트 시도
+        let attributesToUpdate: [CFString: Any] = [
+            kSecValueData: data
+        ]
+        
+        let status = SecItemUpdate(
+            query as CFDictionary,
+            attributesToUpdate as CFDictionary
+        )
+        
+        // 2. 업데이트 성공 시 종료
+        if status == errSecSuccess {
+            return
         }
+        
+        // 3. 아이템이 없으면(.errSecItemNotFound) 새로 추가
+        if status == errSecItemNotFound {
+            let newQuery: [CFString: Any] = [
+                kSecClass: kSecClassGenericPassword,
+                kSecAttrAccount: key,
+                kSecValueData: data,
+                kSecAttrAccessible: kSecAttrAccessibleWhenUnlocked
+            ]
+            
+            let addStatus = SecItemAdd(newQuery as CFDictionary, nil)
+            if addStatus != errSecSuccess {
+                throw KeychainError.unexpectedStatus(addStatus)
+            }
+        } else {
+            // 그 외 에러는 투척
+            throw KeychainError.unexpectedStatus(status)
+        }
+    }
     
     private func load(key: String) throws -> Data {
         let query: [CFString: Any] = [

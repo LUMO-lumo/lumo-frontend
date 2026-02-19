@@ -20,7 +20,7 @@ struct LocalOXProblem {
 class OXMissionViewModel: BaseMissionViewModel {
     
     // MARK: - Configuration
-    // ⭐️ 이 값을 false로 바꾸면 API 모드로 작동합니다.
+    // 이 값을 false로 바꾸면 API 모드로 작동합니다.
     private var isMockMode: Bool
     
     // MARK: - UI Properties
@@ -54,7 +54,7 @@ class OXMissionViewModel: BaseMissionViewModel {
     init(alarmId: Int, alarmLabel: String) {
         self.alarmLabel = alarmLabel
         
-        // ✅ [핵심] ID가 -1이면 테스트 모드(Mock)로 강제 설정
+        // ID가 -1이면 테스트 모드(Mock)로 강제 설정
         self.isMockMode = (alarmId == -1)
         
         super.init(alarmId: alarmId)
@@ -106,7 +106,7 @@ class OXMissionViewModel: BaseMissionViewModel {
                     print("🔍 [DEBUG] 서버 에러 메시지: \(errorBody)")
                 }
                 
-                // 🚨 비상 착륙: 로컬 데이터 세팅
+                // 로컬 데이터 세팅
                 self.setupMockData()
             }
             
@@ -203,8 +203,6 @@ class OXMissionViewModel: BaseMissionViewModel {
             self.errorMessage = "오류가 발생했습니다."
         }
         
-        // 2️⃣ 디버깅용: 서버 응답 바디(Body) 뜯어보기 🕵️
-        // 일반 Error를 MoyaError로 변환 시도
         if let moyaError = error as? MoyaError {
             if let response = moyaError.response {
                 // 서버가 보낸 실제 응답 데이터 (JSON)를 문자열로 변환
