@@ -28,7 +28,7 @@ struct RoutineCardView: View {
                 // 루틴 이름
                 Text(task.title)
                     .font(.Subtitle3)
-                    .foregroundStyle(.black)
+                    .foregroundStyle(.primary)
             }
             
             Spacer()
@@ -49,7 +49,7 @@ struct RoutineCardView: View {
         }
         .padding(24)
         .frame(maxWidth: .infinity)
-        .background(Color.white)
+        .background(Color(uiColor: .secondarySystemBackground))
         .cornerRadius(16)
         .overlay(
             RoundedRectangle(cornerRadius: 16)

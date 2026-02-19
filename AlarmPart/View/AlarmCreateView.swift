@@ -1,27 +1,31 @@
 //
-//  AlarmChange.swift
+//  AlarmCreating.swift
 //  LUMO_MainDev
 //
 //  Created by 육도연 on 1/27/26.
 //
 
+import Moya
+import Combine
 import SwiftUI
 import Foundation
-import Combine
+import UserNotifications
 import AlarmKit
-import Moya
 
-// MARK: - View
-struct AlarmChange: View {
+struct AlarmCreateView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel: AlarmChangeViewModel
+    @StateObject private var viewModel = AlarmCreateViewModel()
     
-    var onSave: ((Alarm) -> Void)?
+    var onCreate: ((Alarm) -> Void)?
     
-    init(alarm: Alarm? = nil, onSave: ((Alarm) -> Void)? = nil) {
-        _viewModel = StateObject(wrappedValue: AlarmChangeViewModel(alarm: alarm))
-        self.onSave = onSave
-    }
+    let missions = [
+        ("수학문제", "MathMission"),
+        ("OX 퀴즈", "OXMission"),
+        ("따라쓰기", "WriteMission"),
+        ("거리미션", "DestMission")
+    ]
+    
+    let days = ["월", "화", "수", "목", "금", "토", "일"]
     
     var body: some View {
         VStack(spacing: 0) {
@@ -32,7 +36,7 @@ struct AlarmChange: View {
                         .foregroundStyle(.gray)
                 }
                 Spacer()
-                Text("알람 수정")
+                Text("알람 생성")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                 Spacer()
@@ -67,13 +71,13 @@ struct AlarmChange: View {
                             .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                             .padding(.horizontal, 20)
                         HStack(spacing: 15) {
-                            ForEach(AlarmChangeModel.missions, id: \.0) { mission in
-                                MissionButton(
-                                    title: mission.title,
-                                    imageName: mission.imageName,
-                                    isSelected: viewModel.selectedMission == mission.title
+                            ForEach(missions, id: \.0) { mission in
+                                CreateMissionButton(
+                                    title: mission.0,
+                                    imageName: mission.1,
+                                    isSelected: viewModel.selectedMission == mission.0
                                 ) {
-                                    viewModel.selectedMission = mission.title
+                                    viewModel.selectedMission = mission.0
                                 }
                                 Spacer()
                             }
@@ -87,9 +91,9 @@ struct AlarmChange: View {
                             .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                             .padding(.horizontal, 20)
                         HStack(spacing: 0) {
-                            ForEach(0..<AlarmChangeModel.days.count, id: \.self) { index in
-                                DayButton(
-                                    text: AlarmChangeModel.days[index],
+                            ForEach(0..<7) { index in
+                                CreateDayButton(
+                                    text: days[index],
                                     isSelected: viewModel.selectedDays.contains(index)
                                 ) {
                                     if viewModel.selectedDays.contains(index) {
@@ -111,7 +115,7 @@ struct AlarmChange: View {
                             .padding(.horizontal, 20)
                         
                         ZStack {
-                            Color(uiColor: .secondarySystemGroupedBackground) // ✅ 다크모드 대응 (Card like bg)
+                            Color(uiColor: .secondarySystemGroupedBackground) // ✅ 다크모드 대응
                                 .cornerRadius(20)
                             
                             DatePicker("", selection: $viewModel.selectedTime, displayedComponents: .hourAndMinute)
@@ -135,10 +139,9 @@ struct AlarmChange: View {
                                 .foregroundStyle(.gray)
                         }
                         .padding(.vertical, 15)
-                        
                         Divider()
                         
-                        // ✅ [수정 완료] NavigationLink로 감싸서 클릭 시 SoundSettingView로 이동하도록 수정
+                        // [연결] SoundSettingView로 이동 (Binding 전달)
                         NavigationLink(destination: SoundSettingView(alarmSound: $viewModel.alarmSound)) {
                             HStack {
                                 Text("사운드")
@@ -159,17 +162,16 @@ struct AlarmChange: View {
                     }
                     .padding(.horizontal, 20)
                     
-                    // [수정 핵심] 로컬 알람 업데이트 제거 (서버 성공 후 처리하도록 변경)
                     Button(action: {
-                        let updatedAlarm = viewModel.getUpdatedAlarm()
+                        // ✅ [수정] 오프라인 퍼스트 적용
+                        // 1. 로컬 객체를 즉시 생성하여 onCreate 호출
+                        let newAlarm = viewModel.createNewAlarm()
+                        onCreate?(newAlarm)
                         
-                        // 🚨 [수정] 여기서 직접 AlarmKitManager를 호출하지 않습니다.
-                        // 부모 뷰(AlarmMenuView)의 onUpdate가 서버 통신 성공 후 로컬 알람을 갱신합니다.
-                        
-                        onSave?(updatedAlarm)
+                        // 2. 창을 즉시 닫음 (서버 통신은 백그라운드에서 AlarmViewModel이 처리)
                         dismiss()
                     }) {
-                        Text("설정하기")
+                        Text("생성하기")
                             .font(.system(size: 18, weight: .bold))
                             .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
@@ -186,55 +188,52 @@ struct AlarmChange: View {
         }
         .navigationBarHidden(true)
         .background(Color(uiColor: .systemBackground)) // ✅ 다크모드 대응
-        .onAppear {
-            viewModel.requestNotificationPermission()
-        }
     }
-    
-    struct MissionButton: View {
-        let title: String
-        let imageName: String
-        let isSelected: Bool
-        let action: () -> Void
-        var body: some View {
-            Button(action: action) {
-                VStack(spacing: 8) {
-                    ZStack {
-                        Circle()
-                            .fill(isSelected ? Color(hex: "FF8C68").opacity(0.1) : Color.gray.opacity(0.1))
-                            .frame(width: 50, height: 50)
-                        Image(imageName)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 30, height: 30)
-                            .opacity(isSelected ? 1.0 : 0.4)
-                    }
-                    Text(title)
-                        .font(.system(size: 12))
-                        .foregroundStyle(isSelected ? Color.primary : .gray) // ✅ 다크모드 대응 (선택시 primary)
-                }
-            }
-        }
-    }
-    
-    struct DayButton: View {
-        let text: String
-        let isSelected: Bool
-        let action: () -> Void
-        var body: some View {
-            Button(action: action) {
-                Text(text)
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(isSelected ? .white : .gray)
-                    .frame(width: 36, height: 36)
+}
 
-                    // ✅ 다크모드 대응: 비활성 배경을 시스템 컬러로
-                    .background(isSelected ? Color(hex: "F55641") : Color(uiColor: .secondarySystemBackground))
-                    .clipShape(Circle())
+private struct CreateMissionButton: View {
+    let title: String
+    let imageName: String
+    let isSelected: Bool
+    let action: () -> Void
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 8) {
+                ZStack {
+                    Circle()
+                        .fill(isSelected ? Color(hex: "FF8C68").opacity(0.1) : Color.gray.opacity(0.1))
+                        .frame(width: 50, height: 50)
+                    Image(imageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30, height: 30)
+                        .opacity(isSelected ? 1.0 : 0.4)
+                }
+                Text(title)
+                    .font(.system(size: 12))
+                    .foregroundStyle(isSelected ? Color.primary : .gray) // ✅ 다크모드 대응
             }
         }
     }
 }
+
+private struct CreateDayButton: View {
+    let text: String
+    let isSelected: Bool
+    let action: () -> Void
+    var body: some View {
+        Button(action: action) {
+            Text(text)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(isSelected ? .white : .gray)
+                .frame(width: 36, height: 36)
+                // ✅ 다크모드 대응
+                .background(isSelected ? Color(hex: "F55641") : Color(uiColor: .secondarySystemBackground))
+                .clipShape(Circle())
+        }
+    }
+}
+
 #Preview {
-    AlarmChange(alarm: Alarm.dummyData[0])
+    AlarmCreateView()
 }

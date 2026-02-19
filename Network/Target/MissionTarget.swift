@@ -21,7 +21,7 @@ enum MissionTarget {
     case dismissAlarm(alarmId: Int, request: DismissAlarmRequest)
 }
 
-extension MissionTarget: @MainActor APITargetType {
+extension MissionTarget: @MainActor APITarget{
     
     var baseURL: URL {
         // AppConfig.baseURL이 확실하다고 가정합니다.
