@@ -126,6 +126,10 @@ class HomeViewModel: ObservableObject {
         let playBriefing = { [weak self] in
             guard let self = self else { return }
             
+            // ✨ [해결책 추가] 대본을 짜기 직전에 무조건 로컬 DB에서 최신 오늘 할 일 데이터를 다시 불러옵니다!
+            // 이렇게 하면 로그아웃 상태이거나, 다른 뷰에서 할 일을 수정했더라도 무조건 최신 상태가 반영됩니다.
+            self.refreshData(for: Date())
+            
             // 데이터 로드 완료 후 플래그 해제 (자동일 경우에만)
             if isAuto {
                 AlarmKitManager.shared.shouldPlayBriefing = false
@@ -179,6 +183,7 @@ class HomeViewModel: ObservableObject {
                 }
             }
         } else {
+            // 로그아웃 상태일 경우 지연 없이 바로 실행 (위에서 추가한 refreshData 덕분에 최신 로컬 데이터가 반영됨)
             playBriefing()
         }
     }
