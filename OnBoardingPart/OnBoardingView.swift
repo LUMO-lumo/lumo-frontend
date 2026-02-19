@@ -18,6 +18,9 @@ struct OnBoardingView: View {
     
     var body: some View {
         ZStack {
+            // 다크모드 대응을 위해 기본 배경색을 명시적으로 지정하거나,
+            // 시스템 기본 배경색을 따르게 둡니다. (기본은 자동)
+            
             VStack {
                 TabView(selection: $PageNumber) {
                     ForEach(0..<onboardingData.count, id: \.self) { index in
@@ -31,7 +34,7 @@ struct OnBoardingView: View {
                     }
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .animation(.easeInOut, value: PageNumber)
+                // 애니메이션 충돌 방지를 위해 .animation 제거 유지
                 
                 // 2. 하단 컨트롤 영역
                 VStack(spacing: 16) {
@@ -44,19 +47,18 @@ struct OnBoardingView: View {
                         }
                     }
                     .padding(.bottom, 45)
-                    // 첫 번째 페이지(PageNumber 0)일 때는 투명도를 0으로 만들어 숨깁니다.
                     .opacity(PageNumber == 0 ? 0 : 1)
                     .animation(.easeInOut, value: PageNumber)
                     
                     // 하단 버튼
                     Button(action: {
                         handleButtonTap()
-                        
-                        /// 첫화면으로 넘어가게 하는 화면으로 넘어가게 만들기
-                        
                     }) {
                         Text(PageNumber == onboardingData.count - 1 ? "시작하기" : "다음")
                             .font(.system(size: 20, weight: .semibold))
+                            // 버튼 배경이 밝은 회색(DDE1E8)이므로, 텍스트는 어두운 색 유지(.black.opacity(0.6))가 가독성에 좋습니다.
+                            // 만약 버튼 배경도 다크모드에 따라 어두워진다면 이 부분도 수정해야 하지만,
+                            // 현재 디자인(라이트 그레이 버튼)상 검은 글씨가 맞습니다.
                             .foregroundStyle(PageNumber == onboardingData.count - 1 ? .white : .black.opacity(0.6))
                             .frame(maxWidth: .infinity)
                             .frame(height: 56)
@@ -74,7 +76,6 @@ struct OnBoardingView: View {
         }
     }
     
-    //기능적으로 확인을 하는 부분
     private func handleButtonTap() {
         if PageNumber < onboardingData.count - 1 {
             withAnimation {
@@ -96,7 +97,6 @@ struct OnboardingFirstPageView: View {
             
             VStack(spacing: 24) {
                 
-                
                 Image(item.imageName)
                     .resizable()
                     .scaledToFit()
@@ -108,17 +108,17 @@ struct OnboardingFirstPageView: View {
                     .foregroundStyle(Color(hex: "F55641"))
                     .tracking(2)
                 
-                
-                
                 VStack(spacing: 8) {
                     Text(item.title)
                         .font(.system(size: 24, weight: .bold))
                         .multilineTextAlignment(.center)
-                        .foregroundStyle(.black)
+                        // [수정] .black -> .primary (다크모드 대응)
+                        .foregroundStyle(.primary)
                     
                     Text(item.description)
                         .font(.system(size: 15))
-                        .foregroundStyle(.gray)
+                        // [수정] .gray -> .secondary (다크모드 대응 및 가독성 향상)
+                        .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                         .lineSpacing(4)
@@ -145,11 +145,13 @@ struct OnboardingPageView: View {
                     Text(item.title)
                         .font(.system(size: 24, weight: .bold))
                         .multilineTextAlignment(.center)
-                        .foregroundStyle(.black)
+                        // [수정] .black -> .primary (다크모드 대응)
+                        .foregroundStyle(.primary)
                     
                     Text(item.description)
                         .font(.system(size: 15))
-                        .foregroundStyle(.gray)
+                        // [수정] .gray -> .secondary (다크모드 대응)
+                        .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                         .lineSpacing(4)
@@ -172,4 +174,5 @@ struct OnboardingPageView: View {
 
 #Preview {
     OnBoardingView()
+        .environment(OnboardingViewModel())
 }

@@ -31,16 +31,20 @@ struct DistanceMissionView: View {
     
     var body: some View {
         ZStack{
+            // ✅ [추가] 전체 화면 배경색 지정 (오버레이 시 투명 방지 & 다크모드 대응)
+            Color(uiColor: .systemBackground)
+                .ignoresSafeArea()
+            
             VStack {
                 // 상단 시간 정보
                 VStack(spacing: 8) {
                     Text(viewModel.alarmLabel)
                         .font(.pretendardMedium16)
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응 (흰색/검은색 자동)
                     
                     Text(timeFormatter.string(from: currentTime))
                         .font(.pretendardSemiBold60)
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                         .onReceive(timer) { input in
                             currentTime = input
                         }
@@ -71,13 +75,13 @@ struct DistanceMissionView: View {
                         Spacer().frame(width:10)
                         Text("\(Int(viewModel.targetDistance))m")
                             .font(.Subtitle1)
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(.black) // ✅ 다크모드 대응
                     }
                     
                     Text(String(format: "%.2fm", viewModel.currentDistance))
                         .font(.pretendardBold60)
                         .padding(.bottom, 30)
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color.black) // ✅ 다크모드 대응
                     
                     Spacer().frame(height: 12)
                     
@@ -104,7 +108,7 @@ struct DistanceMissionView: View {
                     .font(.Subtitle2)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 20)
-                    .foregroundStyle(Color.primary)
+                    .foregroundStyle(Color.black) // ✅ 다크모드 대응
                     .background(Color.gray300, in: Capsule()
                     )
                 
@@ -141,7 +145,10 @@ struct DistanceMissionView: View {
         }
         .onChange(of: viewModel.isMissionCompleted) { oldValue, completed in
             if completed {
-                print("🏁 거리 미션 완료! 메인 화면으로 이동합니다.")
+                print("🏁 거리 미션 완료! 소리를 끄고 알림을 제거합니다.")
+                // 🔥 [핵심 수정] completeMission() 호출
+                AlarmKitManager.shared.completeMission()
+                
                 withAnimation(.easeInOut(duration: 0.5)) {
                     appState.currentRoot = .main
                 }

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct FinalDistanceView: View {
+    @Environment(\.colorScheme) var scheme
+
     var body: some View {
         VStack {
             Text("거리 미션을 수행해주세요!")
@@ -32,21 +34,23 @@ struct FinalDistanceView: View {
                     
                     Text("100m")
                         .font(.Subtitle1)
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(scheme == .dark ? .white : .black)
                 }
                 
                 Text("0.00m")
                     .font(.pretendardBold60)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(scheme == .dark ? .white : .black)
                 
                 Text("움직였어요")
                     .font(.Subtitle3)
+                    .foregroundStyle(scheme == .dark ? .white : .black)
                    
             }
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 24)
             .padding(.vertical, 80)
-            .background(Color(hex: "F2F4F7"))
+            // 박스 배경: 다크모드 대응
+            .background(scheme == .dark ? Color(hex: "2C2C2E") : Color(hex: "F2F4F7"))
             .cornerRadius(16)
             
             Spacer()

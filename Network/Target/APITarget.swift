@@ -10,9 +10,9 @@ import Foundation
 import Moya
 
 /// 모든 타겟이 상속받을 기본 프로토콜
-protocol APITargetType: TargetType {}
+protocol APITarget: TargetType {}
 
-extension APITargetType {
+extension APITarget {
     
     // 공통 BaseURL 설정 (AppConfig 연결)
     var baseURL: URL {

@@ -12,70 +12,7 @@ import Foundation
 import UserNotifications
 import AlarmKit
 
-// MARK: - ViewModel
-class AlarmCreateViewModel: ObservableObject {
-    @Published var alarmTitle: String = ""
-    @Published var selectedMission: String = "수학문제"
-    @Published var selectedDays: Set<Int> = []
-    @Published var selectedTime: Date = Date()
-    @Published var isSoundOn: Bool = true
-    
-    // [연동] 사운드 저장 변수
-    @Published var alarmSound: String = "기본음"
-    
-    func createNewAlarm() -> Alarm {
-        let mappedDays = selectedDays.map { ($0 + 1) % 7 }.sorted()
-        let mType: String
-        switch selectedMission {
-        case "수학문제": mType = "계산"
-        case "따라쓰기": mType = "받아쓰기"
-        case "거리미션": mType = "운동"
-        case "OX 퀴즈": mType = "OX"
-        default: mType = "계산"
-        }
-        
-        // [추가됨] soundName 저장
-        return Alarm(
-            time: selectedTime,
-            label: alarmTitle.isEmpty ? "새 알람" : alarmTitle,
-            isEnabled: isSoundOn,
-            repeatDays: mappedDays,
-            missionTitle: selectedMission,
-            missionType: mType,
-            soundName: alarmSound
-        )
-    }
-    
-    // [수정됨] 실제 서버 API 호출 및 DTO 연결
-    func requestCreateAlarm(completion: @escaping (Bool) -> Void) {
-        // 1. 로컬 알람 객체 생성
-        let newAlarm = createNewAlarm()
-        
-        // 2. 서버 요청용 파라미터 변환 (AlarmModel의 extension 활용 - DTO 변환)
-        let params = newAlarm.toDictionary()
-        
-        print("[Debug] 알람 생성 요청: \(params)")
-        
-        // 3. 서비스 호출 (서버 통신)
-        AlarmService.shared.createAlarm(params: params) { result in
-            switch result {
-            case .success(let dto):
-                print("알람 생성 성공: ID \(dto.alarmId)")
-                // 성공 시 true 반환
-                completion(true)
-            case .failure(let error):
-                print("알람 생성 실패: \(error.localizedDescription)")
-                // 실패 시 false 반환 (필요 시 에러 처리 로직 추가 가능)
-                completion(false)
-            }
-        }
-    }
-    
-    func scheduleLocalNotification() {}
-}
-
-// MARK: - View
-struct AlarmCreate: View {
+struct AlarmCreateView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = AlarmCreateViewModel()
     
@@ -226,19 +163,13 @@ struct AlarmCreate: View {
                     .padding(.horizontal, 20)
                     
                     Button(action: {
+                        // ✅ [수정] 오프라인 퍼스트 적용
+                        // 1. 로컬 객체를 즉시 생성하여 onCreate 호출
                         let newAlarm = viewModel.createNewAlarm()
+                        onCreate?(newAlarm)
                         
-                        // ✅ [수정] 중복 호출 제거
-                        // 여기서 AlarmKitManager를 직접 호출하지 않습니다.
-                        // viewModel.requestCreateAlarm 완료 후 onCreate 클로저를 통해
-                        // AlarmMenuView -> AlarmViewModel.addAlarm 내에서 한 번만 등록하도록 합니다.
-                        
-                        viewModel.requestCreateAlarm { success in
-                            if success {
-                                onCreate?(newAlarm)
-                                dismiss()
-                            }
-                        }
+                        // 2. 창을 즉시 닫음 (서버 통신은 백그라운드에서 AlarmViewModel이 처리)
+                        dismiss()
                     }) {
                         Text("생성하기")
                             .font(.system(size: 18, weight: .bold))
@@ -304,5 +235,5 @@ private struct CreateDayButton: View {
 }
 
 #Preview {
-    AlarmCreate()
+    AlarmCreateView()
 }

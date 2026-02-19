@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import Moya
 
 // 로컬 테스트용 문제 모델
 struct LocalTypingProblem {
@@ -20,7 +21,7 @@ class TypingMissionViewModel: BaseMissionViewModel {
     
     // MARK: - Configuration
     // ⭐️ 이 값을 false로 바꾸면 API 모드로 작동합니다.
-    private let isMockMode: Bool = true
+    private var isMockMode: Bool
     
     // MARK: - UI Properties
     @Published var questionText: String = "문제를 불러오는 중..."
@@ -52,6 +53,10 @@ class TypingMissionViewModel: BaseMissionViewModel {
     // MARK: - Initialization
     init(alarmId: Int, alarmLabel: String) {
         self.alarmLabel = alarmLabel
+        
+        // ✅ [핵심] ID가 -1이면 테스트 모드(Mock)로 강제 설정
+        self.isMockMode = (alarmId == -1)
+        
         super.init(alarmId: alarmId)
     }
     
@@ -65,24 +70,47 @@ class TypingMissionViewModel: BaseMissionViewModel {
         
         // [Real API Mode] - 기존 코드 보존
         AsyncTask {
+            self.isLoading = true
+            
             do {
-                self.isLoading = true
-                
-                // Base의 startMission 호출
-                if let result = try await super.startMission() {
-                    self.contentId = result.contentId
-                    self.questionText = result.question
-                    print("🌐 [SERVER] 문제 로드 성공: \(result.question)")
+                print("🚀 [SERVER] 거리 미션 시작 요청...")
+                print("현재 요청 중인 Alarm ID: \(self.alarmId)")
+                if let results = try await super.startMission() {
+                    
+                    if let firstProblem = results.first {
+                        // 1. [성공] 서버 데이터 적용
+                        self.contentId = firstProblem.contentId
+                        self.questionText = firstProblem.question ?? "문제 내용 없음"
+                        
+                        print("🌐 [SERVER] 문제 로드 성공: \(self.questionText)")
+                    } else {
+                        // 배열은 왔는데 비어있음
+                        throw MissionError.serverError(message: "문제 데이터 없음")
+                    }
+                    
                 } else {
-                    self.errorMessage = "문제를 불러오지 못했습니다."
+                    // 캐스팅 실패 (데이터 형식이 안 맞음)
+                    throw MissionError.serverError(message: "데이터 형식이 올바르지 않습니다.")
                 }
                 
-                self.isLoading = false
             } catch {
-                self.isLoading = false
+                // 2. [실패] 서버 에러 발생 시 로컬 모드로 전환 (Graceful Degradation)
                 print("❌ [SERVER] 문제 로드 실패: \(error)")
-                self.errorMessage = "네트워크 연결을 확인해주세요."
+                print("⚠️ 서버 연결 실패로 인해 '로컬(Mock) 모드'로 전환합니다.")
+                
+                self.isMockMode = true
+                
+                // 3. 디버깅용: 서버 에러 메시지 확인 (MoyaError인 경우)
+                if let moyaError = error as? MoyaError, let response = moyaError.response {
+                    let errorBody = String(data: response.data, encoding: .utf8) ?? "데이터 없음"
+                    print("🔍 [DEBUG] 서버 에러 메시지: \(errorBody)")
+                }
+                
+                // 🚨 비상 착륙: 로컬 데이터 세팅
+                self.setupMockData()
             }
+            
+            self.isLoading = false
         }
     }
     
@@ -134,23 +162,26 @@ class TypingMissionViewModel: BaseMissionViewModel {
         if isCorrect {
             self.feedbackMessage = "잘했어요!"
             
-            // Mock 모드일 때는 수동으로 완료 처리
-            if isMockMode {
-                AsyncTask {
-                    try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
+            AsyncTask {
+                try? await AsyncTask.sleep(nanoseconds: 1_500_000_000) // 1.5초 딜레이 (피드백 감상 시간)
+                
+                // UI 업데이트는 메인 스레드에서
+                await MainActor.run {
+                    print("🏁 [ViewModel] 정답 확인! 미션 완료 처리합니다.")
                     self.isMissionCompleted = true
                 }
-            } else {
-                // API 모드에서는 BaseViewModel이 dismissAlarm 성공 시 isMissionCompleted = true 처리
             }
-
+            
         } else {
-            self.feedbackMessage = "다시 시도해주세요"
+            // ❌ 오답일 때
+            self.feedbackMessage = "틀렸어요!"
             AsyncTask {
                 try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
-                self.showFeedback = false
-                // 오답일 때 텍스트 필드를 비울지 여부는 기획에 따라 결정 (여기서는 비움)
-                self.userAnswer = ""
+                
+                await MainActor.run {
+                    self.showFeedback = false
+                    self.userAnswer = ""
+                }
             }
         }
     }
@@ -192,7 +223,7 @@ class TypingMissionViewModel: BaseMissionViewModel {
         let cleanCorrect = localCorrectAnswer.trimmingCharacters(in: .whitespacesAndNewlines)
         
         let isCorrect = (cleanAnswer == cleanCorrect)
-
+        
         handleSubmissionResult(isCorrect: isCorrect)
     }
 }

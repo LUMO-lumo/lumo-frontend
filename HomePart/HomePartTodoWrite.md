@@ -76,4 +76,11 @@
   "success": true
 }
 
-
+#오늘 할 일 브리핑 
+- response
+{
+  "code": "string",
+  "message": "string",
+  "result": "string",
+  "success": true
+}

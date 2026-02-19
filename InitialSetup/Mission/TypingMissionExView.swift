@@ -12,17 +12,19 @@ struct TypingMissionExView: View {
             Spacer()
             
             HStack {
+                // 다크모드 대응: .primary
                 Text("\(Text("따라쓰기").foregroundStyle(Color(hex: "F55641")))는 이런 미션을 수행해요")
-                    .font(.Subtitle2)
-                    .foregroundStyle(Color.black)
+                    .font(.custom("Pretendard-Bold", size: 24))
+                    .foregroundStyle(.primary)
             }
             
             Spacer()
             
             HStack {
+                // 다크모드 대응: .primary
                 Text("할 수 있다!")
-                    .font(.Subtitle2)
-                    .foregroundStyle(Color.black)
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(.primary)
                 
                 Spacer()
             }
@@ -33,8 +35,9 @@ struct TypingMissionExView: View {
                     .stroke(Color(hex: "DDE1E8"), lineWidth: 2)
             )
             
+            // 밝은 회색 배경 위이므로 회색 텍스트 유지 (다크모드에서도 잘 보임)
             Text("여기에 문장을 작성해 주세요")
-                .font(.Subtitle3)
+                .font(.system(size: 20, weight: .bold))
                 .foregroundStyle(Color(hex: "979DA7"))
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 24)

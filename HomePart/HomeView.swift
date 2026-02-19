@@ -10,6 +10,10 @@ struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @State private var showToDoSheet = false
     @State private var navigateToDetail = false
+    @StateObject private var alarmViewModel = AlarmViewModel()
+    
+    // ✅ AlarmKitManager는 LumoApp에서 전역으로 처리하므로 여기서 감지할 필요 없음
+    // @ObservedObject private var alarmKitManager = AlarmKitManager.shared (삭제 또는 주석)
     
     var body: some View {
         NavigationStack {
@@ -30,77 +34,18 @@ struct HomeView: View {
                     quoteCardSection
                     todoPreviewSection
                     missionStatSection
-                    
-                    Spacer().frame(height: 40)
-                    // MARK: - 미션 테스트 섹션 (차후 삭제)
-                    HStack(spacing: 10) {
-                        Button {
-                            // 🚀 버튼을 누르면 탭뷰가 사라지고 수학 미션이 꽉 찬 화면으로 뜹니다.
-                            withAnimation {
-                                appState.currentRoot = .mathMission(alarmId: 999, label: "테스트 알람")
-                            }
-                        } label: {
-                            Text("수학 미션 테스트")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.orange)
-                                .cornerRadius(12)
-                        }
-                        
-                        Button {
-                            withAnimation {
-                                appState.currentRoot = .distanceMission(alarmId: 999, label: "1교시 없는 날")
-                            }
-                        } label: {
-                            Text("거리 미션 테스트")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.green)
-                                .cornerRadius(12)
-                        }
-                        Button {
-                            withAnimation {
-                                appState.currentRoot = .oxMission(alarmId: 999, label: "1교시 있는 날")
-                            }
-                        } label: {
-                            Text("OX 미션 테스트")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(12)
-                        }
-                        Button {
-                            withAnimation {
-                                appState.currentRoot = .typingMission(alarmId: 999, label: "테스트 알람")
-                            }
-                        } label: {
-                            Text("따라쓰기 미션 테스트")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.orange)
-                                .cornerRadius(12)
-                        }
-                    }
-                    .padding(.top, 20)
-                    // ------------------------------------------
-                    
-                    Spacer().frame(height: 40)
-                    // MARK: - 미션 테스트 섹션
+                   
                 }
                 .padding(.horizontal, 24)
             }
             .toolbar(.hidden)
             .onAppear {
-                // 홈으로 돌아올 때 오늘 데이터를 다시 동기화
+                // 1. 데이터 로드 (화면 진입 시 갱신용)
                 viewModel.loadTasksForSpecificDate(date: Date())
+                
+                // ❌ [삭제] 여기서 브리핑 체크를 하지 않습니다.
+                // LumoApp.swift에서 전역으로 처리하므로 중복 실행을 막기 위해 제거합니다.
+                // viewModel.checkAndPlayBriefing()
             }
             .navigationDestination(isPresented: $navigateToDetail) {
                 TodoSettingView(viewModel: viewModel)

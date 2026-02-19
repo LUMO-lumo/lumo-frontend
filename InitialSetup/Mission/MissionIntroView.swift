@@ -14,8 +14,10 @@ struct MissionIntroView: View {
         VStack {
             Spacer()
             
+            // 기본 텍스트 색상 (.primary) 사용 시 다크모드 자동 대응됨
             Text("이제 미션을 설정해볼까요?")
-                .font(.Subtitle1)
+                .font(.custom("Pretendard-Bold", size: 24))
+                .foregroundStyle(.primary)
             
             Spacer() .frame(height: 82)
             
@@ -27,7 +29,7 @@ struct MissionIntroView: View {
                 viewModel.path.append(OnboardingStep.missionSelect)
             }) {
                 Text("다음")
-                    .font(.Subtitle3)
+                    .font(.system(size: 20, weight: .bold))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
                     .foregroundStyle(Color(hex: "404347"))

@@ -17,7 +17,7 @@ struct MissionContainerView: View {
             HStack(spacing: 6) {
                 ForEach(0..<4) { index in
                     Rectangle()
-                    // 현재 페이지면 주황색, 아니면 회색
+                    // 현재 페이지면 주황색, 아니면 회색 (색상 고정으로 다크모드 무관하게 유지)
                         .foregroundStyle(index <= currentPage ? Color(hex: "F55641") : Color(hex: "DDE1E8"))
                         .frame(height: 3)
                         .cornerRadius(999)
@@ -29,24 +29,22 @@ struct MissionContainerView: View {
             
             // 2. 화면들 (TabView)
             TabView(selection: $currentPage) {
-                // 첫 번째: 미션 선택
-                MissionSelectView(currentPage: $currentPage)
-                    .tag(0)
-                
-                // 두 번째: 미션 미리보기
-                MissionPreviewView(currentPage: $currentPage)
-                    .tag(1)
-                
-                FinalCheckView(currentPage: $currentPage)
-                    .tag(2)
-                
-                IntroTermAgreementView(currentPage: $currentPage)
-                    .tag(3)
-            }
+                           // 첫 번째: 미션 선택
+                           MissionSelectView(currentPage: $currentPage)
+                               .tag(0)
+                           
+                           // 두 번째: 미션 미리보기
+                           MissionPreviewView(currentPage: $currentPage)
+                               .tag(1)
+                           
+                           FinalCheckView(currentPage: $currentPage)
+                               .tag(2)
+                           
+                           IntroTermAgreementView(currentPage: $currentPage)
+                               .tag(3)
+                       }
             .tabViewStyle(.page(indexDisplayMode: .never))
-            .animation(.easeInOut, value: currentPage) // 슬라이드 애니메이션
-            
-            // (참고: 버튼은 각 화면의 기능이 달라서 자식 뷰 내부에 두는 것이 좋습니다)
+            .animation(.easeInOut, value: currentPage)
         }
         .navigationBarBackButtonHidden(true)
     }

@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Moya
 
 // 로컬 테스트용 문제 모델
 struct LocalMathProblem {
@@ -19,7 +20,7 @@ class MathMissionViewModel: BaseMissionViewModel {
     
     // MARK: - Configuration
     // ⭐️ 이 값을 false로 바꾸면 즉시 API 모드로 작동합니다.
-    private let isMockMode: Bool = true
+    private var isMockMode: Bool
     
     // MARK: - UI Properties
     @Published var questionText: String = "문제를 불러오는 중..."
@@ -51,6 +52,10 @@ class MathMissionViewModel: BaseMissionViewModel {
     // MARK: - Initialization
     init(alarmId: Int, alarmLabel: String) {
         self.alarmLabel = alarmLabel
+        
+        // ✅ [핵심] ID가 -1이면 테스트 모드(Mock)로 강제 설정
+        self.isMockMode = (alarmId == -1)
+        
         super.init(alarmId: alarmId)
     }
     
@@ -65,18 +70,46 @@ class MathMissionViewModel: BaseMissionViewModel {
         // [Real API Mode] - 기존 코드 보존
         isLoading = true
         AsyncTask {
+            self.isLoading = true
+            
             do {
-                // BaseMissionViewModel의 startMission 호출
-                if let result = try await super.startMission() {
-                    self.contentId = result.contentId
-                    self.questionText = result.question
-                    print("✅ [API] 문제 로드 완료: \(result.question)")
+                print("🚀 [SERVER] 수학 미션 시작 요청...")
+                print("현재 요청 중인 Alarm ID: \(self.alarmId)")
+                if let results = try await super.startMission() {
+                    
+                    if let firstProblem = results.first {
+                        // 1. [성공] 서버 데이터 적용
+                        self.contentId = firstProblem.contentId
+                        self.questionText = firstProblem.question ?? "문제 내용 없음"
+                        
+                        print("🌐 [SERVER] 문제 로드 성공: \(self.questionText)")
+                    } else {
+                        // 배열은 왔는데 비어있음
+                        throw MissionError.serverError(message: "문제 데이터 없음")
+                    }
+                    
                 } else {
-                    self.errorMessage = "문제를 불러오지 못했습니다."
+                    // 캐스팅 실패 (데이터 형식이 안 맞음)
+                    throw MissionError.serverError(message: "데이터 형식이 올바르지 않습니다.")
                 }
+                
             } catch {
-                self.handleError(error)
+                // 2. [실패] 서버 에러 발생 시 로컬 모드로 전환 (Graceful Degradation)
+                print("❌ [SERVER] 문제 로드 실패: \(error)")
+                print("⚠️ 서버 연결 실패로 인해 '로컬(Mock) 모드'로 전환합니다.")
+                
+                self.isMockMode = true
+                
+                // 3. 디버깅용: 서버 에러 메시지 확인 (MoyaError인 경우)
+                if let moyaError = error as? MoyaError, let response = moyaError.response {
+                    let errorBody = String(data: response.data, encoding: .utf8) ?? "데이터 없음"
+                    print("🔍 [DEBUG] 서버 에러 메시지: \(errorBody)")
+                }
+                
+                // 🚨 비상 착륙: 로컬 데이터 세팅
+                self.setupMockData()
             }
+            
             self.isLoading = false
         }
     }
@@ -122,39 +155,59 @@ class MathMissionViewModel: BaseMissionViewModel {
             
             // API 모드일 때는 BaseViewModel이 dismissAlarm을 이미 호출했을 것임.
             // Mock 모드일 때는 여기서 수동으로 완료 처리.
-            if isMockMode {
-                AsyncTask {
-                    try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
+            AsyncTask {
+                try? await AsyncTask.sleep(nanoseconds: 1_500_000_000) // 1.5초 딜레이 (피드백 감상 시간)
+                
+                // UI 업데이트는 메인 스레드에서
+                await MainActor.run {
+                    print("🏁 [ViewModel] 정답 확인! 미션 완료 처리합니다.")
                     self.isMissionCompleted = true
                 }
-            } else {
-                // API 모드에서도 사용자가 정답 피드백을 볼 시간을 줌 (Base가 isMissionCompleted를 true로 만들기 전이라고 가정하거나, UI 흐름에 따라 조정)
-                 // 보통 BaseViewModel에서 dismissAlarm 성공 후 isMissionCompleted = true로 설정하므로
-                 // 여기서는 별도 처리가 필요 없거나, 애니메이션을 위한 딜레이만 줄 수 있습니다.
             }
             
         } else {
+            // ❌ 오답일 때
             self.feedbackMessage = "틀렸어요!"
-            // 1.5초 후 피드백 숨기고 입력창 초기화
             AsyncTask {
                 try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
-                self.showFeedback = false
-                self.userAnswer = ""
+                
+                await MainActor.run {
+                    self.showFeedback = false
+                    self.userAnswer = ""
+                }
             }
         }
     }
     
     // 에러 처리
     private func handleError(_ error: Error) {
+        // 1. UI용 기본 메시지 설정
         if let missionError = error as? MissionError {
             switch missionError {
             case .serverError(let message):
                 self.errorMessage = message
+            default:
+                self.errorMessage = "미션 진행 중 오류가 발생했습니다."
             }
         } else {
-            self.errorMessage = "오류가 발생했습니다."
+            self.errorMessage = "알 수 없는 오류가 발생했습니다."
         }
-        print("❌ Error: \(error)")
+        
+        // 2. 디버깅용 상세 로그 (MoyaError 캐스팅)
+        print("\n❌ Error 발생: \(error)")
+        
+        // 일반 Error는 response 속성이 없으므로 MoyaError로 캐스팅해야 함
+        if let moyaError = error as? MoyaError, let response = moyaError.response {
+            print("🔢 상태 코드: \(response.statusCode)")
+            
+            // 📦 [숨겨진 112 bytes 확인하는 코드]
+            if let errorBody = String(data: response.data, encoding: .utf8) {
+                print("\n📦 [서버 에러 메시지 디코딩]:")
+                print("👉 \(errorBody)")
+            }
+        } else {
+            print("🌍 네트워크 오류이거나 응답이 없습니다.")
+        }
     }
     
     // MARK: - Mock Helpers (Local Logic)

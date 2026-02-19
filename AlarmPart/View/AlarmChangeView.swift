@@ -12,7 +12,7 @@ import AlarmKit
 import Moya
 
 // MARK: - View
-struct AlarmChange: View {
+struct AlarmChangeView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: AlarmChangeViewModel
     
@@ -135,22 +135,27 @@ struct AlarmChange: View {
                                 .foregroundStyle(.gray)
                         }
                         .padding(.vertical, 15)
+                        
                         Divider()
-                        HStack {
-                            Text("사운드")
-                                .font(.system(size: 14))
-                                .foregroundStyle(Color.primary) // ✅ 다크모드 대응
-                            Spacer()
-                            HStack(spacing: 5) {
-                                Text(viewModel.alarmSound)
+                        
+                        // ✅ [수정 완료] NavigationLink로 감싸서 클릭 시 SoundSettingView로 이동하도록 수정
+                        NavigationLink(destination: SoundSettingView(alarmSound: $viewModel.alarmSound)) {
+                            HStack {
+                                Text("사운드")
                                     .font(.system(size: 14))
-                                    .foregroundStyle(.gray)
-                                Image(systemName: "chevron.right")
-                                    .font(.system(size: 12))
-                                    .foregroundStyle(.gray)
+                                    .foregroundStyle(Color.primary) // ✅ 다크모드 대응
+                                Spacer()
+                                HStack(spacing: 5) {
+                                    Text(viewModel.alarmSound)
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(.gray)
+                                    Image(systemName: "chevron.right")
+                                        .font(.system(size: 12))
+                                        .foregroundStyle(.gray)
+                                }
                             }
+                            .padding(.vertical, 15)
                         }
-                        .padding(.vertical, 15)
                     }
                     .padding(.horizontal, 20)
                     
@@ -231,5 +236,5 @@ struct AlarmChange: View {
     }
 }
 #Preview {
-    AlarmChange(alarm: Alarm.dummyData[0])
+    AlarmChangeView(alarm: Alarm.dummyData[0])
 }
