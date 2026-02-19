@@ -104,8 +104,19 @@ class AlarmViewModel: ObservableObject {
             // 2. 서버 업데이트 (기본 정보 + 미션 정보)
             if let serverId = updatedAlarm.serverId, MainAPIClient<AlarmEndpoint>().isLoggedIn {
                 
-                // A. 기본 정보(시간, 요일, 라벨 등) 수정
-                AlarmService.shared.updateAlarm(alarmId: serverId, params: updatedAlarm.toDictionary()) { _ in }
+                print("📡 [Server] 알람 업데이트 요청: ID \(serverId)")
+                let params = updatedAlarm.toDictionary()
+                
+                // A. 기본 정보(시간, 요일, 라벨, 사운드 등) 수정
+                // ✅ [수정] 에러 확인을 위한 로그 추가
+                AlarmService.shared.updateAlarm(alarmId: serverId, params: params) { result in
+                    switch result {
+                    case .success(let dto):
+                        print("✅ [Server] 알람 기본 정보 수정 완료. 사운드: \(dto.soundType)")
+                    case .failure(let error):
+                        print("❌ [Server] 알람 기본 정보 수정 실패: \(error)")
+                    }
+                }
                 
                 // ✅ B. [추가] 미션 설정 수정 API 호출
                 // AlarmDTO.toDictionary 로직을 참고하여 미션 파라미터 생성

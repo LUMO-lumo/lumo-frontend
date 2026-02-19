@@ -167,8 +167,19 @@ extension Alarm {
     
     // ✅ 파일명 -> 한글 이름 (UI 표시용)
     static func fromServerSoundName(_ fileName: String) -> String {
-        // value로 key 찾기
-        return soundMapping.first(where: { $0.value == fileName })?.key ?? "비명 소리"
+        // 1. 정확한 매칭
+        if let key = soundMapping.first(where: { $0.value == fileName })?.key {
+            return key
+        }
+        
+        // 2. 확장자 제거 후 매칭 (서버가 .mp3 등을 붙여서 줄 경우 대비)
+        // 예: "scream14-6918.mp3" -> "scream14-6918"
+        let nameWithoutExt = fileName.components(separatedBy: ".").first ?? fileName
+        if let key = soundMapping.first(where: { $0.value == nameWithoutExt })?.key {
+            return key
+        }
+        
+        return "비명 소리"
     }
     
     init(from dto: AlarmDTO) {
@@ -280,7 +291,7 @@ extension Alarm {
             "alarmTime": timeFormatter.string(from: self.time),
             "label": self.label.isEmpty ? "Alarm" : self.label,
             "isEnabled": self.isEnabled,
-            "soundType": serverSoundType, // 변환된 파일명 전송
+            "soundType": serverSoundType, // ✅ 중요: 파일명(영어)만 전송. soundId/soundName 등 불필요한 키 제거.
             "vibration": true,
             "volume": 100,
             "repeatDays": safeRepeatDays,
