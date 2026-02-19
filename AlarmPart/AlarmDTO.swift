@@ -197,40 +197,40 @@ extension Alarm {
         
         self.repeatDays = Alarm.convertRepeatDaysToInt(dto.repeatDays)
         
-
+        
         // ⚠️ 주의: 현재는 서버에서 받아온 미션을 앱에 반영하는 로직이 없어서 'NONE'으로 고정되어 있습니다.
         // 추후 서버의 MissionSettingDTO를 해석해서 missionType을 설정하는 로직 추가가 필요합니다.
         if let settings = dto.missionSetting {
-                    switch settings.missionType {
-                    case "MATH", "CALCULATION":
-                        self.missionType = "계산"
-                        self.missionTitle = "수학 문제 풀기"
-                        
-                    case "TYPING", "DICTATION":
-                        self.missionType = "받아쓰기"
-                        self.missionTitle = "명언 따라쓰기"
-                        
-                    case "WALK", "DISTANCE":
-                        self.missionType = "운동"
-                        let goal = settings.walkGoalMeter
-                        self.missionTitle = "목표 거리 걷기 (\(goal)m)"
-                        
-                    case "OX", "OX_QUIZ", "QUIZ":
-                        self.missionType = "OX"
-                        self.missionTitle = "시사 상식 퀴즈"
-                        
-                    default:
-                        self.missionType = "계산" // 기본값
-                        self.missionTitle = "수학 문제 풀기"
-                    }
-                } else {
-                    self.missionType = "NONE"
-                    self.missionTitle = "미션 없음"
-                }
+            switch settings.missionType {
+            case "MATH", "CALCULATION":
+                self.missionType = "계산"
+                self.missionTitle = "수학 문제 풀기"
+                
+            case "TYPING", "DICTATION":
+                self.missionType = "받아쓰기"
+                self.missionTitle = "명언 따라쓰기"
+                
+            case "WALK", "DISTANCE":
+                self.missionType = "운동"
+                let goal = settings.walkGoalMeter
+                self.missionTitle = "목표 거리 걷기 (\(goal)m)"
+                
+            case "OX", "OX_QUIZ", "QUIZ":
+                self.missionType = "OX"
+                self.missionTitle = "시사 상식 퀴즈"
+                
+            default:
+                self.missionType = "계산" // 기본값
+                self.missionTitle = "수학 문제 풀기"
+            }
+        } else {
+            self.missionType = "NONE"
+            self.missionTitle = "미션 없음"
+        }
     }
     
     
-   
+    
     func toDictionary() -> [String: Any] {
         let timeFormatter = DateFormatter()
         timeFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -240,35 +240,53 @@ extension Alarm {
         var questionCount = 0
         var walkGoalMeter = 0
         
+        // ✅ [추가] 저장된 난이도 불러오기 (없으면 MEDIUM 기본값)
+        // 저장된 값: LOW, MEDIUM, HIGH -> 서버 전송 값: EASY, NORMAL, HARD (매핑 필요 시)
+        // 만약 서버가 LOW/MEDIUM/HIGH를 그대로 받는다면 그대로 사용, 변환 필요하면 switch문 사용
+        let savedDifficulty = UserDefaults.standard.string(forKey: "MISSION_DIFFICULTY") ?? "MEDIUM"
+        var serverDifficulty = "MEDIUM"
+        
+        // ✅ [수정 1] HIGH를 HARD로 변환 (서버 규격 맞춤)
+        switch savedDifficulty {
+        case "LOW": serverDifficulty = "EASY"
+        case "MEDIUM": serverDifficulty = "MEDIUM"
+        case "HIGH": serverDifficulty = "HARD"
+        default: serverDifficulty = "MEDIUM"
+        }
+        
         switch self.missionType {
-            case "계산":
-                serverMissionType = "MATH"
-                questionCount = 1 // 기본값 (나중에 UI에서 설정 가능하게 변경 필요)
-                
-            case "받아쓰기":
-                serverMissionType = "TYPING"
-                questionCount = 1
-                
-            case "운동":
-                serverMissionType = "WALK"
-                walkGoalMeter = 50 // 기본 50걸음
-                
-            case "OX", "퀴즈", "시사":
-                serverMissionType = "OX_QUIZ"
-                questionCount = 1
-                
-            default:
-                serverMissionType = "MATH"
-            }
+        case "계산":
+            serverMissionType = "MATH"
+            questionCount = 1 // 기본값 (나중에 UI에서 설정 가능하게 변경 필요)
             
-            print("📤 미션 변환: \(self.missionType) -> \(serverMissionType)")
-
-            let missionSetting: [String: Any] = [
-                "missionType": serverMissionType,
-                "difficulty": "EASY", // 일단 EASY 고정
-                "walkGoalMeter": walkGoalMeter,
-                "questionCount": questionCount
-            ]
+        case "받아쓰기":
+            serverMissionType = "TYPING"
+            questionCount = 1
+            
+        case "운동":
+            serverMissionType = "WALK"
+            walkGoalMeter = 50 // 기본 50걸음
+            
+        case "OX", "퀴즈", "시사":
+            serverMissionType = "OX_QUIZ"
+            questionCount = 1
+            
+        default:
+            serverMissionType = "MATH"
+        }
+        if (serverMissionType == "OX_QUIZ" || serverMissionType == "TYPING") && serverDifficulty == "HARD" {
+            print("⚠️ [Warning] \(serverMissionType)는 HARD 난이도가 없어 MEDIUM으로 하향 조정합니다.")
+            serverDifficulty = "MEDIUM"
+        }
+        
+        print("📤 미션 변환: \(self.missionType) -> \(serverMissionType)")
+        
+        let missionSetting: [String: Any] = [
+            "missionType": serverMissionType,
+            "difficulty": serverDifficulty,
+            "walkGoalMeter": walkGoalMeter,
+            "questionCount": questionCount
+        ]
         
         // 2. 스누즈 설정
         let snoozeSetting: [String: Any] = [
@@ -300,17 +318,17 @@ extension Alarm {
         ]
     }
     static func convertRepeatDaysToInt(_ days: [String]) -> [Int] {
-            let dayMap: [String: Int] = [
-                "SUN": 0, "MON": 1, "TUE": 2, "WED": 3, "THU": 4, "FRI": 5, "SAT": 6
-            ]
-            return days.compactMap { dayMap[$0] }.sorted()
-        }
-        
-        static func convertRepeatDaysToString(_ days: [Int]) -> [String] {
-            let dayMap: [Int: String] = [
-                0: "SUN", 1: "MON", 2: "TUE", 3: "WED", 4: "THU", 5: "FRI", 6: "SAT"
-            ]
-            return days.sorted().compactMap { dayMap[$0] }
-        }
+        let dayMap: [String: Int] = [
+            "SUN": 0, "MON": 1, "TUE": 2, "WED": 3, "THU": 4, "FRI": 5, "SAT": 6
+        ]
+        return days.compactMap { dayMap[$0] }.sorted()
+    }
+    
+    static func convertRepeatDaysToString(_ days: [Int]) -> [String] {
+        let dayMap: [Int: String] = [
+            0: "SUN", 1: "MON", 2: "TUE", 3: "WED", 4: "THU", 5: "FRI", 6: "SAT"
+        ]
+        return days.sorted().compactMap { dayMap[$0] }
+    }
     
 }
