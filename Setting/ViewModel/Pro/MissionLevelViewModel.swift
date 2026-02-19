@@ -15,7 +15,7 @@ class MissionLevelViewModel {
     private let provider = MoyaProvider<SettingTarget>()
     
     // MARK: - Properties
-    var selectedLevel: String = "MEDIUM" // UI 반영용 (기본값)
+    var selectedLevel: String = UserDefaults.standard.string(forKey: "MISSION_DIFFICULTY") ?? "MEDIUM"
     
     // UserDefaults 초기화 (앱 켤 때 저장된 값 불러오기)
     // 관례상 변수명은 소문자로 시작 (SmartBriefingEnabled -> smartBriefingEnabled)
@@ -50,10 +50,14 @@ class MissionLevelViewModel {
         let oldLevel = self.selectedLevel
         
         print("⏳ 난이도 변경 요청 중... (\(oldLevel) ➡️ \(level))")
-
+        
         // Optimistic UI 적용 (먼저 UI를 바꿈)
         self.selectedLevel = level
-
+        
+        // ✅ [추가] 변경된 난이도를 로컬에 영구 저장 (AlarmDTO에서 갖다 쓰기 위함)
+        UserDefaults.standard.set(level, forKey: "MISSION_DIFFICULTY")
+        print("💾 로컬 난이도 저장 완료: \(level)")
+        
         provider.request(.updateMissionLevel(level: level)) { [weak self] result in
             switch result {
             case .success(let response):
