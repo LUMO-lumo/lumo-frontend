@@ -10,6 +10,7 @@ import SwiftUI
 
 struct BackgroundSelectView: View {
     @Environment(OnboardingViewModel.self) var viewModel
+    @Environment(\.colorScheme) var scheme
     @Binding var currentPage: Int
     
     let columns = [
@@ -28,6 +29,7 @@ struct BackgroundSelectView: View {
                 
                 Text("하루의 시작을 밝혀 줄\n알람 배경을 선택해주세요.")
                     .font(.Subtitle1)
+                    .foregroundStyle(scheme == .dark ? .white : .black)
                 
                 Spacer() .frame(height: 45)
             }
@@ -40,7 +42,8 @@ struct BackgroundSelectView: View {
                         matching: .images
                     ) {
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.white)
+                            // 다크모드: 어두운 배경, 라이트모드: 흰색
+                            .fill(scheme == .dark ? Color.gray800 : Color.white)
                             .aspectRatio(168.0/230.0, contentMode: .fit)
                             .overlay(
                                 VStack(spacing: 4) {
@@ -49,11 +52,11 @@ struct BackgroundSelectView: View {
                                     Text("앨범에서 선택하기")
                                         .font(body3)
                                 }
-                                    .foregroundStyle(Color.black)
+                                    .foregroundStyle(scheme == .dark ? .white : .black)
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color(gray), lineWidth: 2)
+                                    .stroke(scheme == .dark ? Color.gray600 : gray, lineWidth: 2)
                             )
                     }
                     
@@ -77,7 +80,7 @@ struct BackgroundSelectView: View {
                         let remainingSlots = 3 - viewModel.selectedImages.count
                         ForEach(0..<remainingSlots, id: \.self) { _ in
                             Rectangle()
-                                .fill(Color(hex: "D9D9D9"))
+                                .fill(scheme == .dark ? Color.gray800 : Color(hex: "D9D9D9"))
                                 .aspectRatio(168.0/230.0, contentMode: .fit)
                                 .cornerRadius(12)
                         }

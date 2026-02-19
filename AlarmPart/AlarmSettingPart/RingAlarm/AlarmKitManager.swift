@@ -62,9 +62,10 @@ final class AlarmKitManager: NSObject, ObservableObject {
         setupNotifications()
         setupAudioSessionForAlarm()
         
-        _Concurrency.Task {
-            try? await AlarmManager.shared.requestAuthorization()
-        }
+        // ⚠️ [수정] 앱 시작 시 자동 요청 제거
+        // 여기 있던 AlarmManager.shared.requestAuthorization()는
+        // 사용자가 알림 권한을 허용한 뒤에(또는 필요할 때) 호출하도록 미뤄야 할 수도 있습니다.
+        // 우선 알림 센터 설정만 초기화하고 팝업은 띄우지 않습니다.
     }
     
     // MARK: - 초기 설정
@@ -85,7 +86,22 @@ final class AlarmKitManager: NSObject, ObservableObject {
         )
         
         UNUserNotificationCenter.current().setNotificationCategories([alarmCategory])
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
+        
+        // ⚠️ [수정] 앱 실행 시점에 무조건 권한 요청하던 코드 삭제
+        // UNUserNotificationCenter.current().requestAuthorization... (삭제됨)
+    }
+    
+    // ✅ [추가] 온보딩 뷰에서 명시적으로 호출할 권한 요청 함수
+    func requestNotificationAuthorization() async -> Bool {
+        do {
+            let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+            // AlarmKit 권한도 이때 같이 요청
+            try? await AlarmManager.shared.requestAuthorization()
+            return granted
+        } catch {
+            print("❌ 권한 요청 오류: \(error)")
+            return false
+        }
     }
     
     private func setupAudioSessionForAlarm() {

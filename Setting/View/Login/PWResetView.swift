@@ -13,55 +13,62 @@ struct PWResetView: View {
     @StateObject private var viewModel = PasswordResetViewModel()
     
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) var scheme // 다크 모드 감지
     @Binding var isTabBarHidden: Bool
     
     var body: some View {
-        VStack {
-            // 1. 상단 네비게이션 (뒤로가기/닫기)
-            HStack {
-                Button(action: {
-                    handleBackButton()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 20))
-                        .foregroundStyle(Color.black)
-                }
-                Spacer()
-            }
-            .padding(.bottom, 20)
+        ZStack {
+            // 배경색 설정
+            (scheme == .dark ? Color.black : Color.white)
+                .ignoresSafeArea()
             
-            // 2. 단계별 화면 교체 (Switch-Case)
-            switch viewModel.step {
-            case .inputEmail:
-                inputEmailView
+            VStack {
+                // 1. 상단 네비게이션 (뒤로가기/닫기)
+                HStack {
+                    Button(action: {
+                        handleBackButton()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 20))
+                            .foregroundStyle(scheme == .dark ? .white : .black)
+                    }
+                    Spacer()
+                }
+                .padding(.bottom, 20)
                 
-            case .verification:
-                verificationView
-                
-            case .resetPassword:
-                resetPasswordView
+                // 2. 단계별 화면 교체 (Switch-Case)
+                switch viewModel.step {
+                case .inputEmail:
+                    inputEmailView
+                    
+                case .verification:
+                    verificationView
+                    
+                case .resetPassword:
+                    resetPasswordView
+                }
             }
-        }
-        .padding(.horizontal, 24)
-        .navigationBarHidden(true)
-        .onAppear {
-            isTabBarHidden = true
-        }
-        // 공통 알림창
-        .alert("알림", isPresented: $viewModel.showAlert) {
-            Button("확인", role: .cancel) { }
-        } message: {
-            Text(viewModel.errorMessage ?? "잠시 후 다시 시도해주세요.")
-        }
-        // 로딩 처리
-        .disabled(viewModel.isLoading)
-        .overlay {
-            if viewModel.isLoading {
-                ZStack {
-                    Color.black.opacity(0.4).ignoresSafeArea()
-                    ProgressView()
-                        .tint(.white)
-                        .scaleEffect(1.5)
+            .padding(.horizontal, 24)
+            .navigationBarHidden(true)
+            .onAppear {
+                isTabBarHidden = true
+            }
+            // 공통 알림창
+            .alert("알림", isPresented: $viewModel.showAlert) {
+                Button("확인", role: .cancel) { }
+            } message: {
+                Text(viewModel.errorMessage ?? "잠시 후 다시 시도해주세요.")
+            }
+            // 로딩 처리
+            .disabled(viewModel.isLoading)
+            .overlay {
+                if viewModel.isLoading {
+                    ZStack {
+                        Color.black.opacity(0.4).ignoresSafeArea()
+                        ProgressView()
+                            .tint(.white)
+                            .scaleEffect(1.5)
+                    }
                 }
             }
         }
@@ -86,10 +93,12 @@ struct PWResetView: View {
             Text("비밀번호 찾기")
                 .lineSpacing(14)
                 .font(.Headline2)
+                .foregroundStyle(scheme == .dark ? .white : .black)
                 .padding(.bottom, 4)
             
             Text("비밀번호를 재설정하실 이메일을 입력해주세요")
                 .font(.Body1)
+                .foregroundStyle(scheme == .dark ? .white : .black)
                 .padding(.bottom, 36)
             
             // 이메일 입력 필드
@@ -97,14 +106,15 @@ struct PWResetView: View {
                 if viewModel.email.isEmpty {
                     Text("이메일")
                         .font(.Subtitle3)
-                        .foregroundStyle(Color.gray700)
+                        // 다크 모드에서는 gray700이 잘 안보이므로 밝게 처리
+                        .foregroundStyle(scheme == .dark ? Color.gray300 : Color.gray700)
                         .padding(.horizontal, 18)
                         .padding(.vertical)
                 }
                 
                 TextField("", text: $viewModel.email)
                     .font(.Subtitle3)
-                    .foregroundStyle(Color.primary)
+                    .foregroundStyle(scheme == .dark ? .white : .primary)
                     .padding(.horizontal, 18)
                     .padding(.vertical)
                     .keyboardType(.emailAddress)
@@ -154,24 +164,26 @@ struct PWResetView: View {
         VStack(alignment: .leading) {
             Text("이메일 인증")
                 .font(.Headline2)
+                .foregroundStyle(scheme == .dark ? .white : .black)
                 .padding(.bottom, 4)
             
             Text("메일로 발송된 인증번호를 입력해주세요")
                 .font(.Body1)
+                .foregroundStyle(scheme == .dark ? .white : .black)
                 .padding(.bottom, 36)
             
             ZStack(alignment: .leading) {
                 if viewModel.authCode.isEmpty {
                     Text("인증번호")
                         .font(.Subtitle3)
-                        .foregroundStyle(Color.gray700)
+                        .foregroundStyle(scheme == .dark ? Color.gray300 : Color.gray700)
                         .padding(.horizontal, 18)
                         .padding(.vertical)
                 }
                 
                 TextField("", text: $viewModel.authCode)
                     .font(.Subtitle3)
-                    .foregroundStyle(Color.primary)
+                    .foregroundStyle(scheme == .dark ? .white : .primary)
                     .padding(.horizontal, 18)
                     .padding(.vertical)
                     .keyboardType(.default)
@@ -192,7 +204,7 @@ struct PWResetView: View {
                 }) {
                     Text("인증번호 재전송")
                         .font(.pretendardSemiBold10)
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(scheme == .dark ? .white : .black)
                         .underline()
                 }
                 Spacer()
@@ -229,10 +241,12 @@ struct PWResetView: View {
         VStack(alignment: .leading) {
             Text("비밀번호 재설정")
                 .font(.Headline2)
+                .foregroundStyle(scheme == .dark ? .white : .black)
                 .padding(.bottom, 4)
             
             Text("변경하실 비밀번호를 입력해주세요")
                 .font(.Body1)
+                .foregroundStyle(scheme == .dark ? .white : .black)
                 .padding(.bottom, 36)
             
             // 새 비밀번호
@@ -240,14 +254,14 @@ struct PWResetView: View {
                 if viewModel.newPassword.isEmpty {
                     Text("새 비밀번호")
                         .font(.Subtitle3)
-                        .foregroundStyle(Color.gray700)
+                        .foregroundStyle(scheme == .dark ? Color.gray300 : Color.gray700)
                         .padding(.horizontal, 18)
                         .padding(.vertical)
                 }
                 
                 SecureField("", text: $viewModel.newPassword)
                     .font(.Subtitle3)
-                    .foregroundStyle(Color.primary)
+                    .foregroundStyle(scheme == .dark ? .white : .primary)
                     .padding(.horizontal, 18)
                     .padding(.vertical)
             }
@@ -263,14 +277,14 @@ struct PWResetView: View {
                 if viewModel.confirmPassword.isEmpty {
                     Text("비밀번호 확인")
                         .font(.Subtitle3)
-                        .foregroundStyle(Color.gray700)
+                        .foregroundStyle(scheme == .dark ? Color.gray300 : Color.gray700)
                         .padding(.horizontal, 18)
                         .padding(.vertical)
                 }
                 
                 SecureField("", text: $viewModel.confirmPassword)
                     .font(.Subtitle3)
-                    .foregroundStyle(Color.primary)
+                    .foregroundStyle(scheme == .dark ? .white : .primary)
                     .padding(.horizontal, 18)
                     .padding(.vertical)
             }
