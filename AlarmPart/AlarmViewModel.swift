@@ -138,14 +138,34 @@ class AlarmViewModel: ObservableObject {
                     serverMissionType = "MATH"
                 }
                 
+                let savedDifficulty = UserDefaults.standard.string(forKey: "MISSION_DIFFICULTY") ?? "MEDIUM"
+                
+                var serverDifficulty = "NORMAL"
+                
+                switch savedDifficulty {
+                case "LOW":
+                    serverDifficulty = "EASY"
+                case "MEDIUM":
+                    serverDifficulty = "MEDIUM"
+                case "HIGH":
+                    serverDifficulty = "HARD"
+                default:
+                    serverDifficulty = "MEDIUM"
+                }
+                
+                if (serverMissionType == "OX_QUIZ" || serverMissionType == "TYPING") && serverDifficulty == "HARD" {
+                    serverDifficulty = "MEDIUM"
+                }
+                
+                
                 let missionParams: [String: Any] = [
                     "missionType": serverMissionType,
-                    "difficulty": "EASY",
+                    "difficulty": serverDifficulty,
                     "walkGoalMeter": walkGoalMeter,
                     "questionCount": questionCount
                 ]
                 
-                print("📡 [Server] 미션 변경 요청: \(serverMissionType)")
+                print("📡 [Server] 미션 변경 요청: \(serverMissionType) (난이도: \(savedDifficulty))")
                 
                 AlarmService.shared.updateMissionSettings(alarmId: serverId, params: missionParams) { result in
                     switch result {
@@ -204,6 +224,11 @@ class AlarmViewModel: ObservableObject {
     // MARK: - Helper Methods
     private func syncAlarmKit(alarms: [Alarm]) async {
         print("🔄 [System] 시스템 알람 일괄 동기화")
+        
+        // 서버에서 다시 받아와서 UUID가 바뀌기 전에, 옛날에 예약된 모든 알림을 완전히 지워버립니다.
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        
         for alarm in alarms where alarm.isEnabled {
             try? await AlarmKitManager.shared.scheduleAlarm(from: alarm)
         }
