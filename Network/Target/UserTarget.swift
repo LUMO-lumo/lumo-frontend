@@ -33,7 +33,7 @@ enum UserTarget {
     case changePassword(request: ChangePasswordRequest)
 }
 
-extension UserTarget: @MainActor APITargetType {
+extension UserTarget: @MainActor APITarget{
     
     
     // 각 API의 경로

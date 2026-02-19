@@ -18,7 +18,7 @@ enum SettingTarget {
 }
 
 // ✅ [수정 1] @MainActor 추가: 메인 스레드 격리 문제 해결
-extension SettingTarget: @MainActor APITargetType {
+extension SettingTarget: @MainActor APITarget{
     
     var path: String { return "/api/setting" }
     

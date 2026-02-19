@@ -1,70 +1,27 @@
 //
-//  AlarmCreating.swift
+//  AlarmChange.swift
 //  LUMO_MainDev
 //
 //  Created by 육도연 on 1/27/26.
 //
 
-import Moya
-import Combine
 import SwiftUI
 import Foundation
-import UserNotifications
+import Combine
 import AlarmKit
-
-// MARK: - ViewModel
-class AlarmCreateViewModel: ObservableObject {
-    @Published var alarmTitle: String = ""
-    @Published var selectedMission: String = "수학문제"
-    @Published var selectedDays: Set<Int> = []
-    @Published var selectedTime: Date = Date()
-    @Published var isSoundOn: Bool = true
-    
-    // [연동] 사운드 저장 변수
-    @Published var alarmSound: String = "기본음"
-    
-    func createNewAlarm() -> Alarm {
-        let mappedDays = selectedDays.map { ($0 + 1) % 7 }.sorted()
-        let mType: String
-        switch selectedMission {
-        case "수학문제": mType = "계산"
-        case "따라쓰기": mType = "받아쓰기"
-        case "거리미션": mType = "운동"
-        case "OX 퀴즈": mType = "OX"
-        default: mType = "계산"
-        }
-        
-        // [추가됨] soundName 저장
-        return Alarm(
-            time: selectedTime,
-            label: alarmTitle.isEmpty ? "새 알람" : alarmTitle,
-            isEnabled: isSoundOn,
-            repeatDays: mappedDays,
-            missionTitle: selectedMission,
-            missionType: mType,
-            soundName: alarmSound
-        )
-    }
-    
-    // ✅ [수정] 뷰모델에서 직접 API 호출하는 로직 제거
-    // API 호출은 AlarmMenuView -> AlarmViewModel.addAlarm()에서 처리합니다.
-}
+import Moya
 
 // MARK: - View
-struct AlarmCreate: View {
+struct AlarmChangeView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = AlarmCreateViewModel()
+    @StateObject private var viewModel: AlarmChangeViewModel
     
-    var onCreate: ((Alarm) -> Void)?
+    var onSave: ((Alarm) -> Void)?
     
-    let missions = [
-        ("수학문제", "MathMission"),
-        ("OX 퀴즈", "OXMission"),
-        ("따라쓰기", "WriteMission"),
-        ("거리미션", "DestMission")
-    ]
-    
-    let days = ["월", "화", "수", "목", "금", "토", "일"]
+    init(alarm: Alarm? = nil, onSave: ((Alarm) -> Void)? = nil) {
+        _viewModel = StateObject(wrappedValue: AlarmChangeViewModel(alarm: alarm))
+        self.onSave = onSave
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -75,7 +32,7 @@ struct AlarmCreate: View {
                         .foregroundStyle(.gray)
                 }
                 Spacer()
-                Text("알람 생성")
+                Text("알람 수정")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                 Spacer()
@@ -110,13 +67,13 @@ struct AlarmCreate: View {
                             .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                             .padding(.horizontal, 20)
                         HStack(spacing: 15) {
-                            ForEach(missions, id: \.0) { mission in
-                                CreateMissionButton(
-                                    title: mission.0,
-                                    imageName: mission.1,
-                                    isSelected: viewModel.selectedMission == mission.0
+                            ForEach(AlarmChangeModel.missions, id: \.0) { mission in
+                                MissionButton(
+                                    title: mission.title,
+                                    imageName: mission.imageName,
+                                    isSelected: viewModel.selectedMission == mission.title
                                 ) {
-                                    viewModel.selectedMission = mission.0
+                                    viewModel.selectedMission = mission.title
                                 }
                                 Spacer()
                             }
@@ -130,9 +87,9 @@ struct AlarmCreate: View {
                             .foregroundStyle(Color.primary) // ✅ 다크모드 대응
                             .padding(.horizontal, 20)
                         HStack(spacing: 0) {
-                            ForEach(0..<7) { index in
-                                CreateDayButton(
-                                    text: days[index],
+                            ForEach(0..<AlarmChangeModel.days.count, id: \.self) { index in
+                                DayButton(
+                                    text: AlarmChangeModel.days[index],
                                     isSelected: viewModel.selectedDays.contains(index)
                                 ) {
                                     if viewModel.selectedDays.contains(index) {
@@ -154,7 +111,7 @@ struct AlarmCreate: View {
                             .padding(.horizontal, 20)
                         
                         ZStack {
-                            Color(uiColor: .secondarySystemGroupedBackground) // ✅ 다크모드 대응
+                            Color(uiColor: .secondarySystemGroupedBackground) // ✅ 다크모드 대응 (Card like bg)
                                 .cornerRadius(20)
                             
                             DatePicker("", selection: $viewModel.selectedTime, displayedComponents: .hourAndMinute)
@@ -178,9 +135,10 @@ struct AlarmCreate: View {
                                 .foregroundStyle(.gray)
                         }
                         .padding(.vertical, 15)
+                        
                         Divider()
                         
-                        // [연결] SoundSettingView로 이동 (Binding 전달)
+                        // ✅ [수정 완료] NavigationLink로 감싸서 클릭 시 SoundSettingView로 이동하도록 수정
                         NavigationLink(destination: SoundSettingView(alarmSound: $viewModel.alarmSound)) {
                             HStack {
                                 Text("사운드")
@@ -201,16 +159,17 @@ struct AlarmCreate: View {
                     }
                     .padding(.horizontal, 20)
                     
+                    // [수정 핵심] 로컬 알람 업데이트 제거 (서버 성공 후 처리하도록 변경)
                     Button(action: {
-                        // ✅ [수정] 오프라인 퍼스트 적용
-                        // 1. 로컬 객체를 즉시 생성하여 onCreate 호출
-                        let newAlarm = viewModel.createNewAlarm()
-                        onCreate?(newAlarm)
+                        let updatedAlarm = viewModel.getUpdatedAlarm()
                         
-                        // 2. 창을 즉시 닫음 (서버 통신은 백그라운드에서 AlarmViewModel이 처리)
+                        // 🚨 [수정] 여기서 직접 AlarmKitManager를 호출하지 않습니다.
+                        // 부모 뷰(AlarmMenuView)의 onUpdate가 서버 통신 성공 후 로컬 알람을 갱신합니다.
+                        
+                        onSave?(updatedAlarm)
                         dismiss()
                     }) {
-                        Text("생성하기")
+                        Text("설정하기")
                             .font(.system(size: 18, weight: .bold))
                             .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
@@ -227,52 +186,55 @@ struct AlarmCreate: View {
         }
         .navigationBarHidden(true)
         .background(Color(uiColor: .systemBackground)) // ✅ 다크모드 대응
+        .onAppear {
+            viewModel.requestNotificationPermission()
+        }
     }
-}
-
-private struct CreateMissionButton: View {
-    let title: String
-    let imageName: String
-    let isSelected: Bool
-    let action: () -> Void
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 8) {
-                ZStack {
-                    Circle()
-                        .fill(isSelected ? Color(hex: "FF8C68").opacity(0.1) : Color.gray.opacity(0.1))
-                        .frame(width: 50, height: 50)
-                    Image(imageName)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 30, height: 30)
-                        .opacity(isSelected ? 1.0 : 0.4)
+    
+    struct MissionButton: View {
+        let title: String
+        let imageName: String
+        let isSelected: Bool
+        let action: () -> Void
+        var body: some View {
+            Button(action: action) {
+                VStack(spacing: 8) {
+                    ZStack {
+                        Circle()
+                            .fill(isSelected ? Color(hex: "FF8C68").opacity(0.1) : Color.gray.opacity(0.1))
+                            .frame(width: 50, height: 50)
+                        Image(imageName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 30, height: 30)
+                            .opacity(isSelected ? 1.0 : 0.4)
+                    }
+                    Text(title)
+                        .font(.system(size: 12))
+                        .foregroundStyle(isSelected ? Color.primary : .gray) // ✅ 다크모드 대응 (선택시 primary)
                 }
-                Text(title)
-                    .font(.system(size: 12))
-                    .foregroundStyle(isSelected ? Color.primary : .gray) // ✅ 다크모드 대응
+            }
+        }
+    }
+    
+    struct DayButton: View {
+        let text: String
+        let isSelected: Bool
+        let action: () -> Void
+        var body: some View {
+            Button(action: action) {
+                Text(text)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(isSelected ? .white : .gray)
+                    .frame(width: 36, height: 36)
+
+                    // ✅ 다크모드 대응: 비활성 배경을 시스템 컬러로
+                    .background(isSelected ? Color(hex: "F55641") : Color(uiColor: .secondarySystemBackground))
+                    .clipShape(Circle())
             }
         }
     }
 }
-
-private struct CreateDayButton: View {
-    let text: String
-    let isSelected: Bool
-    let action: () -> Void
-    var body: some View {
-        Button(action: action) {
-            Text(text)
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(isSelected ? .white : .gray)
-                .frame(width: 36, height: 36)
-                // ✅ 다크모드 대응
-                .background(isSelected ? Color(hex: "F55641") : Color(uiColor: .secondarySystemBackground))
-                .clipShape(Circle())
-        }
-    }
-}
-
 #Preview {
-    AlarmCreate()
+    AlarmChangeView(alarm: Alarm.dummyData[0])
 }

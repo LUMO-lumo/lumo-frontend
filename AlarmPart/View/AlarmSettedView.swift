@@ -112,7 +112,7 @@ struct AlarmSettedView: View {
                     
                     Spacer()
                     
-                    NavigationLink(destination: AlarmChange(alarm: alarm, onSave: { updatedAlarm in
+                    NavigationLink(destination: AlarmChangeView(alarm: alarm, onSave: { updatedAlarm in
                         self.alarm = updatedAlarm
                         firstupdateAlarmOnServer()
                     })) {

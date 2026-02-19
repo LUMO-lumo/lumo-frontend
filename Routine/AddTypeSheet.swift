@@ -47,3 +47,10 @@ struct AddTypeSheet: View {
         .background(Color.white)
     }
 }
+
+#Preview {
+    @Previewable @State var isPresented = true
+    let container = try! ModelContainer(for: RoutineType.self, RoutineTask.self)
+    let viewModel = RoutineViewModel(modelContext: container.mainContext)
+    AddTypeSheet(viewModel: viewModel, isPresented: $isPresented)
+}

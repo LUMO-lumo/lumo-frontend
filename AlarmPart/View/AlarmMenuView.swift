@@ -76,7 +76,7 @@ struct AlarmMenuView: View {
                 }
                 
                 // 알람 생성 버튼
-                NavigationLink(destination: AlarmCreate(onCreate: { newAlarm in
+                NavigationLink(destination: AlarmCreateView(onCreate: { newAlarm in
                     // 생성 시 에러 방지를 위한 딜레이 추가
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         withAnimation {
