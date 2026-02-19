@@ -25,16 +25,15 @@ class HomeViewModel: ObservableObject {
     }()
     
     // MARK: - Published Properties
-    // 현재 UI(상세 설정창 등)에서 보여주고 있는 "특정 날짜"의 할 일 목록
     @Published var tasks: [Task] = []
-    
-    // 홈 화면에서 항상 고정으로 보여줄 "오늘" 날짜의 할 일 목록
     @Published var todayTasksList: [Task] = []
-    
     @Published var missionStat: MissionStat = MissionStat(consecutiveDays: 0, monthlyAchievementRate: 0)
     @Published var dailyQuote: String = "오늘도 힘찬 하루 보내세요!"
     @Published var briefingText: String? = nil
     @Published var errorMessage: String? = nil
+    
+    // 브리핑 중복 실행 방지 플래그
+    private var isBriefingInProgress = false
     
     init() {
         loadAllData()
@@ -43,14 +42,12 @@ class HomeViewModel: ObservableObject {
     // MARK: - Data Loading
     func loadAllData() {
         let today = Date()
-        // 1. 초기 로드 시 오늘 데이터와 홈 정보를 가져옴
         refreshData(for: today)
         if tokenCheckClient.isLoggedIn {
             fetchHomeInfo()
         }
     }
     
-    // 특정 날짜의 데이터를 로드하고 서버와 동기화 (달력에서 날짜 변경 시 호출)
     func loadTasksForSpecificDate(date: Date) {
         refreshData(for: date)
         if tokenCheckClient.isLoggedIn {
@@ -58,46 +55,43 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    // 로컬 데이터를 즉시 반영하고, 날짜에 따라 적절한 리스트를 업데이트
     private func refreshData(for date: Date) {
         let entities = localService.fetchTodos(date: date)
         let mappedTasks = entities.map { $0.toTask() }
         
-        // 현재 뷰(달력 상세 등)에서 보고 있는 리스트 업데이트
         self.tasks = mappedTasks
         
-        // 홈 화면을 위한 "오늘" 리스트는 별도로 관리 (날짜가 오늘일 때만 혹은 강제 동기화)
         let today = Date()
         if Calendar.current.isDate(date, inSameDayAs: today) {
             self.todayTasksList = mappedTasks
         } else {
-            // 다른 날짜를 보고 있더라도 홈 화면용 데이터는 로컬에서 오늘 것을 따로 가져와 유지
             let todayEntities = localService.fetchTodos(date: today)
             self.todayTasksList = todayEntities.map { $0.toTask() }
         }
-        
-        print("📂 [Local] \(date.description) 데이터 동기화 완료")
     }
     
-    private func fetchTodoListFromServer(date: Date) {
+    private func fetchTodoListFromServer(date: Date, completion: (() -> Void)? = nil) {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         let dateString = formatter.string(from: date)
         
         todoService.fetchTodoList(date: dateString) { [weak self] result in
-            guard let self = self else { return }
+            guard let self = self else {
+                completion?()
+                return
+            }
             if case .success(let dtos) = result {
                 self.localService.syncWithServerData(dtos: dtos, date: date)
                 self.refreshData(for: date)
+            } else {
+                print("⚠️ 서버 동기화 실패 (오프라인 모드 등)")
             }
+            completion?()
         }
     }
     
     private func fetchHomeInfo() {
-        // 1. 오늘 날짜를 "yyyy-MM-dd" 문자열로 변환
         let todayString = apiDateFormatter.string(from: Date())
-        
-        // 2. Service에 날짜 전달
         homeService.fetchHomeData(today: todayString) { [weak self] result in
             if case .success(let data) = result {
                 self?.dailyQuote = data.encouragement
@@ -105,14 +99,92 @@ class HomeViewModel: ObservableObject {
                     consecutiveDays: data.missionRecord.consecutiveSuccessCnt,
                     monthlyAchievementRate: Double(data.missionRecord.missionSuccessRate) / 100.0
                 )
-            } else if case .failure(let error) = result {
-                // 에러 로그 확인용
-                print("❌ 홈 데이터 로드 실패: \(error)")
             }
         }
     }
     
+    // MARK: - Briefing Logic
+    
+    /// 미션 완료 후 브리핑 실행 (자동 감지용)
+    func checkAndPlayBriefing() {
+        guard AlarmKitManager.shared.shouldPlayBriefing else { return }
+        executeBriefing(isAuto: true)
+    }
+    
+    /// 수동으로 브리핑 실행 (버튼 클릭 등 어느 화면에서든 호출 가능)
+    func playManualBriefing() {
+        executeBriefing(isAuto: false)
+    }
+    
+    private func executeBriefing(isAuto: Bool) {
+        // 중복 실행 방지
+        if isBriefingInProgress { return }
+        isBriefingInProgress = true
+        
+        print("🎙️ [Briefing] 브리핑 로직 시작 (Auto: \(isAuto))")
+        
+        let playBriefing = { [weak self] in
+            guard let self = self else { return }
+            
+            // 데이터 로드 완료 후 플래그 해제 (자동일 경우에만)
+            if isAuto {
+                AlarmKitManager.shared.shouldPlayBriefing = false
+            }
+            self.isBriefingInProgress = false
+            
+            let tasksToRead = self.todayTasksList.filter { !$0.isCompleted }
+            let count = tasksToRead.count
+            
+            var script = ""
+            
+            // 상황에 따른 멘트 분기
+            if isAuto {
+                script += "미션 성공을 축하합니다! "
+            } else {
+                script += "오늘의 할 일을 브리핑해드릴게요. "
+            }
+            
+            if count == 0 {
+                script += "오늘 등록된 할 일이 없습니다. 편안한 하루 보내세요."
+            } else {
+                script += "오늘 예정된 할 일은 총 \(count)개 입니다. "
+                for (index, task) in tasksToRead.prefix(5).enumerated() {
+                    let order = ["첫 번째", "두 번째", "세 번째", "네 번째", "다섯 번째"][index]
+                    script += "\(order), \(task.title). "
+                }
+                if count > 5 { script += "그 외 \(count - 5)개의 할 일이 더 있습니다." }
+                script += "오늘도 힘찬 하루 보내세요!"
+            }
+            
+            TTSManager.shared.play(script)
+        }
+        
+        // 서버 동기화 후 실행 (5초 타임아웃 적용)
+        if tokenCheckClient.isLoggedIn {
+            // 타임아웃을 위한 DispatchWorkItem (혹시 서버가 너무 느리면 로컬 데이터로 읽음)
+            var isFinished = false
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                if !isFinished {
+                    isFinished = true
+                    print("⚠️ 서버 응답 지연 -> 로컬 데이터로 브리핑 시작")
+                    playBriefing()
+                }
+            }
+            
+            fetchTodoListFromServer(date: Date()) {
+                if !isFinished {
+                    isFinished = true
+                    playBriefing()
+                }
+            }
+        } else {
+            playBriefing()
+        }
+    }
+    
     // MARK: - User Interactions
+    // (기존 코드 유지: addTask, deleteTask, updateTask, toggleTask 등)
     
     func addTask(title: String, date: Date) {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -135,7 +207,6 @@ class HomeViewModel: ObservableObject {
     }
     
     func deleteTask(id: UUID) {
-        // 어느 리스트에 있든 삭제를 위해 검색
         let allCurrentTasks = tasks + todayTasksList
         guard let task = allCurrentTasks.first(where: { $0.id == id }) else { return }
         let taskDate = task.date
@@ -166,7 +237,6 @@ class HomeViewModel: ObservableObject {
     
     func toggleTask(id: UUID) {
         localService.toggleTodo(id: id)
-        // 두 리스트 모두에서 상태를 즉시 반전 (UI 반응성)
         if let index = tasks.firstIndex(where: { $0.id == id }) {
             tasks[index].isCompleted.toggle()
         }

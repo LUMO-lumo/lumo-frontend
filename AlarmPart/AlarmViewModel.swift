@@ -91,18 +91,70 @@ class AlarmViewModel: ObservableObject {
     // MARK: - UPDATE (오프라인 퍼스트)
     func updateAlarm(_ updatedAlarm: Alarm) {
         DispatchQueue.main.async {
+            // 1. 로컬 데이터 및 AlarmKit 업데이트 (기존 코드 유지)
             if let index = self.alarms.firstIndex(where: { $0.id == updatedAlarm.id }) {
                 self.alarms[index] = updatedAlarm
                 self.saveAlarmsToLocal()
             }
             
-            // 🚨 [수정] _Concurrency.Task 사용
             _Concurrency.Task {
                 try? await AlarmKitManager.shared.scheduleAlarm(from: updatedAlarm)
             }
             
+            // 2. 서버 업데이트 (기본 정보 + 미션 정보)
             if let serverId = updatedAlarm.serverId, MainAPIClient<AlarmEndpoint>().isLoggedIn {
-                AlarmService.shared.updateAlarm(alarmId: serverId, params: updatedAlarm.toDictionary()) { _ in }
+                
+                print("📡 [Server] 알람 업데이트 요청: ID \(serverId)")
+                let params = updatedAlarm.toDictionary()
+                
+                // A. 기본 정보(시간, 요일, 라벨, 사운드 등) 수정
+                // ✅ [수정] 에러 확인을 위한 로그 추가
+                AlarmService.shared.updateAlarm(alarmId: serverId, params: params) { result in
+                    switch result {
+                    case .success(let dto):
+                        print("✅ [Server] 알람 기본 정보 수정 완료. 사운드: \(dto.soundType)")
+                    case .failure(let error):
+                        print("❌ [Server] 알람 기본 정보 수정 실패: \(error)")
+                    }
+                }
+                
+                // ✅ B. [추가] 미션 설정 수정 API 호출
+                // AlarmDTO.toDictionary 로직을 참고하여 미션 파라미터 생성
+                var serverMissionType = "MATH"
+                var walkGoalMeter = 0
+                var questionCount = 1
+                
+                switch updatedAlarm.missionType {
+                case "계산":
+                    serverMissionType = "MATH"
+                case "받아쓰기":
+                    serverMissionType = "TYPING"
+                case "운동":
+                    serverMissionType = "WALK"
+                    walkGoalMeter = 50 // 기본값 또는 알람 객체에 저장된 값 사용
+                case "OX":
+                    serverMissionType = "OX_QUIZ"
+                default:
+                    serverMissionType = "MATH"
+                }
+                
+                let missionParams: [String: Any] = [
+                    "missionType": serverMissionType,
+                    "difficulty": "EASY",
+                    "walkGoalMeter": walkGoalMeter,
+                    "questionCount": questionCount
+                ]
+                
+                print("📡 [Server] 미션 변경 요청: \(serverMissionType)")
+                
+                AlarmService.shared.updateMissionSettings(alarmId: serverId, params: missionParams) { result in
+                    switch result {
+                    case .success:
+                        print("✅ [Server] 미션 수정 완료")
+                    case .failure(let error):
+                        print("⚠️ [Server] 미션 수정 실패: \(error)")
+                    }
+                }
             }
         }
     }

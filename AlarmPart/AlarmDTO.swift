@@ -95,7 +95,7 @@ struct MissionContentDTO: Codable {
 struct MissionStartResponse: Codable {
     let code: String?
     let message: String?
-    let result: [MissionContentDTO] 
+    let result: [MissionContentDTO]
     let success: Bool?
 }
 
@@ -139,12 +139,57 @@ struct AlarmSoundDTO: Codable {
 
 // MARK: - Extensions (Mapping Logic)
 extension Alarm {
+    
+    // ✅ [추가] 사운드 이름(한글) <-> 파일명(영어) 매핑 딕셔너리
+    // SoundManager가 있지만 Model 내에서도 안전하게 변환하기 위해 정의
+    private static let soundMapping: [String: String] = [
+        "비명 소리": "scream14-6918",
+        "천둥 번개": "big-thunder-34626",
+        "개 짖는 소리": "big-dog-barking-112717",
+        "절규": "desperate-shout-106691",
+        "뱃고동": "traimory-mega-horn-angry-siren-f-cinematic-trailer-sound-effects-193408",
+        "평온한 멜로디": "calming-melody-loop-291840",
+        "섬의 아침": "the-island-clearing-216263",
+        "플루트 연주": "native-american-style-flute-music-324301",
+        "종소리": "calm-music-64526",
+        "소원": "i-wish-looping-tune-225553",
+        "환희의 록": "rock-of-joy-197159",
+        "황제": "emperor-197164",
+        "비트 앤 베이스": "basic-beats-and-bass-10791",
+        "침묵 속 노력": "work-hard-in-silence-spoken-201870",
+        "런어웨이": "runaway-loop-373063"
+    ]
+    
+    // ✅ 한글 이름 -> 파일명 (서버 전송용)
+    static func toServerSoundName(_ displayName: String) -> String {
+        return soundMapping[displayName] ?? "scream14-6918" // 기본값: 비명소리
+    }
+    
+    // ✅ 파일명 -> 한글 이름 (UI 표시용)
+    static func fromServerSoundName(_ fileName: String) -> String {
+        // 1. 정확한 매칭
+        if let key = soundMapping.first(where: { $0.value == fileName })?.key {
+            return key
+        }
+        
+        // 2. 확장자 제거 후 매칭 (서버가 .mp3 등을 붙여서 줄 경우 대비)
+        // 예: "scream14-6918.mp3" -> "scream14-6918"
+        let nameWithoutExt = fileName.components(separatedBy: ".").first ?? fileName
+        if let key = soundMapping.first(where: { $0.value == nameWithoutExt })?.key {
+            return key
+        }
+        
+        return "비명 소리"
+    }
+    
     init(from dto: AlarmDTO) {
         self.id = UUID() // 로컬용 UUID 생성
         self.serverId = dto.alarmId
         self.label = dto.label ?? ""
         self.isEnabled = dto.isEnabled
-        self.soundName = dto.soundType
+        
+        // ✅ [수정] 서버의 파일명(영어)을 한글 이름으로 변환하여 UI에 저장
+        self.soundName = Alarm.fromServerSoundName(dto.soundType)
         
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm" // 서버는 초 단위 없음
@@ -156,25 +201,29 @@ extension Alarm {
         // ⚠️ 주의: 현재는 서버에서 받아온 미션을 앱에 반영하는 로직이 없어서 'NONE'으로 고정되어 있습니다.
         // 추후 서버의 MissionSettingDTO를 해석해서 missionType을 설정하는 로직 추가가 필요합니다.
         if let settings = dto.missionSetting {
-                    // 1. 미션 타입 설정
-                    self.missionType = settings.missionType
-                    
-                    // 2. 미션 타이틀 생성 (서버 타입 -> 유저 친화적 텍스트)
                     switch settings.missionType {
                     case "MATH", "CALCULATION":
+                        self.missionType = "계산"
                         self.missionTitle = "수학 문제 풀기"
+                        
                     case "TYPING", "DICTATION":
+                        self.missionType = "받아쓰기"
                         self.missionTitle = "명언 따라쓰기"
-                    case "DISTANCE", "WALK":
+                        
+                    case "WALK", "DISTANCE":
+                        self.missionType = "운동"
                         let goal = settings.walkGoalMeter
                         self.missionTitle = "목표 거리 걷기 (\(goal)m)"
-                    case "OX", "QUIZ":
+                        
+                    case "OX", "OX_QUIZ", "QUIZ":
+                        self.missionType = "OX"
                         self.missionTitle = "시사 상식 퀴즈"
+                        
                     default:
-                        self.missionTitle = "미션 없음"
+                        self.missionType = "계산" // 기본값
+                        self.missionTitle = "수학 문제 풀기"
                     }
                 } else {
-                    // 설정이 없으면 기본값
                     self.missionType = "NONE"
                     self.missionTitle = "미션 없음"
                 }
@@ -229,8 +278,9 @@ extension Alarm {
         ]
         
         // 3. 사운드 이름 처리
-        let currentSound = self.soundName ?? "기본음"
-        let serverSoundType = (currentSound == "기본음" || currentSound.isEmpty) ? "scream14-6918" : currentSound
+        // ✅ [수정] 한글 이름(UI)을 파일명(Server)으로 변환
+        let currentDisplaySound = self.soundName ?? "기본음"
+        let serverSoundType = Alarm.toServerSoundName(currentDisplaySound)
         
         // 4. 요일 안전 처리
         let dayStrings = Alarm.convertRepeatDaysToString(self.repeatDays)
@@ -241,7 +291,7 @@ extension Alarm {
             "alarmTime": timeFormatter.string(from: self.time),
             "label": self.label.isEmpty ? "Alarm" : self.label,
             "isEnabled": self.isEnabled,
-            "soundType": serverSoundType,
+            "soundType": serverSoundType, // ✅ 중요: 파일명(영어)만 전송. soundId/soundName 등 불필요한 키 제거.
             "vibration": true,
             "volume": 100,
             "repeatDays": safeRepeatDays,

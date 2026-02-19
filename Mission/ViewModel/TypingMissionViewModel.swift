@@ -21,7 +21,7 @@ class TypingMissionViewModel: BaseMissionViewModel {
     
     // MARK: - Configuration
     // ⭐️ 이 값을 false로 바꾸면 API 모드로 작동합니다.
-    private let isMockMode: Bool = false
+    private var isMockMode: Bool
     
     // MARK: - UI Properties
     @Published var questionText: String = "문제를 불러오는 중..."
@@ -53,6 +53,10 @@ class TypingMissionViewModel: BaseMissionViewModel {
     // MARK: - Initialization
     init(alarmId: Int, alarmLabel: String) {
         self.alarmLabel = alarmLabel
+        
+        // ✅ [핵심] ID가 -1이면 테스트 모드(Mock)로 강제 설정
+        self.isMockMode = (alarmId == -1)
+        
         super.init(alarmId: alarmId)
     }
     
@@ -93,6 +97,8 @@ class TypingMissionViewModel: BaseMissionViewModel {
                 // 2. [실패] 서버 에러 발생 시 로컬 모드로 전환 (Graceful Degradation)
                 print("❌ [SERVER] 문제 로드 실패: \(error)")
                 print("⚠️ 서버 연결 실패로 인해 '로컬(Mock) 모드'로 전환합니다.")
+                
+                self.isMockMode = true
                 
                 // 3. 디버깅용: 서버 에러 메시지 확인 (MoyaError인 경우)
                 if let moyaError = error as? MoyaError, let response = moyaError.response {
@@ -157,27 +163,27 @@ class TypingMissionViewModel: BaseMissionViewModel {
             self.feedbackMessage = "잘했어요!"
             
             AsyncTask {
-                        try? await AsyncTask.sleep(nanoseconds: 1_500_000_000) // 1.5초 딜레이 (피드백 감상 시간)
-                        
-                        // UI 업데이트는 메인 스레드에서
-                        await MainActor.run {
-                            print("🏁 [ViewModel] 정답 확인! 미션 완료 처리합니다.")
-                            self.isMissionCompleted = true
-                        }
-                    }
-                    
-                } else {
-                    // ❌ 오답일 때
-                    self.feedbackMessage = "틀렸어요!"
-                    AsyncTask {
-                        try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
-                        
-                        await MainActor.run {
-                            self.showFeedback = false
-                            self.userAnswer = ""
-                        }
-                    }
+                try? await AsyncTask.sleep(nanoseconds: 1_500_000_000) // 1.5초 딜레이 (피드백 감상 시간)
+                
+                // UI 업데이트는 메인 스레드에서
+                await MainActor.run {
+                    print("🏁 [ViewModel] 정답 확인! 미션 완료 처리합니다.")
+                    self.isMissionCompleted = true
                 }
+            }
+            
+        } else {
+            // ❌ 오답일 때
+            self.feedbackMessage = "틀렸어요!"
+            AsyncTask {
+                try? await AsyncTask.sleep(nanoseconds: 1_500_000_000)
+                
+                await MainActor.run {
+                    self.showFeedback = false
+                    self.userAnswer = ""
+                }
+            }
+        }
     }
     
     // 에러 처리
@@ -217,7 +223,7 @@ class TypingMissionViewModel: BaseMissionViewModel {
         let cleanCorrect = localCorrectAnswer.trimmingCharacters(in: .whitespacesAndNewlines)
         
         let isCorrect = (cleanAnswer == cleanCorrect)
-
+        
         handleSubmissionResult(isCorrect: isCorrect)
     }
 }

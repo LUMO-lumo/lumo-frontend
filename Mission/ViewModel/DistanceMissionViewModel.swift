@@ -34,17 +34,21 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     // MARK: - Internal Properties (Location)
     private let locationManager = CLLocationManager()
     private var previousLocation: CLLocation? // 이전 위치 저장용
-
+    
     
     // MARK: - Mock Mode (테스트용)
-    private let isMockMode: Bool = false
+    private var isMockMode: Bool
     
     // MARK: - Initialization
     init(alarmId: Int, alarmLabel: String) {
         self.alarmLabel = alarmLabel
+        
+        // ✅ [핵심] ID가 -1이면 테스트 모드(Mock)로 강제 설정
+        self.isMockMode = (alarmId == -1)
+        
         super.init(alarmId: alarmId)
     }
-
+    
     // 위치 권한 및 설정
     private func setupLocationManager() {
         locationManager.delegate = self
@@ -111,6 +115,8 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
                 print("⚠️ [SERVER] 시작 실패: \(error)")
                 print("⚠️ 네트워크/서버 오류로 인해 기본 목표(20m)로 진행합니다.")
                 
+                self.isMockMode = true
+                
                 // 🚨 비상 착륙: 서버 연결 실패해도 GPS 미션은 진행
                 self.contentId = 888 // 로컬 처리를 위한 가상 ID
                 self.targetDistance = 50.0
@@ -139,10 +145,10 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         }
         
         let request = MissionSubmitRequest(
-                    contentId: contentId,
-                    userAnswer: String(format: "%.1f", currentDistance), // 현재 거리를 문자열로 전송
-                    attemptCount: attemptCount
-                )
+            contentId: contentId,
+            userAnswer: String(format: "%.1f", currentDistance), // 현재 거리를 문자열로 전송
+            attemptCount: attemptCount
+        )
         
         AsyncTask {
             do {
@@ -196,7 +202,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
     }
     
     // MARK: - CLLocationManagerDelegate
-
+    
     
     // 위치 업데이트 감지
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -230,7 +236,7 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
                     self.locationManager.stopUpdatingLocation()
                     
                     self.submit()
-
+                    
                 }
             }
         }
@@ -270,10 +276,10 @@ class DistanceMissionViewModel: BaseMissionViewModel, CLLocationManagerDelegate 
         AsyncTask {
             try? await AsyncTask.sleep(nanoseconds: 500_000_000)
             self.contentId = 888
-            self.targetDistance = 30.0
+            self.targetDistance = 20.0
             self.isLoading = false
             
-            self.simulateMockWalking()
+//            self.simulateMockWalking()
         }
     }
     
