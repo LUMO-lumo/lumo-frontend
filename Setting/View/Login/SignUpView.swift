@@ -14,6 +14,7 @@ struct SignUpView: View {
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.colorScheme) var scheme // 다크 모드 감지
     
     @Binding var isTabBarHidden: Bool
     
@@ -30,34 +31,40 @@ struct SignUpView: View {
     }
     
     var body: some View {
-        VStack {
-            if viewModel.step != .success {
-                HStack {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Image(systemName: "chevron.left")
-                            .foregroundStyle(Color.black)
-                    }
-                    Spacer()
-                }
-                .padding(.bottom, 20)
-            }
+        ZStack {
+            // 배경색 설정
+            (scheme == .dark ? Color.black : Color.white)
+                .ignoresSafeArea()
             
-            // 단계별 화면 전환
-            switch viewModel.step {
-            case .inputInfo:
-                inputInfoView
-            case .verification:
-                verificationView
-            case .success:
-                successView
+            VStack {
+                if viewModel.step != .success {
+                    HStack {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Image(systemName: "chevron.left")
+                                .foregroundStyle(scheme == .dark ? .white : .black)
+                        }
+                        Spacer()
+                    }
+                    .padding(.bottom, 20)
+                }
+                
+                // 단계별 화면 전환
+                switch viewModel.step {
+                case .inputInfo:
+                    inputInfoView
+                case .verification:
+                    verificationView
+                case .success:
+                    successView
+                }
             }
-        }
-        .padding(.horizontal, 24)
-        .navigationBarHidden(true) // 기본 네비게이션 바 숨김 (커스텀 사용)
-        .navigationDestination(isPresented: $navigateToProfile) {
-            ProfileSettingView(isTabBarHidden: $isTabBarHidden)
+            .padding(.horizontal, 24)
+            .navigationBarHidden(true) // 기본 네비게이션 바 숨김 (커스텀 사용)
+            .navigationDestination(isPresented: $navigateToProfile) {
+                ProfileSettingView(isTabBarHidden: $isTabBarHidden)
+            }
         }
     }
     
@@ -67,10 +74,12 @@ struct SignUpView: View {
         VStack(alignment: .leading) {
             Text("회원가입")
                 .font(.Headline2)
+                .foregroundStyle(scheme == .dark ? .white : .black)
                 .padding(.bottom, 4)
             
             Text("가입하실 이메일과 비밀번호를 입력해주세요")
                 .font(.Body1)
+                .foregroundStyle(scheme == .dark ? .white : .black)
                 .padding(.bottom, 36)
             
             // 입력 필드
@@ -84,6 +93,7 @@ struct SignUpView: View {
                     )
                     .keyboardType(.emailAddress)
                     .textInputAutocapitalization(.never)
+                    .foregroundStyle(scheme == .dark ? .white : .black)
                 
                 SecureField("비밀번호", text: $viewModel.password)
                     .padding()
@@ -92,6 +102,7 @@ struct SignUpView: View {
                         RoundedRectangle(cornerRadius: 8)
                             .strokeBorder(Color.gray300)
                     )
+                    .foregroundStyle(scheme == .dark ? .white : .black)
             }
             
             // 체크박스
@@ -147,10 +158,12 @@ struct SignUpView: View {
         VStack(alignment: .leading, spacing: 20) {
             Text("이메일 인증")
                 .font(.Headline2)
+                .foregroundStyle(scheme == .dark ? .white : .black)
                 .padding(.bottom, 4)
             
             Text("메일로 발송된 인증번호를 입력해주세요")
                 .font(.Body1)
+                .foregroundStyle(scheme == .dark ? .white : .black)
                 .padding(.bottom, 36)
             
             TextField("인증번호", text: $viewModel.verificationCode)
@@ -161,6 +174,7 @@ struct SignUpView: View {
                         .strokeBorder(Color.gray300)
                 )
                 .keyboardType(.default)
+                .foregroundStyle(scheme == .dark ? .white : .black)
             
             // 인증번호 재전송 버튼
             HStack {
@@ -171,7 +185,7 @@ struct SignUpView: View {
                     }
                 }
                 .font(.pretendardSemiBold10)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(scheme == .dark ? .white : .black)
                 .underline()
                 
                 Spacer()
@@ -226,6 +240,7 @@ struct SignUpView: View {
                 
                 Text("가입을 완료했어요")
                     .font(.Headline1)
+                    .foregroundStyle(scheme == .dark ? .white : .black)
             }
             
             Spacer()

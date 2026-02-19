@@ -16,160 +16,175 @@ struct LoginView: View {
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.colorScheme) var scheme // 다크 모드 감지
     
     @Binding var isTabBarHidden: Bool
     
     var body: some View {
         NavigationStack {
-            VStack {
-                // 1. 상단 네비게이션 (뒤로가기)
-                HStack {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 20))
-                            .foregroundStyle(.black)
-                    }
-                    
-                    Spacer()
-                }
-                .padding(.bottom, 20)
+            ZStack {
+                // 배경색 설정
+                (scheme == .dark ? Color.black : Color.white)
+                    .ignoresSafeArea()
                 
-                // 2. 로고 영역
-                VStack(spacing: 10) {
-                    Image("Logo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 98, height: 98)
-                    
-                    Text("LUMO")
-                        .font(.Headline1)
-                    
-                    VStack(spacing: 3) {
-                        Text("확실하게 깨워주는 진짜 알람")
-                            .font(.Subtitle1)
-                        
-                        Text("아무리 피곤하고 지쳐도 개운하게")
-                            .font(.Body1)
-                            .opacity(0.4)
-                    }
-                    .padding(.top, 10)
-                }
-                .padding(.top, 20)
-                
-                Spacer()
-                
-                // 3. 입력 필드
-                VStack(spacing: 10) {
-                    TextField("이메일", text: $viewModel.email)
-                        .padding()
-                        .frame(height: 52)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder(
-                                    Color.gray300,
-                                    lineWidth: 1
-                                )
-                        )
-                        .textInputAutocapitalization(.never)
-                        .keyboardType(.emailAddress)
-                    
-                    SecureField("비밀번호", text: $viewModel.password)
-                        .padding()
-                        .frame(height: 52)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder(
-                                    Color.gray300,
-                                    lineWidth: 1
-                                )
-                        )
-                }
-                
-                // 4. 체크박스 & 에러 메시지
-                HStack(alignment: .center, spacing: 12) {
-                    CheckboxButton(
-                        title: "자동로그인",
-                        isChecked: $viewModel.isAutoLogin
-                    )
-                    
-                    CheckboxButton(
-                        title: "이메일 기억하기",
-                        isChecked: $viewModel.rememberEmail
-                    )
-                    
-                    Spacer()
-                    
-                    if let error = viewModel.errorMessage {
-                        Text(error)
-                            .font(.system(size: 11))
-                            .foregroundStyle(Color(hex: "F06D5B"))
-                            .transition(.opacity)
-                    }
-                }
-                .padding(.top, 12)
-                
-                Spacer()
-                
-                // 5. 하단 링크 (비밀번호 찾기 | 회원가입)
-                HStack(spacing: 12) {
-                    NavigationLink(destination: PWResetView(isTabBarHidden: $isTabBarHidden)) {
-                        Text("비밀번호 찾기")
-                    }
-                    
-                    Rectangle()
-                        .frame(width: 1, height: 12)
-                        .foregroundStyle(Color(hex: "D9D9D9"))
-                    
-                    NavigationLink(
-                        destination: SignUpView(isTabBarHidden: $isTabBarHidden)
-                    ) {
-                        Text("회원가입")
-                    }
-                }
-                .font(.Body1)
-                .foregroundStyle(.primary)
-                .padding(.bottom, 12)
-                
-                // 6. 로그인 버튼
-                Button(action: {
-                    _Concurrency.Task {
-                        await viewModel.userLogin(modelContext: modelContext)
-                    }
-                }) {
+                VStack {
+                    // 1. 상단 네비게이션 (뒤로가기)
                     HStack {
-                        if viewModel.isLoading {
-                            ProgressView()
-                                .progressViewStyle(
-                                    CircularProgressViewStyle(tint: .white)
-                                )
-                                .padding(.trailing, 8)
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 20))
+                                .foregroundStyle(scheme == .dark ? .white : .black)
                         }
                         
-                        Text("로그인")
-                            .font(.Subtitle3)
-                            .foregroundStyle(Color.gray700)
+                        Spacer()
                     }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 55)
-                    .background(
-                        viewModel.isButtonEnabled ? Color.main300 : Color.gray300
-                    )
-                    .foregroundStyle(Color.white)
-                    .cornerRadius(8)
+                    .padding(.bottom, 20)
+                    
+                    // 2. 로고 영역
+                    VStack(spacing: 10) {
+                        Image("Logo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 98, height: 98)
+                        
+                        Text("LUMO")
+                            .font(.Headline1)
+                            .foregroundStyle(scheme == .dark ? .white : .black)
+                        
+                        VStack(spacing: 3) {
+                            Text("확실하게 깨워주는 진짜 알람")
+                                .font(.Subtitle1)
+                                .foregroundStyle(scheme == .dark ? .white : .black)
+                            
+                            Text("아무리 피곤하고 지쳐도 개운하게")
+                                .font(.Body1)
+                                .foregroundStyle(scheme == .dark ? .white : .black)
+                                .opacity(0.4)
+                        }
+                        .padding(.top, 10)
+                    }
+                    .padding(.top, 20)
+                    
+                    Spacer()
+                    
+                    // 3. 입력 필드
+                    VStack(spacing: 10) {
+                        TextField("이메일", text: $viewModel.email)
+                            .padding()
+                            .frame(height: 52)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .strokeBorder(
+                                        Color.gray300,
+                                        lineWidth: 1
+                                    )
+                            )
+                            .textInputAutocapitalization(.never)
+                            .keyboardType(.emailAddress)
+                            .foregroundStyle(scheme == .dark ? .white : .black)
+                        
+                        SecureField("비밀번호", text: $viewModel.password)
+                            .padding()
+                            .frame(height: 52)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .strokeBorder(
+                                        Color.gray300,
+                                        lineWidth: 1
+                                    )
+                            )
+                            .foregroundStyle(scheme == .dark ? .white : .black)
+                    }
+                    
+                    // 4. 체크박스 & 에러 메시지
+                    HStack(alignment: .center, spacing: 12) {
+                        CheckboxButton(
+                            title: "자동로그인",
+                            isChecked: $viewModel.isAutoLogin
+                        )
+                        
+                        CheckboxButton(
+                            title: "이메일 기억하기",
+                            isChecked: $viewModel.rememberEmail
+                        )
+                        
+                        Spacer()
+                        
+                        if let error = viewModel.errorMessage {
+                            Text(error)
+                                .font(.system(size: 11))
+                                .foregroundStyle(Color(hex: "F06D5B"))
+                                .transition(.opacity)
+                        }
+                    }
+                    .padding(.top, 12)
+                    
+                    Spacer()
+                    
+                    // 5. 하단 링크 (비밀번호 찾기 | 회원가입)
+                    HStack(spacing: 12) {
+                        NavigationLink(destination: PWResetView(isTabBarHidden: $isTabBarHidden)) {
+                            Text("비밀번호 찾기")
+                        }
+                        
+                        Rectangle()
+                            .frame(width: 1, height: 12)
+                            .foregroundStyle(Color(hex: "D9D9D9"))
+                        
+                        NavigationLink(
+                            destination: SignUpView(isTabBarHidden: $isTabBarHidden)
+                        ) {
+                            Text("회원가입")
+                        }
+                    }
+                    .font(.Body1)
+                    .foregroundStyle(scheme == .dark ? .white : .primary)
+                    .padding(.bottom, 12)
+                    
+                    // 6. 로그인 버튼
+                    Button(action: {
+                        _Concurrency.Task {
+                            await viewModel.userLogin(modelContext: modelContext)
+                        }
+                    }) {
+                        HStack {
+                            if viewModel.isLoading {
+                                ProgressView()
+                                    .progressViewStyle(
+                                        CircularProgressViewStyle(tint: .white)
+                                    )
+                                    .padding(.trailing, 8)
+                            }
+                            
+                            Text("로그인")
+                                .font(.Subtitle3)
+                                // 버튼 배경이 회색/메인컬러이므로 텍스트는 흰색/진한회색 유지 필요.
+                                // 기존 코드: gray700. 다크 모드에서도 버튼 위 글씨는 잘 보여야 함.
+                                // 버튼 배경색(main300, gray300) 상에서는 gray700이 잘 보임.
+                                .foregroundStyle(Color.gray700)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 55)
+                        .background(
+                            viewModel.isButtonEnabled ? Color.main300 : Color.gray300
+                        )
+                        .foregroundStyle(Color.white)
+                        .cornerRadius(8)
+                    }
+                    .disabled(!viewModel.isButtonEnabled || viewModel.isLoading)
+                    .padding(.bottom, 22)
                 }
-                .disabled(!viewModel.isButtonEnabled || viewModel.isLoading)
-                .padding(.bottom, 22)
-            }
-            .padding(.horizontal, 24)
-            .navigationBarHidden(true)
-            .onAppear {
-                isTabBarHidden = true
-            }
-            .onChange(of: viewModel.isLoggedIn) { oldValue, newValue in
-                if newValue {
-                    dismiss() 
+                .padding(.horizontal, 24)
+                .navigationBarHidden(true)
+                .onAppear {
+                    isTabBarHidden = true
+                }
+                .onChange(of: viewModel.isLoggedIn) { oldValue, newValue in
+                    if newValue {
+                        dismiss()
+                    }
                 }
             }
         }
@@ -183,6 +198,8 @@ struct CheckboxButton: View {
     
     let title: String
     @Binding var isChecked: Bool
+    
+    @Environment(\.colorScheme) var scheme // 환경 변수 추가
     
     var body: some View {
         Button(action: {
@@ -211,7 +228,8 @@ struct CheckboxButton: View {
                 
                 Text(title)
                     .font(.pretendardSemiBold10)
-                    .foregroundStyle(.black)
+                    // 다크모드 대응
+                    .foregroundStyle(scheme == .dark ? .white : .black)
             }
         }
     }

@@ -10,6 +10,7 @@ import SwiftUI
 struct MissionPreviewView: View {
     @Environment(OnboardingViewModel.self) var viewModel
     @Binding var currentPage: Int
+    @Environment(\.colorScheme) var colorScheme // 다크모드 감지
     
     var body: some View {
         VStack {
@@ -33,11 +34,13 @@ struct MissionPreviewView: View {
                     }
                 }) {
                     Text("이전")
-                        .font(.Subtitle3)
-                        .foregroundStyle(Color(hex: "404347"))
+                        .font(.system(size: 20, weight: .bold)) // .Subtitle3 대체
+                        // 다크모드: 흰색 글씨, 라이트모드: 진회색 글씨
+                        .foregroundStyle(colorScheme == .dark ? .white : Color(hex: "404347"))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .backgroundStyle(Color.white)
+                        // 다크모드: 투명 배경, 라이트모드: 흰색 배경
+                        .background(colorScheme == .dark ? Color.clear : Color.white)
                         .cornerRadius(8)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
@@ -51,7 +54,9 @@ struct MissionPreviewView: View {
                     }
                 }) {
                     Text("다음")
-                        .font(.Subtitle3)
+                        .font(.system(size: 20, weight: .bold)) // .Subtitle3 대체
+                        // 배경이 밝은 회색(DDE1E8)이므로, 다크모드에서도 어두운 글씨가 잘 보임
+                        // 가독성을 위해 검은색 계열 유지
                         .foregroundStyle(Color(hex: "404347"))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)

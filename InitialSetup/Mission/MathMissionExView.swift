@@ -12,16 +12,18 @@ struct MathMissionExView: View {
         VStack {
             Spacer()
             
-                Text("\(Text("수학 미션").foregroundStyle(Color(hex: "F55641")))은 이런 미션을 수행해요")
-                    .font(.Subtitle2)
-                    .foregroundStyle(Color.black)
+            // 다크모드 대응: .primary
+            Text("\(Text("수학 미션").foregroundStyle(Color(hex: "F55641")))은 이런 미션을 수행해요")
+                .font(.custom("Pretendard-Bold", size: 24))
+                .foregroundStyle(.primary)
             
             Spacer()
             
             HStack {
+                // 다크모드 대응: .primary
                 Text("Q. 88+33 = ?")
-                    .font(.Subtitle2)
-                    .foregroundStyle(Color.black)
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(.primary)
                 
                 Spacer()
             }
@@ -34,8 +36,9 @@ struct MathMissionExView: View {
             
             VStack {
                 HStack {
+                    // 밝은 회색 배경 위이므로 Black 유지
                     Text("A. \(Text("답변을 입력해주세요.").foregroundStyle(Color(hex: "979DA7")))")
-                        .font(.Subtitle2)
+                        .font(.system(size: 24, weight: .bold))
                         .foregroundStyle(Color.black)
                     
                     Spacer()

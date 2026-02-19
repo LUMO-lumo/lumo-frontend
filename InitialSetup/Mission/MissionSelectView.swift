@@ -11,8 +11,6 @@ struct MissionSelectView: View {
     @Environment(OnboardingViewModel.self) var viewModel
     @Binding var currentPage: Int
     
-   // private var index: Int = 0
-    
     let columns = [
         GridItem(.flexible(), spacing: 9),
         GridItem(.flexible(), spacing: 9)
@@ -24,13 +22,14 @@ struct MissionSelectView: View {
             Spacer() .frame(height: 37)
             
             VStack(alignment: .leading, spacing: 8) {
+                // 다크모드 대응: .primary
                 Text("잠에서 확실하게 깨워줄\n미션을 선택해주세요.")
-                    .font(.Subtitle1)
-                    .foregroundStyle(Color.black)
+                    .font(.custom("Pretendard-Bold", size: 24))
+                    .foregroundStyle(.primary)
                     .lineSpacing(8)
                 
                 Text("나중에 변경할 수 있어요.")
-                    .font(.Body1)
+                    .font(.body)
                     .foregroundStyle(Color(hex: "7A7F88"))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -43,7 +42,6 @@ struct MissionSelectView: View {
                         mission: mission,
                         isSelected: viewModel.selectedMission == mission
                     ) {
-                        // 탭하면 뷰모델 선택값 변경
                         viewModel.selectedMission = mission
                     }
                 }
@@ -58,7 +56,7 @@ struct MissionSelectView: View {
                 }
             }) {
                 Text("다음")
-                    .font(.Subtitle3)
+                    .font(.system(size: 20, weight: .bold))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
                     .foregroundStyle(Color(hex: "404347"))
@@ -85,15 +83,15 @@ struct MissionButton: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width:96, height: 96)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.black) // 흰 배경이므로 검은색 유지
                 
                 Text(mission.title)
-                    .font(.Body1)
-                    .foregroundStyle(Color.black)
+                    .font(.body)
+                    .foregroundStyle(Color.black) // 흰 배경이므로 검은색 유지
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .aspectRatio(168/185, contentMode: .fit)
-            .background(Color.white)
+            .background(Color.white) // 배경 흰색 고정
             .cornerRadius(16)
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
@@ -102,7 +100,6 @@ struct MissionButton: View {
         }
     }
     
-    // 미션별 아이콘 매핑 (임시)
     func getIconName(_ mission: MissionType) -> String {
         switch mission {
         case .math: return "MathMission"
